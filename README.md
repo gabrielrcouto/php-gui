@@ -8,12 +8,12 @@ PHP <=> Stdin/Stdout Pipes <=> Lazarus Application <=> GUI
 
 Based on JSON RPC:
 
-### Request:
+### Request/Command:
 
 ```json
 {
 	"id": 2,
-	"method": "creatObject",
+	"method": "createObject",
 	"params": [
 		{
 			"lazarusClass": "TButton"
@@ -43,4 +43,61 @@ Based on JSON RPC:
 		}
 	]
 }
+```
+
+### Commands avaible:
+
+#### createObject
+
+Request:
+
+```json
+{
+	"id": 2,
+	"method": "createObject",
+	"params": [
+		{
+			"lazarusClass": "TButton"
+		}
+	]
+}
+```
+
+Response:
+
+```json
+{
+	"id": 2,
+	"result": 123 // This is the object ID
+}
+```
+
+#### setObjectProperty
+
+```json
+{
+	"id": 2,
+	"method": "setObjectProperty",
+	"params": [
+		"objectId",
+		"propertyName",
+		"propertyValue"
+	]
+}
+```
+
+Response:
+
+```json
+{
+	"id": 2,
+	"result": true
+}
+```
+
+
+## Compiling Lazarus App
+
+```bash
+lazbuild phpgui.lpr
 ```
