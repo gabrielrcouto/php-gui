@@ -1,0 +1,17 @@
+{
+    "name": "gabrielrodriguescouto/php-gui",
+    "require": {
+        "react/child-process": "^0.4.0"
+    },
+    "authors": [
+        {
+            "name": "Gabriel Rodrigues Couto",
+            "email": "gabrielrcouto@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gui\\": "src/"
+        }
+    }
+}
