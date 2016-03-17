@@ -29,7 +29,8 @@ class Object
         // As the callback, we will define the object id
         $this->application->sendCommand('createObject', [
             [
-                'lazarusClass' => $this->lazarusClass
+                'lazarusClass' => $this->lazarusClass,
+                'lazarusObjectId' => $this->lazarusObjectId,
             ]
         ], function($result) use ($object) {
             $object->onCreated($result);

@@ -3,25 +3,8 @@ object Form1: TForm1
   Height = 240
   Top = 125
   Width = 320
-  Caption = 'Form1'
+  Caption = 'PHP GUI'
   ClientHeight = 240
   ClientWidth = 320
   LCLVersion = '1.6.0.4'
-  object Button1: TButton
-    Left = 8
-    Height = 25
-    Top = 16
-    Width = 75
-    Caption = 'Button1'
-    OnClick = Button1Click
-    TabOrder = 0
-  end
-  object Edit1: TEdit
-    Left = 8
-    Height = 22
-    Top = 48
-    Width = 192
-    TabOrder = 1
-    Text = 'Edit1'
-  end
 end

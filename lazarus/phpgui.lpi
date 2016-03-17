@@ -46,7 +46,7 @@
         <UnitName Value="Unit1"/>
       </Unit1>
       <Unit2>
-        <Filename Value="UnitMyThread.pas"/>
+        <Filename Value="unitipcthread.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
     </Units>

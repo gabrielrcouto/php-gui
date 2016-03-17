@@ -7,16 +7,16 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, unit1, UnitMyThread
+  Forms, unit1, unitipcthread
   { you can add units after this };
 
 {$R *.res}
 
 var
-    MyThread : TMyThread;
+    IpcThread : TIpcThread;
 
 begin
-  MyThread := TMyThread.Create(False);
+  IpcThread := TIpcThread.Create(False);
 
   RequireDerivedFormResource:=True;
   Application.Initialize;

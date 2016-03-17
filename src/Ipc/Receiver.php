@@ -43,7 +43,7 @@ class Receiver
      */
     public function onData($data)
     {
-        echo 'Received: ' . $data;
+        echo 'Received: ' . $data . PHP_EOL;
 
         if (strlen($data) === 0) {
             return;
@@ -53,7 +53,7 @@ class Receiver
             $message = json_decode($data);
 
             // Can be a command or a result
-            if (property_exists($message, 'id')) {
+            if ($message && property_exists($message, 'id')) {
                 if (property_exists($message, 'result')) {
                     $this->callMessageCallback($message->id, $message->result);
                 } else {
