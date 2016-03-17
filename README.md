@@ -57,7 +57,8 @@ Request:
 	"method": "createObject",
 	"params": [
 		{
-			"lazarusClass": "TButton"
+			"lazarusClass": "TButton",
+			"lazarusObjectId": 123
 		}
 	]
 }
@@ -79,7 +80,7 @@ Response:
 	"id": 2,
 	"method": "setObjectProperty",
 	"params": [
-		"objectId",
+		objectId,
 		"propertyName",
 		"propertyValue"
 	]
@@ -95,6 +96,27 @@ Response:
 }
 ```
 
+#### setObjectEventListener
+
+```json
+{
+	"id": 2,
+	"method": "setObjectEventListener",
+	"params": [
+		objectId,
+		"eventName"
+	]
+}
+```
+
+Response:
+
+```json
+{
+	"id": 2,
+	"result": true
+}
+```
 
 ## Compiling Lazarus App
 

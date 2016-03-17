@@ -4,6 +4,6 @@ namespace Gui\Components;
 
 class Edit extends Object
 {
-    protected $lazarusClass = 'TEdit';
+    public $lazarusClass = 'TEdit';
     protected $text;
 }

@@ -4,7 +4,5 @@ object Form1: TForm1
   Top = 125
   Width = 320
   Caption = 'PHP GUI'
-  ClientHeight = 240
-  ClientWidth = 320
   LCLVersion = '1.6.0.4'
 end

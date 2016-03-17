@@ -25,6 +25,20 @@ class Receiver
     }
 
     /**
+     * Fire a event on a object
+     * @param  int $id Object ID
+     * @param  String $eventName Event Name
+     */
+    public function callObjectEventListener($id, $eventName)
+    {
+        $object = $this->application->getObject($id);
+
+        if ($object) {
+            $object->fire($eventName);
+        }
+    }
+
+    /**
      * Result received, time to call the message callback
      * @param  int $id Message ID
      * @param  String|Array|Object|int $result Command Result
@@ -58,6 +72,14 @@ class Receiver
                     $this->callMessageCallback($message->id, $message->result);
                 } else {
                     // @TODO - Command implementation
+                }
+            }
+
+            // This is a notification/event!
+            if ($message && ! property_exists($message, 'id')) {
+                if ($message->method == 'callObjectEventListener') {
+                    // @TODO - Check if params contains all the items
+                    $this->callObjectEventListener($message->params[0], $message->params[1]);
                 }
             }
         }

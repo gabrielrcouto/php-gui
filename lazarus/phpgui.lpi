@@ -48,6 +48,7 @@
       <Unit2>
         <Filename Value="unitipcthread.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="UnitIpcThread"/>
       </Unit2>
     </Units>
   </ProjectOptions>

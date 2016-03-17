@@ -14,9 +14,20 @@ class Application
     protected $eventHandlers = [];
     protected $loop;
     protected $objectId = 0;
+    protected $objects = [];
     public $process;
     protected $running = false;
     protected $sender;
+
+    /**
+     * Put a object to the internal objects array
+     * @param Object $object Component Object
+     */
+    public function addObject($object)
+    {
+        $object->lazarusObjectId = $this->getNextObjectId();
+        $this->objects[$object->lazarusObjectId] = $object;
+    }
 
     /**
      * Fire an application event
@@ -37,6 +48,16 @@ class Application
     public function getNextObjectId()
     {
         return $this->objectId++;
+    }
+
+    /**
+     * Get a object from the internal objects array
+     * @param int $id Object ID
+     */
+    public function getObject($id)
+    {
+        // @TODO - Check if the object exists
+        return $this->objects[$id];
     }
 
     public function on($eventName, $eventHandler)

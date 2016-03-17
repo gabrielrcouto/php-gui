@@ -7,8 +7,9 @@ use Gui\Application;
 class Object
 {
     protected $application;
-    protected $lazarusClass = 'TObject';
-    protected $lazarusObjectId;
+    protected $eventHandlers = [];
+    public $lazarusClass = 'TObject';
+    public $lazarusObjectId;
 
     public function __construct($defaultAttributes = null, $application = null)
     {
@@ -23,17 +24,16 @@ class Object
         }
 
         // Get the next object id
-        $this->lazarusObjectId = $this->application->getNextObjectId();
+        $this->application->addObject($this);
 
         // Send the createObject command
-        // As the callback, we will define the object id
         $this->application->sendCommand('createObject', [
             [
                 'lazarusClass' => $this->lazarusClass,
                 'lazarusObjectId' => $this->lazarusObjectId,
             ]
         ], function($result) use ($object) {
-            $object->onCreated($result);
+            // Ok, object created
         });
     }
 
@@ -46,15 +46,45 @@ class Object
             $name,
             $value
         ], function($result) {
-            // Ok, the property changed :-)
+            // Ok, the property changed
         });
 
         $this->$name = $value;
     }
 
-    public function onCreated($lazarusObjectId)
+    /**
+     * Fire an object event
+     * @param  String $eventName Event Name
+     */
+    public function fire($eventName)
     {
-        // Store the object ID from lazarus
-        $this->lazarusObjectId = $lazarusObjectId;
+        if (array_key_exists($eventName, $this->eventHandlers)) {
+            foreach ($this->eventHandlers[$eventName] as $eventHandler) {
+                $eventHandler();
+            }
+        }
+    }
+
+    /**
+     * Add a listener to an event
+     * @param  String $eventName Event Name
+     * @param  Function $eventHandler Event Handler Function
+     */
+    public function on($eventName, $eventHandler)
+    {
+        $eventName = 'on' . $eventName;
+
+        $this->application->sendCommand('setObjectEventListener', [
+            $this->lazarusObjectId,
+            $eventName
+        ], function($result) {
+            // Ok, the event listener created
+        });
+
+        if (! array_key_exists($eventName, $this->eventHandlers)) {
+            $this->eventHandlers[$eventName] = [];
+        }
+
+        $this->eventHandlers[$eventName][] = $eventHandler;
     }
 }

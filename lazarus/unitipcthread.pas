@@ -13,11 +13,23 @@ type
   private
     procedure CreateObject;
     procedure SetObjectProperty;
+    procedure SetObjectEventListener;
   protected
     procedure Execute; override;
     procedure Output(Text: String);
     procedure ParseMessage(Text: String);
   public
+  end;
+
+type
+  TEventHandler = class(TObject)
+  private
+  protected
+  public
+    EventName: String;
+    ObjectId: Integer;
+    procedure Call(Sender: TObject);
+    procedure Output(Text: String);
   end;
 
 var
@@ -111,27 +123,40 @@ begin
       SetLength(AString, AStringLength);
       AStream.ReadBuffer(AString[1], AStringLength);
 
-      // Split the AString into messages
-      // Into AString, we can have more than one message, just search for "}{"
-      // The "}{" into a json string is escaped by "}/{"
-      for Counter := 1 to AStringLength do
+      if Trim(AString) <> '' then
       begin
-        if (Counter > 1) then
+        // Split the AString into messages
+        // Into AString, we can have more than one message, just search for "}{"
+        // The "}{" into a json string is escaped by "}/{"
+        for Counter := 1 to AStringLength do
         begin
-          if (AString[Counter - 1] = '}') AND (AString[Counter] = '{') then
+          if (Counter > 1) then
           begin
-            // Ok, we found the message "glue", lets split
-            ToPosition := Counter - 1;
-            ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
-            FromPosition := Counter;
-          end else if Counter = AStringLength then
-          begin
-            // We reached the end of AString, just send the rest
-            ToPosition := Counter;
-            ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
+            if (AString[Counter - 1] = '}') AND (AString[Counter] = '{') then
+            begin
+              // Ok, we found the message "glue", lets split
+              ToPosition := Counter - 1;
+              ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
+              FromPosition := Counter;
+            end else if Counter = AStringLength then
+            begin
+              if FromPosition = 1 then
+              begin
+                ParseMessage(AString);
+              end
+              else
+              begin
+                // We reached the end of AString, just send the rest
+                ToPosition := Counter;
+                ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
+              end;
+            end;
           end;
         end;
       end;
+
+      FromPosition := 1;
+      ToPosition := 1;
     end
     else
     begin
@@ -154,9 +179,43 @@ begin
     if (jData.FindPath('method').value = 'createObject') then
     begin
       Synchronize(@CreateObject);
+    end else if (jData.FindPath('method').value = 'setObjectEventListener') then
+    begin
+      Synchronize(@SetObjectEventListener);
     end else if (jData.FindPath('method').value = 'setObjectProperty') then
     begin
       Synchronize(@SetObjectProperty);
+    end;
+  end;
+end;
+
+procedure TIpcThread.SetObjectEventListener;
+var objId: Integer;
+  eventHandler: TEventHandler;
+  eventName: String;
+  propInfo: PPropInfo;
+begin
+  // param[0] = objectId
+  // param[1] = eventName
+  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) then
+  begin
+    // check if objectId is valid
+    if jData.FindPath('params[0]').AsInteger < Length(objArray) then
+    begin
+      objId := jData.FindPath('params[0]').AsInteger;
+      eventName := jData.FindPath('params[1]').AsString;
+
+      // Get the info about the property
+      propInfo := GetPropInfo(objArray[objId], eventName);
+
+      // If the object has the property, change the value
+      if Assigned(propInfo) then
+      begin
+        eventHandler := TEventHandler.Create;
+        eventHandler.EventName := eventName;
+        eventHandler.ObjectId := objId;
+        SetMethodProp(objArray[objId], eventName, TMethod(@eventHandler.Call));
+      end;
     end;
   end;
 end;
@@ -189,6 +248,24 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TEventHandler.Call(Sender: TObject);
+var i: Integer;
+begin
+  for i := 0 to Length(objArray) do
+  begin
+    if objArray[i] = Sender then
+    begin
+      Output('{"method": "callObjectEventListener", "params": [' + IntToStr(ObjectId) + ', "' + EventName + '"]}');
+    end;
+  end;
+end;
+
+procedure TEventHandler.Output(Text: String);
+begin
+  Write(F, Text);
+  Flush(F);
 end;
 
 end.
