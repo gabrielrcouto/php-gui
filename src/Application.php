@@ -5,6 +5,7 @@ namespace Gui;
 use Gui\Ipc\CommandMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
+use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
 
@@ -77,7 +78,21 @@ class Application
 
         $application = $this;
         $this->loop = Factory::create();
-        $this->process = $process = new Process('./phpgui', __DIR__ . '/../lazarus/phpgui.app/Contents/MacOS/');
+
+        if (OsDetector::isMacOS()) {
+            $processName = './phpgui-i386-darwin';
+            $processPath = __DIR__ . '/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
+        } else if (OsDetector::isUnix()) {
+            $processName = './phpgui-x86_64-linux';
+            $processPath = __DIR__ . '/../lazarus/';
+        } else if (OsDetector::isWindows()) {
+            // @TODO: Windows binary
+        } else {
+            throw new RuntimeException('Operational System not identified by PHP-GUI.');
+        }
+
+        $this->process = $process = new Process($processName, $processPath);
+
         $this->receiver = $receiver = new Receiver($this);
         $this->sender = new Sender($this, $receiver);
 

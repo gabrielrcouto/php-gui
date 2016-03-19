@@ -15,6 +15,12 @@ $application->on('start', function() use ($application) {
     $button->top = 100;
     $button->counter = 1;
 
+    $button2 = new Button();
+    $button2->caption = 'Fala René!';
+    $button2->left = 100;
+    $button2->top = 150;
+    $button2->counter = 1;
+
     $edit = new Edit();
     $edit->text = 'Made with PHP S2!';
     $edit->left = 50;

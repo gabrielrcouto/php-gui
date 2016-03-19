@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/bin/fpc" Date="1449313866"/>
+  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/app/lazarus/lib/x86_64-linux -Fl/opt/gnome/lib -Fu/app/lazarus -Fu/usr/share/lazarus/1.6/lcl/units/x86_64-linux/gtk2 -Fu/usr/share/lazarus/1.6/lcl/units/x86_64-linux -Fu/usr/share/lazarus/1.6/components/lazutils/lib/x86_64-linux -Fu/usr/share/lazarus/1.6/packager/units/x86_64-linux -FU/app/lazarus/lib/x86_64-linux/ -ophpgui-x86_64-linux -dLCL -dLCLgtk2 -dUseCThreads phpgui.lpr"/>
+</CONFIG>
