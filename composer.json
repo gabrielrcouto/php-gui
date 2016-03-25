@@ -1,14 +1,18 @@
 {
-    "name": "gabrielrodriguescouto/php-gui",
-    "require": {
-        "react/child-process": "^0.4.0"
-    },
+    "name": "gabrielrcouto/php-gui",
+    "description": "Extensionless PHP Graphic User Interface library",
+    "keywords": ["php","gui","graphic","interface"],
+    "homepage": "http://github.com/gabrielrcouto/php-gui",
+    "license": "MIT",
     "authors": [
         {
             "name": "Gabriel Rodrigues Couto",
             "email": "gabrielrcouto@gmail.com"
         }
     ],
+    "require": {
+        "react/child-process": "^0.4.0"
+    },
     "autoload": {
         "psr-4": {
             "Gui\\": "src/"

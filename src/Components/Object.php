@@ -10,6 +10,7 @@ class Object
     protected $eventHandlers = [];
     public $lazarusClass = 'TObject';
     public $lazarusObjectId;
+    protected $propertiesNameTransform = [];
 
     public function __construct($defaultAttributes = null, $application = null)
     {
@@ -35,11 +36,25 @@ class Object
         ], function($result) use ($object) {
             // Ok, object created
         });
+
+        // @TODO: Use defaultAttributes for initial properties values
     }
 
+    /**
+     * This magic method is used to send the IPC message when a property is set
+     * @param String $name  Property name
+     * @param mixed $value Property value
+     */
     public function __set($name, $value)
     {
-        // @TODO - Check on a property list if we need to send the
+        $this->$name = $value;
+
+        // For Lazarus, this property has another name
+        if (array_key_exists($name, $this->propertiesNameTransform)) {
+            $name = $this->propertiesNameTransform[$name];
+        }
+
+        // @TODO: Check on a property list if we need to send the
         // command to Lazarus
         $this->application->sendCommand('setObjectProperty', [
             $this->lazarusObjectId,
@@ -48,8 +63,6 @@ class Object
         ], function($result) {
             // Ok, the property changed
         });
-
-        $this->$name = $value;
     }
 
     /**

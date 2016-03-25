@@ -71,14 +71,14 @@ class Receiver
                 if (property_exists($message, 'result')) {
                     $this->callMessageCallback($message->id, $message->result);
                 } else {
-                    // @TODO - Command implementation
+                    // @TODO: Command implementation
                 }
             }
 
             // This is a notification/event!
             if ($message && ! property_exists($message, 'id')) {
                 if ($message->method == 'callObjectEventListener') {
-                    // @TODO - Check if params contains all the items
+                    // @TODO: Check if params contains all the items
                     $this->callObjectEventListener($message->params[0], $message->params[1]);
                 }
             }

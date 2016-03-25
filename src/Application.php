@@ -57,7 +57,7 @@ class Application
      */
     public function getObject($id)
     {
-        // @TODO - Check if the object exists
+        // @TODO: Check if the object exists
         return $this->objects[$id];
     }
 
