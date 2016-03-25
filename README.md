@@ -4,6 +4,8 @@ Extensionless PHP Graphic User Interface library.
 
 # ALPHA - Please, don't use it for production.
 
+<p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14037217/07de6574-f220-11e5-8020-bb7e625db151.png" alt="made with PHP S2" /></p>
+
 ## Table of Contents
 
 + [Why](#why)
