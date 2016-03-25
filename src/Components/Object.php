@@ -4,13 +4,29 @@ namespace Gui\Components;
 
 use Gui\Application;
 
+/**
+ * Object
+ *
+ * @property int $bottom Bottom position (in pixels)
+ * @property int $height Height size (in pixels)
+ * @property int $left Left position (in pixels)
+ * @property int $right Right position (in pixels)
+ * @property int $top Top position (in pixels)
+ * @property int $width Width size (in pixels)
+ */
 class Object
 {
     protected $application;
+    protected $bottom;
     protected $eventHandlers = [];
+    protected $height;
+    protected $left;
     public $lazarusClass = 'TObject';
     public $lazarusObjectId;
     protected $propertiesNameTransform = [];
+    protected $right;
+    protected $top;
+    protected $width;
 
     public function __construct($defaultAttributes = null, $application = null)
     {
