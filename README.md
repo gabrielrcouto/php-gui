@@ -28,7 +28,7 @@ This project aims to solve the most common problems of existing "GUI Projects":
 - The need of installing an extension
 - Cross platform
 - No external dependencies
-- Easy to install (compose require php-gui) / Easy to use ($button = new Button)
+- Easy to install (composer require php-gui) / Easy to use ($button = new Button)
 
 ## Installation
 
@@ -129,3 +129,4 @@ The "Issues" page from this repository is being used for TO-DO management, just 
 ## Credits
 
 [@gabrielrcouto](http://www.twitter.com/gabrielrcouto)
+[@reisraff](http://www.twitter.com/reisraff)
