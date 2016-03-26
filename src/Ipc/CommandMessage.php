@@ -9,7 +9,7 @@ class CommandMessage implements MessageInterface
     public $method;
     public $params;
 
-    public function __construct($method, $params, $callback)
+    public function __construct($method, $params, $callback = false)
     {
         $this->method = $method;
         $this->params = $params;
