@@ -26,8 +26,7 @@ class Application
      */
     public function addObject($object)
     {
-        $object->lazarusObjectId = $this->getNextObjectId();
-        $this->objects[$object->lazarusObjectId] = $object;
+        $this->objects[$object->getLazarusObjectId()] = $object;
     }
 
     /**

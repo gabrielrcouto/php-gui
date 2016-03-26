@@ -67,14 +67,14 @@ use Gui\Components\Button;
 $application = new Application();
 
 $application->on('start', function() use ($application) {
-    $button = new Button();
-    $button->left    = 40;
-    $button->top     = 100;
-    $button->width   = 200;
-    $button->value   = 'Look, I\'m a button!';
+    $button = (new Button())
+        ->setLeft(40)
+        ->setTop(100)
+        ->setWidth(200)
+        ->setValue('Look, I\'m a button!');
 
     $button->on('click', function() use ($button) {
-        $button->value = 'Look, I\'m a clicked button!';
+        $button->setValue('Look, I\'m a clicked button!');
     });
 });
 
