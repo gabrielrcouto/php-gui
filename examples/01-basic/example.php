@@ -9,25 +9,27 @@ use Gui\Components\InputText;
 $application = new Application();
 
 $application->on('start', function() use ($application) {
-    $button = new Button();
-    $button->counter = 1;
-    $button->left    = 100;
-    $button->top     = 100;
-    $button->value = 'Dont click';
+    $button = (new Button())
+        ->setCounter(1)
+        ->setLeft(100)
+        ->setTop(100)
+        ->setValue('Dont click');
 
-    $input = new InputText();
-    $input->left  = 10;
-    $input->text  = 'Made with PHP S2!';
-    $input->top   = 50;
-    $input->width = 290;
+    $input = (new InputText())
+        ->setLeft(10)
+        ->setValue('Made with PHP S2!')
+        ->setTop(50)
+        ->setWidth(290);
 
     $button->on('click', function() use ($button, $input) {
-        $button->value = 'Ouch ' . $button->counter++ . 'x';
+        $button->setValue('Ouch ' . $button->getCounter() . 'x');
+        $button->setCounter($button->getCounter() + 1);
 
-        if ($button->counter == 20) {
-            $input->text = 'Please, stop! You already clicked ' . preg_replace('/[^0-9]/', '', $button->value) . ' times';
-        } else if ($button->counter == 30) {
-            $button->visible = false;
+        if ($button->getCounter() == 20) {
+            $text = 'Please, stop! You already clicked ' . preg_replace('/[^0-9]/', '', $button->getValue()) . ' times';
+            $input->setValue($text);
+        } else if ($button->getCounter() == 30) {
+            $button->setVisible(false);
         }
     });
 });
