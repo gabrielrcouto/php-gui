@@ -82,6 +82,35 @@ class Object
     }
 
     /**
+     * This magic method is used to send the IPC message when a property is get
+     *
+     * @param String $name  Property name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        $name = $this->getTransformedProperty($name);
+
+        return $this->application->waitCommand('getObjectProperty', [
+            $this->lazarusObjectId,
+            $name
+        ]);
+    }
+
+    private function getTransformedProperty($name)
+    {
+        // $this->propertiesNameTransform could be static to be faster.
+
+        // For Lazarus, this property has another name
+        if (array_key_exists($name, $this->propertiesNameTransform)) {
+            return $this->propertiesNameTransform[$name];
+        }
+
+        return $name;
+    }
+
+    /**
      * Fire an object event
      * @param  String $eventName Event Name
      */

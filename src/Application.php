@@ -122,4 +122,11 @@ class Application
         $message = new CommandMessage($method, $params, $callback);
         $this->sender->send($message);
     }
+
+    public function waitCommand($method, $params)
+    {
+        $message = new CommandMessage($method, $params);
+
+        return $this->sender->waitReturn($message);
+    }
 }

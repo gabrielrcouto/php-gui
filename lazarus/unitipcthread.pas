@@ -13,6 +13,7 @@ type
   private
     procedure CreateObject;
     procedure SetObjectProperty;
+    procedure GetObjectProperty;
     procedure SetObjectEventListener;
   protected
     procedure Execute; override;
@@ -185,6 +186,9 @@ begin
     end else if (jData.FindPath('method').value = 'setObjectProperty') then
     begin
       Synchronize(@SetObjectProperty);
+    end else if (jData.FindPath('method').value = 'getObjectProperty') then
+    begin
+      Synchronize(@GetObjectProperty);
     end;
   end;
 end;
@@ -245,6 +249,40 @@ begin
       if Assigned(propInfo) then
       begin
         SetPropValue(objArray[objId], propertyName, jData.FindPath('params[2]').Value);
+      end;
+    end;
+  end;
+end;
+
+procedure TIpcThread.GetObjectProperty;
+var  objId: Integer;
+  propertyName: String;
+  propertyValue: Variant;
+  propInfo: PPropInfo;
+  return: String;
+  messageId: Integer;
+begin
+  // param[0] = objectId
+  // param[1] = propertyName
+  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) then
+  begin
+    // check if objectId is valid
+    if jData.FindPath('params[0]').AsInteger < Length(objArray) then
+    begin
+      objId := jData.FindPath('params[0]').AsInteger;
+      propertyName := jData.FindPath('params[1]').AsString;
+
+      // Get the info about the property
+      propInfo := GetPropInfo(objArray[objId], propertyName);
+
+      // If the object has the property, change the value
+      if Assigned(propInfo) then
+      begin
+
+        // @todo send the Variant property as your real type
+        propertyValue := GetPropValue(objArray[objId], propertyName, true);
+        messageId := jData.FindPath('id').AsInteger;
+        Output('{"id": ' + IntToStr(messageId) + ',"result": "' + propertyValue + '"}');
       end;
     end;
   end;
