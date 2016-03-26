@@ -40,7 +40,7 @@ class Object
                     'lazarusObjectId' => $this->lazarusObjectId,
                 ]
             ],
-            function($result) use ($object) {
+            function ($result) use ($object) {
                 // Ok, object created
             }
         );
@@ -88,7 +88,7 @@ class Object
                 $name,
                 $value
             ],
-            function($result) {
+            function ($result) {
                 // Ok, the property changed
             }
         );
@@ -134,7 +134,7 @@ class Object
         $this->application->sendCommand('setObjectEventListener', [
             $this->lazarusObjectId,
             $eventName
-        ], function($result) {
+        ], function ($result) {
             // Ok, the event listener created
         });
 

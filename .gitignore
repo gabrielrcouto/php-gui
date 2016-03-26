@@ -1,4 +1,7 @@
-vendor/
 composer.lock
+vendor/
 material/
 lazarus/backup/
+bin/*
+!bin/.gitkeep
+phpunit.xml

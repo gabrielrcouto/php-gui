@@ -122,6 +122,14 @@ cd lazarus/
 lazbuild phpgui.lpr
 ```
 
+### Test
+
+First install the dependencies, and after you can run:
+
+```bash
+bin/phing
+```
+
 ## TO-DO
 
 The "Issues" page from this repository is being used for TO-DO management, just search for the "to-do" tag.
