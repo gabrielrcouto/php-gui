@@ -30,6 +30,7 @@ class Sender
         }
 
         $this->application->process->stdin->write($json);
+        $this->application->process->stdin->getBuffer()->handleWrite();
     }
 
     public function waitReturn(MessageInterface $message)

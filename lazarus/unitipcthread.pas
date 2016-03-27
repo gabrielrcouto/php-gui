@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls;
 
 type
   TIpcThread = class(TThread)
@@ -103,6 +103,8 @@ begin
   // @TODO - Move it from here!
   RegisterClass(TButton);
   RegisterClass(TEdit);
+  RegisterClass(TLabel);
+  RegisterClass(TShape);
 
   // Initializes the input pipe (Stdin)
   AStream := TInputPipeStream.Create(StdInputHandle);
@@ -226,9 +228,11 @@ end;
 
 procedure TIpcThread.SetObjectProperty;
 var  objId: Integer;
+  obj: TControl;
   propertyName: String;
   propertyValue: Variant;
   propInfo: PPropInfo;
+  subpropertyName: String;
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -239,16 +243,36 @@ begin
     if jData.FindPath('params[0]').AsInteger < Length(objArray) then
     begin
       objId := jData.FindPath('params[0]').AsInteger;
+      obj := objArray[objId];
       propertyName := jData.FindPath('params[1]').AsString;
       propertyValue := jData.FindPath('params[2]').Value;
 
+      // The property name can be property.subproperty.subsubproperty...
+      while Pos('.', propertyName) > 0 do
+      begin
+        subpropertyName := Copy(propertyName, 1, Pos('.', propertyName) - 1);
+        propInfo := GetPropInfo(obj, subpropertyName);  
+
+        if Assigned(propInfo) then
+        begin
+          obj := TControl(GetObjectProp(obj, subpropertyName));
+        end else
+        begin
+          break;
+        end;
+
+        Delete(propertyName, 1, Pos('.', propertyName));
+      end;
+
       // Get the info about the property
-      propInfo := GetPropInfo(objArray[objId], propertyName);
+      propInfo := GetPropInfo(obj, propertyName);
 
       // If the object has the property, change the value
       if Assigned(propInfo) then
       begin
-        SetPropValue(objArray[objId], propertyName, jData.FindPath('params[2]').Value);
+        // @TODO: Convert propertyValue to a object checking with PropIsType and GetObjectPropClass
+
+        SetPropValue(obj, propertyName, propertyValue);
       end;
     end;
   end;
@@ -259,7 +283,6 @@ var  objId: Integer;
   propertyName: String;
   propertyValue: Variant;
   propInfo: PPropInfo;
-  return: String;
   messageId: Integer;
 begin
   // param[0] = objectId

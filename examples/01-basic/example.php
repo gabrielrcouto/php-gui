@@ -5,6 +5,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Gui\Application;
 use Gui\Components\Button;
 use Gui\Components\InputText;
+use Gui\Components\Shape;
 
 $application = new Application();
 

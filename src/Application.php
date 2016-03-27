@@ -13,7 +13,7 @@ class Application
 {
     public static $defaultApplication;
     protected $eventHandlers = [];
-    protected $loop;
+    public $loop;
     protected $objectId = 0;
     protected $objects = [];
     public $process;
