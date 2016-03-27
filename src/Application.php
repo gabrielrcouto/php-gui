@@ -81,10 +81,10 @@ class Application
         if (OsDetector::isMacOS()) {
             $processName = './phpgui-i386-darwin';
             $processPath = __DIR__ . '/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
-        } else if (OsDetector::isUnix()) {
+        } elseif (OsDetector::isUnix()) {
             $processName = './phpgui-x86_64-linux';
             $processPath = __DIR__ . '/../lazarus/';
-        } else if (OsDetector::isWindows()) {
+        } elseif (OsDetector::isWindows()) {
             // @TODO: Windows binary
         } else {
             throw new RuntimeException('Operational System not identified by PHP-GUI.');
@@ -95,10 +95,10 @@ class Application
         $this->receiver = $receiver = new Receiver($this);
         $this->sender = new Sender($this, $receiver);
 
-        $this->loop->addTimer(0.001, function($timer) use ($process, $application, $receiver) {
+        $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
             $process->start($timer->getLoop());
 
-            $process->stdout->on('data', function($data) use ($receiver) {
+            $process->stdout->on('data', function ($data) use ($receiver) {
                 $receiver->onData($data);
             });
 

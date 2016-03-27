@@ -25,10 +25,12 @@ $application->on('start', function() use ($application) {
         $button->setValue('Ouch ' . $button->getCounter() . 'x');
         $button->setCounter($button->getCounter() + 1);
 
-        if ($button->getCounter() == 20) {
+        if ($button->getCounter() >= 20) {
             $text = 'Please, stop! You already clicked ' . preg_replace('/[^0-9]/', '', $button->getValue()) . ' times';
             $input->setValue($text);
-        } else if ($button->getCounter() == 30) {
+        }
+
+        if ($button->getCounter() == 30) {
             $button->setVisible(false);
         }
     });

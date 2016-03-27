@@ -13,9 +13,18 @@
     "require": {
         "react/child-process": "^0.4.0"
     },
+    "require-dev" : {
+        "phing/phing": "2.*",
+        "phpunit/phpunit": "4.5.*",
+        "squizlabs/php_codesniffer": "2.0.*@dev"
+    },
+    "config" : {
+        "bin-dir" : "bin/"
+    },
     "autoload": {
         "psr-4": {
-            "Gui\\": "src/"
+            "Gui\\": "src/",
+            "Test\\": "test/"
         }
     }
 }

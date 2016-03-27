@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="php-gui" basedir="." default="main">
+    <property name="examples" value="examples" />
+    <property name="source" value="src" />
+    <property name="bindir" value="bin" />
+
+    <fileset id="php-files" dir="${project.basedir}">
+        <include name="${project.source}/**/*.php"/>
+    </fileset>
+
+    <target name="main" description="Start analyzing our application">
+        <echo msg="Start Build" />
+
+        <phingCall target="phpunit" />
+        <phingCall target="phpcs" />
+
+        <echo msg="Finished Build" />
+    </target>
+
+    <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+        <exec passthru="true" command="${bindir}/phpunit" checkreturn="true"/>
+    </target>
+
+    <target name="phpcs" description="Coding Standards Analysis">
+        <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${source}" checkreturn="true" />
+        <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${examples}" checkreturn="true" />
+    </target>
+</project>
