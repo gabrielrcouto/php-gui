@@ -1,0 +1,38 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="javascript://" ui-sref="root.home">PHP-GUI</a>
+
+      <a class="navbar-brand" href="javascript://" ng-repeat="version in controller.versions" ng-click="version.version">
+        {{ version.label }}
+        {{ version.stable ? '- Stable' : '' }}
+      </a>
+    </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="nav nav-sidebar">
+        <li><a href="javascript://" ui-sref="root.home">Home</a></li>
+      </ul>
+
+      <h4>Classes - {{ controller.currentVersion.label }}</h4>
+      <ul class="nav nav-sidebar">
+        <li ng-repeat="classe in controller.classes">
+          <a href="javascript://"
+            ui-sref="root.doc({ version: classe.version, path: classe.path })">{{ classe.label }}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div ui-view="content"></div>
+    </div>
+  </div>
+</div>
