@@ -7,7 +7,7 @@ use Gui\Application;
 /**
  * Object
  */
-class Object
+abstract class Object
 {
     protected $lazarusClass = 'TObject';
     protected $lazarusObjectId;
@@ -15,7 +15,7 @@ class Object
     protected $eventHandlers = [];
     protected $runTimeProperties = [];
 
-    public function __construct($defaultAttributes = null, $application = null)
+    public function __construct(array $defaultAttributes = [], $application = null)
     {
         $object = $this;
 
@@ -31,21 +31,26 @@ class Object
         $this->lazarusObjectId = $this->application->getNextObjectId();
         $this->application->addObject($this);
 
-        // Send the createObject command
-        $this->application->sendCommand(
-            'createObject',
-            [
+        if ($this->lazarusObjectId !== 0) {
+            // Send the createObject command
+            $this->application->sendCommand(
+                'createObject',
                 [
-                    'lazarusClass' => $this->lazarusClass,
-                    'lazarusObjectId' => $this->lazarusObjectId,
-                ]
-            ],
-            function ($result) use ($object) {
-                // Ok, object created
-            }
-        );
-
-        // @TODO: Use defaultAttributes for initial properties values
+                    [
+                        'lazarusClass' => $this->lazarusClass,
+                        'lazarusObjectId' => $this->lazarusObjectId,
+                    ]
+                ],
+                function ($result) use ($object, $defaultAttributes) {
+                    foreach ($defaultAttributes as $attr => $value) {
+                        $method = 'set' . ucfirst($attr);
+                        if (method_exists($object, $method)) {
+                            $object->$method($value);
+                        }
+                    }
+                }
+            );
+        }
     }
 
     public function __call($method, $params)

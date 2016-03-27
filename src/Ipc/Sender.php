@@ -22,7 +22,7 @@ class Sender
         $json = $this->getLazarusJson($message);
         $this->output($json);
 
-        if (! $message->callback) {
+        if (is_callable($message->callback)) {
             // It's a command!
             $this->receiver->addMessageCallback($message->id, $message->callback);
         } else {
