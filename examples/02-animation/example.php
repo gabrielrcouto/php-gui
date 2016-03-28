@@ -25,16 +25,19 @@ $application->on('start', function() use ($application) {
         $animationCache->frame = 0;
     });
 
-    //@t is the current time (or position) of the tween. This can be seconds or frames, steps, seconds, ms, whatever – as long as the unit is the same as is used for the total time [3].
-    // @b is the beginning value of the property.
-    // @c is the change between the beginning and destination value of the property.
-    // @d is the total time of the tween.
+    /**
+     * @t is the current time (or position) of the tween. This can be seconds or frames, steps,
+     *seconds, ms, whatever – as long as the unit is the same as is used for the total time [3].
+     * @b is the beginning value of the property.
+     * @c is the change between the beginning and destination value of the property.
+     * @d is the total time of the tween.
+     */
     $easeOutBounce = function ($t, $b, $c, $d) {
         if (($t /= $d) < (1 / 2.75)) {
             return $c * (7.5625 * $t * $t) + $b;
-        } else if ($t < (2 / 2.75)) {
+        } elseif ($t < (2 / 2.75)) {
             return $c * (7.5625 * ($t -= (1.5 / 2.75)) * $t + 0.75) + $b;
-        } else if ($t < (2.5 / 2.75)) {
+        } elseif ($t < (2.5 / 2.75)) {
             return $c * (7.5625 * ($t -= (2.25 / 2.75)) * $t + 0.9375) + $b;
         } else {
             return $c * (7.5625 * ($t -= (2.625 / 2.75)) * $t + 0.984375) + $b;
