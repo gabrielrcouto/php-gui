@@ -25,7 +25,7 @@ class Application
 
     public function __construct(array $defaultAttributes = [])
     {
-        $this->window = $window = new Window([], $this);
+        $this->window = $window = new Window([], null, $this);
 
         $this->on('start', function () use ($window, $defaultAttributes) {
             foreach ($defaultAttributes as $attr => $value) {
@@ -126,7 +126,7 @@ class Application
 
             $process->stderr->on('data', function ($data) {
                 if (! empty($data)) {
-                    echo 'Err -> ' . $data;
+                    Output::err($data);
                 }
             });
 
