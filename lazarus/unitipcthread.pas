@@ -116,6 +116,14 @@ begin
   FromPosition := 1;
   ToPosition := 1;
 
+  while Form1 = Nil do
+  begin
+    // Waiting Form1 be <> Nil
+  end;
+
+  SetLength(objArray, 1);
+  objArray[0] := Form1;
+
   while True do
   begin
     // We have messages?

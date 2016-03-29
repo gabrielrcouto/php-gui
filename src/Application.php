@@ -2,6 +2,7 @@
 
 namespace Gui;
 
+use Gui\Components\Window;
 use Gui\Ipc\CommandMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
@@ -19,6 +20,27 @@ class Application
     public $process;
     protected $running = false;
     protected $sender;
+    protected $window;
+
+
+    public function __construct(array $defaultAttributes = [])
+    {
+        $this->window = $window = new Window([], $this);
+
+        $this->on('start', function () use ($window, $defaultAttributes) {
+            foreach ($defaultAttributes as $attr => $value) {
+                $method = 'set' . ucfirst($attr);
+                if (method_exists($window, $method)) {
+                    $window->$method($value);
+                }
+            }
+        });
+    }
+
+    public function getWindow()
+    {
+        return $this->window;
+    }
 
     /**
      * Put a object to the internal objects array
@@ -100,6 +122,12 @@ class Application
 
             $process->stdout->on('data', function ($data) use ($receiver) {
                 $receiver->onData($data);
+            });
+
+            $process->stderr->on('data', function ($data) {
+                if (! empty($data)) {
+                    echo 'Err -> ' . $data;
+                }
             });
 
             $application->running = true;
