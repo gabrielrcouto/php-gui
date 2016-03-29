@@ -15,7 +15,7 @@ abstract class Object
     protected $eventHandlers = [];
     protected $runTimeProperties = [];
 
-    public function __construct(array $defaultAttributes = [], $application = null)
+    public function __construct(array $defaultAttributes = [], Window $parent = null, $application = null)
     {
         $object = $this;
 
@@ -25,6 +25,10 @@ abstract class Object
             $this->application = Application::$defaultApplication;
         } else {
             $this->application = $application;
+        }
+
+        if ($parent == null) {
+            $parent = $this->application->getWindow();
         }
 
         // Get the next object id
@@ -39,6 +43,7 @@ abstract class Object
                     [
                         'lazarusClass' => $this->lazarusClass,
                         'lazarusObjectId' => $this->lazarusObjectId,
+                        'parent' => $parent->getLazarusObjectId()
                     ]
                 ],
                 function ($result) use ($object, $defaultAttributes) {

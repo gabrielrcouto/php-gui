@@ -8,13 +8,15 @@ This protocol is based on JSON RPC.
 
 ```json
 {
-	"id": 2,
-	"method": "createObject",
-	"params": [
-		{
-			"lazarusClass": "TButton"
-		}
-	]
+    "id": 2,
+    "method": "createObject",
+    "params": [
+        {
+            "lazarusClass": "TButton",
+            "lazarusObjectId": 1,
+            "parent": 0
+        }
+    ]
 }
 ```
 
@@ -22,8 +24,8 @@ This protocol is based on JSON RPC.
 
 ```json
 {
-	"id": 2,
-	"result": 123
+    "id": 2,
+    "result": 123
 }
 ```
 
@@ -31,13 +33,13 @@ This protocol is based on JSON RPC.
 
 ```json
 {
-	"method": "eventCallback",
-	"params": [
-		{
-			"name": "Click",
-			"target": 123
-		}
-	]
+    "method": "eventCallback",
+    "params": [
+        {
+            "name": "Click",
+            "target": 123
+        }
+    ]
 }
 ```
 
@@ -49,14 +51,15 @@ Request:
 
 ```json
 {
-	"id": 2,
-	"method": "createObject",
-	"params": [
-		{
-			"lazarusClass": "TButton",
-			"lazarusObjectId": 123
-		}
-	]
+    "id": 2,
+    "method": "createObject",
+    "params": [
+        {
+            "lazarusClass": "TButton",
+            "lazarusObjectId": 123,
+            "parent": 0
+        }
+    ]
 }
 ```
 
@@ -64,8 +67,8 @@ Response:
 
 ```json
 {
-	"id": 2,
-	"result": 123 // This is the object ID
+    "id": 2,
+    "result": 123 // This is the object ID
 }
 ```
 
@@ -73,13 +76,13 @@ Response:
 
 ```json
 {
-	"id": 2,
-	"method": "setObjectProperty",
-	"params": [
-		objectId,
-		"propertyName",
-		"propertyValue"
-	]
+    "id": 2,
+    "method": "setObjectProperty",
+    "params": [
+        objectId,
+        "propertyName",
+        "propertyValue"
+    ]
 }
 ```
 
@@ -87,8 +90,8 @@ Response:
 
 ```json
 {
-	"id": 2,
-	"result": true
+    "id": 2,
+    "result": true
 }
 ```
 
@@ -96,12 +99,12 @@ Response:
 
 ```json
 {
-	"id": 2,
-	"method": "setObjectEventListener",
-	"params": [
-		objectId,
-		"eventName"
-	]
+    "id": 2,
+    "method": "setObjectEventListener",
+    "params": [
+        objectId,
+        "eventName"
+    ]
 }
 ```
 
@@ -109,7 +112,25 @@ Response:
 
 ```json
 {
-	"id": 2,
-	"result": true
+    "id": 2,
+    "result": true
+}
+```
+
+### Debug
+
+if you want debug something from lazarus you can use the key "debug" like 
+
+```
+{
+    "callback" : {},
+    "id" : 94,
+    "method" : "setObjectProperty",
+    "params" : [
+        18,
+        "caption",
+        "test"
+    ],
+    "debug" : true
 }
 ```

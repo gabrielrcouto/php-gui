@@ -45,9 +45,10 @@ procedure TIpcThread.CreateObject;
 var obj: TControl;
   objClass: TPersistentClass;
   objIndex: Integer;
+  parent: Integer;
   messageId: Integer;
 begin
-  if (jData.FindPath('params[0].lazarusClass') <> Nil) AND (jData.FindPath('params[0].lazarusObjectId') <> Nil) then
+  if (jData.FindPath('params[0].lazarusClass') <> Nil) AND (jData.FindPath('params[0].lazarusObjectId') <> Nil) AND (jData.FindPath('params[0].parent') <> Nil) then
   begin
     // The class name of the object, like TButton
     objClass := GetClass(jData.FindPath('params[0].lazarusClass').value);
@@ -57,9 +58,21 @@ begin
       // It's a TControl?
       if objClass.InheritsFrom(TControl) then
       begin
-        // Create the object, base on the class passed
-        obj := TControl(TControlClass(objClass).Create(Form1));
-        obj.Parent := Form1;
+
+        if jData.FindPath('params[0].lazarusClass').AsString = 'TForm1' then
+        begin
+            Application.CreateForm(TForm1, obj);
+            TForm1(obj).Show;
+        end
+        else
+        begin
+          // Create the object, base on the class passed
+
+          parent := jData.FindPath('params[0].parent').AsInteger;
+
+          obj := TControl(TControlClass(objClass).Create(objArray[parent]));
+          obj.Parent := TWinControl(objArray[parent]);
+        end;
 
         // The index of the object on the object array
         objIndex := jData.FindPath('params[0].lazarusObjectId').AsInteger;
@@ -102,6 +115,7 @@ var
 begin
   // Register all the classes
   // @TODO - Move it from here!
+  RegisterClass(TForm1);
   RegisterClass(TButton);
   RegisterClass(TEdit);
   RegisterClass(TLabel);
