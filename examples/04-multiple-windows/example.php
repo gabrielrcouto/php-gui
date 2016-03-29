@@ -47,21 +47,25 @@ $application->on('start', function() use ($application) {
     foreach ($data as $key => $value) {
         $calculatedTop = ($c++ * 35);
 
-        ${'label_' . $key} = new Label([
+        ${'label' . ucfirst($key)} = new Label([
             'text' => $value . ':',
             'top' => 72 + $calculatedTop,
             'left' => 45,
             'fontSize' => 10,
         ]);
 
-        ${'edit_' . $key} = new InputText([
+        ${'inputText' . ucfirst($key)} = new InputText([
             'top' => 65 + $calculatedTop,
             'left' => 110,
             'fontSize' => 25,
             'width' => 320
         ]);
 
-        $form[$value] = ${'edit_' . $key};
+        $form[] = [
+            'key' => $key,
+            'label' => $value,
+            'object' => ${'inputText' . ucfirst($key)}
+        ];
     }
 
     $button = new Button([
@@ -79,12 +83,12 @@ $application->on('start', function() use ($application) {
         ]);
 
         $c = 0;
-        foreach ($form as $key => $value) {
+        foreach ($form as $value) {
             $calculatedTop = ($c++ * 35);
 
-            ${'label_' . strtolower($key)} = new Label(
+            ${'label' . ucfirst($value['key'])} = new Label(
                 [
-                    'text' => $key . ':',
+                    'text' => $value['label'] . ':',
                     'top' => 10 + $calculatedTop,
                     'left' => 30,
                     'fontSize' => 10,
@@ -92,9 +96,9 @@ $application->on('start', function() use ($application) {
                 $window
             );
 
-            ${strtolower($key)} = new Label(
+            ${$value['key']} = new Label(
                 [
-                    'text' => $value->getValue(),
+                    'text' => $value['object']->getValue(),
                     'top' => 10 + $calculatedTop,
                     'left' => 100,
                     'fontSize' => 10,

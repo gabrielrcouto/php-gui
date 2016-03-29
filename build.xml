@@ -4,20 +4,25 @@
     <property name="source" value="src" />
     <property name="bindir" value="bin" />
 
-    <fileset id="php-files" dir="${project.basedir}">
-        <include name="${project.source}/**/*.php"/>
-    </fileset>
-
     <target name="main" description="Start analyzing our application">
         <echo msg="Start Build" />
 
+        <phingCall target="phplint" />
         <phingCall target="phpunit" />
         <phingCall target="phpcs" />
 
         <echo msg="Finished Build" />
     </target>
 
-    <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+    <target name="phplint" description="Check syntax of a fileset of source files.">
+        <phplint>
+            <fileset dir="${source}">
+                <include name="**/*.php"/>
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpunit" description="Run unit tests using PHPUnit">
         <exec passthru="true" command="${bindir}/phpunit" checkreturn="true"/>
     </target>
 
