@@ -15,6 +15,7 @@ type
     procedure SetObjectProperty;
     procedure GetObjectProperty;
     procedure SetObjectEventListener;
+    procedure OutputDebug(Text: String);
   protected
     procedure Execute; override;
     procedure Output(Text: String);
@@ -176,9 +177,23 @@ begin
   end;
 end;
 
+procedure TIpcThread.OutputDebug(Text: String);
+var
+  jsonData : TJSONData;
+  jObj : TJSONObject;
+begin
+  Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
+  jsonData := GetJSON(Text);
+
+  jObj := TJSONObject(jsonData);
+  jObj.Add('debug', true);
+  Output(jObj.AsJSON);
+  jObj.Free;
+end;
+
 procedure TIpcThread.ParseMessage(Text: String);
 begin
-  Output('Get: ' + Text);
+  OutputDebug(Text);
   Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
   jData := GetJSON(Text);
 

@@ -3,6 +3,8 @@
 namespace Gui\Ipc;
 
 use Gui\Application;
+use Gui\Output;
+use React\Stream\Stream;
 
 class Receiver
 {
@@ -57,14 +59,11 @@ class Receiver
      */
     public function onData($data)
     {
-        echo 'Received: ' . $data . PHP_EOL;
+        $data = self::removeDebug(self::splitMessage($data));
 
-        if (strlen($data) === 0) {
-            return;
-        }
-
-        if ($data[0] === '{' && $data[strlen($data) - 1] === '}') {
-            $message = json_decode($data);
+        foreach ($data as $json) {
+            Output::out(self::prepareOutput($json));
+            $message = self::jsonDecode($json);
 
             // Can be a command or a result
             if ($message && property_exists($message, 'id')) {
@@ -83,5 +82,102 @@ class Receiver
                 }
             }
         }
+    }
+
+    protected static function splitMessage($message)
+    {
+        $data = trim($message);
+
+        if (empty($data)) {
+            return [];
+        }
+
+        $data = array_filter(array_map(
+            function ($data) {
+                if ($data[0] !== '{') {
+                    $data = '{' . $data;
+                }
+                if ($data[strlen($data) - 1] !== '}') {
+                    $data = $data . '}';
+                }
+
+                return $data;
+            },
+            explode('}{', $data)
+        ));
+
+        return $data;
+    }
+
+    protected static function removeDebug(array $jsons)
+    {
+        return array_filter(
+            array_map(
+                function ($message) {
+                    $obj = self::jsonDecode($message);
+                    if (property_exists($obj, 'debug')) {
+                        Output::out('Debug: ' . $message, 'blue');
+                        return null;
+                    }
+
+                    return $message;
+                },
+                $jsons
+            )
+        );
+    }
+
+    protected static function jsonDecode($json)
+    {
+        $obj = json_decode($json);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $obj;
+        } else {
+            // @todo throw an exception
+            Output::err('JSON ERROR: ' . $json);
+        }
+    }
+
+    public static function waitMessage(Stream $stdout, MessageInterface $message)
+    {
+        $stdout->pause();
+        $stream = $stdout->stream;
+        while (! feof($stream)) {
+            $data = fgets($stream);
+
+            if (! empty($data)) {
+                $data = self::removeDebug(self::splitMessage($data));
+
+                foreach ($data as $json) {
+                    Output::out(self::prepareOutput($json));
+                    $obj = self::jsonDecode($json);
+
+                    // Can be a command or a result
+                    if (property_exists($obj, 'id')) {
+                        if (property_exists($obj, 'result')) {
+                            if ($obj->id == $message->id) {
+                                $return = $obj->result;
+                                break;
+                            } else {
+                                Output::out('Skipped: ' . $obj->id, 'yellow');
+                            }
+                        }
+                    }
+                }
+            }
+            if (isset($return)) {
+                break;
+            }
+        }
+
+        $stdout->resume();
+
+        return $return;
+    }
+
+    private static function prepareOutput($string)
+    {
+        return 'Received: ' . $string;
     }
 }
