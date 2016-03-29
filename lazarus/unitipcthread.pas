@@ -120,6 +120,7 @@ begin
   while Form1 = Nil do
   begin
     // Waiting Form1 be <> Nil
+    Sleep(1);
   end;
 
   SetLength(objArray, 1);
