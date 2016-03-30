@@ -16,7 +16,7 @@ class Window extends Object
      */
     public function setTitle($title)
     {
-        $this->set('Caption', $title);
+        $this->set('caption', $title);
 
         return $this;
     }
@@ -26,6 +26,6 @@ class Window extends Object
      */
     public function getTitle()
     {
-        return $this->get('Caption');
+        return $this->get('caption');
     }
 }

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants;
 
 type
   TIpcThread = class(TThread)
@@ -120,6 +120,7 @@ begin
   RegisterClass(TEdit);
   RegisterClass(TLabel);
   RegisterClass(TShape);
+  RegisterClass(TCheckBox);
 
   // Initializes the input pipe (Stdin)
   AStream := TInputPipeStream.Create(StdInputHandle);
@@ -322,6 +323,7 @@ var  objId: Integer;
   propertyValue: Variant;
   propInfo: PPropInfo;
   messageId: Integer;
+  return: String;
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -342,8 +344,18 @@ begin
 
         // @todo send the Variant property as your real type
         propertyValue := GetPropValue(objArray[objId], propertyName, true);
+
+        if VarIsStr(propertyValue) then
+        begin
+          return := '"' + VarToStr(propertyValue) + '"';
+        end
+        else
+        begin
+          return := VarToStr(propertyValue);
+        end;
+
         messageId := jData.FindPath('id').AsInteger;
-        Output('{"id": ' + IntToStr(messageId) + ',"result": "' + propertyValue + '"}');
+        Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
       end;
     end;
   end;

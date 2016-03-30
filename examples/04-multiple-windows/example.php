@@ -8,13 +8,14 @@ use Gui\Components\InputText;
 use Gui\Components\Button;
 use Gui\Components\Shape;
 use Gui\Components\Window;
+use Gui\Components\Checkbox;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
     'left' => 30,
     'top' => 40,
     'width' => 480,
-    'height' => 256
+    'height' => 300
 ]);
 
 $application->on('start', function() use ($application) {
@@ -32,7 +33,7 @@ $application->on('start', function() use ($application) {
         'left' => 40,
         'top' => 60,
         'width' => 400,
-        'height' => 150
+        'height' => 190
     ]);
 
     $data = [
@@ -68,9 +69,27 @@ $application->on('start', function() use ($application) {
         ];
     }
 
+    $labelOfAge = new Label([
+        'text' => '+18:',
+        'top' => 208,
+        'left' => 45,
+        'fontSize' => 10,
+    ]);
+
+    $checkboxOfAge = new Checkbox([
+        'top' => 205,
+        'left' => 110
+    ]);
+
+    $form[] = [
+        'key' => 'ofAge',
+        'label' => '+18',
+        'object' => $checkboxOfAge
+    ];
+
     $button = new Button([
         'value' => 'Save',
-        'top' => 216,
+        'top' => 240,
         'left' => 40,
         'width' => 400
     ]);
@@ -96,9 +115,17 @@ $application->on('start', function() use ($application) {
                 $window
             );
 
+            $objValue = null;
+
+            if ($value['object'] instanceof InputText) {
+                $objValue = $value['object']->getValue();
+            } elseif ($value['object'] instanceof Checkbox) {
+                $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
+            }
+
             ${$value['key']} = new Label(
                 [
-                    'text' => $value['object']->getValue(),
+                    'text' => $objValue,
                     'top' => 10 + $calculatedTop,
                     'left' => 100,
                     'fontSize' => 10,
