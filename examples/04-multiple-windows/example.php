@@ -9,13 +9,14 @@ use Gui\Components\Button;
 use Gui\Components\Shape;
 use Gui\Components\Window;
 use Gui\Components\Checkbox;
+use Gui\Components\Radio;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
     'left' => 30,
     'top' => 40,
     'width' => 480,
-    'height' => 300
+    'height' => 350
 ]);
 
 $application->on('start', function() use ($application) {
@@ -33,7 +34,7 @@ $application->on('start', function() use ($application) {
         'left' => 40,
         'top' => 60,
         'width' => 400,
-        'height' => 190
+        'height' => 240
     ]);
 
     $data = [
@@ -87,14 +88,39 @@ $application->on('start', function() use ($application) {
         'object' => $checkboxOfAge
     ];
 
+    $labelGender = new Label([
+        'text' => 'Gender:',
+        'top' => 243,
+        'left' => 45,
+        'fontSize' => 10,
+    ]);
+
+    $checkboxGender = new Radio([
+        'top' => 241,
+        'left' => 110,
+        'height' => 50
+    ]);
+
+    $items = [
+        ['Male', 0],
+        ['Female', 1],
+    ];
+    $checkboxGender->setItems($items);
+
+    $form[] = [
+        'key' => 'gender',
+        'label' => 'Gender',
+        'object' => $checkboxGender
+    ];
+
     $button = new Button([
         'value' => 'Save',
-        'top' => 240,
+        'top' => 315,
         'left' => 40,
         'width' => 400
     ]);
 
-    $button->on('click', function () use ($form) {
+    $button->on('click', function () use ($form, $items) {
         $window = new Window([
             'title' => 'Form1 Info',
             'width' => 400,
@@ -121,6 +147,8 @@ $application->on('start', function() use ($application) {
                 $objValue = $value['object']->getValue();
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
+            } elseif ($value['object'] instanceof Radio) {
+                $objValue = $items[$value['object']->getChecked()][0];
             }
 
             ${$value['key']} = new Label(

@@ -128,7 +128,7 @@ class Receiver
     {
         $obj = json_decode($json);
 
-        if ($obj !== NULL) {
+        if ($obj !== null) {
             return $obj;
         } else {
             // @todo throw an exception

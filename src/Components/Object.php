@@ -81,6 +81,21 @@ abstract class Object
         }
     }
 
+    protected function call($method, $params)
+    {
+        $this->application->sendCommand(
+            'callObjectMethod',
+            [
+                $this->lazarusObjectId,
+                $method,
+                $params
+            ],
+            function ($result) {
+                // Ok, the property changed
+            }
+        );
+    }
+
     /**
      * this method is used to send the IPC message when a property is set
      *
