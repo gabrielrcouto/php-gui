@@ -33,12 +33,10 @@ $application->on('start', function() use ($application) {
     $button->on('click', function () use ($button, $application) {
         $window = ($application->getWindow());
 
-        if ($window->getResized() !== true) {
-            $window->setHeight(300)
-                ->setResized(true);
+        if ($window->getHeight() == 600) {
+            $window->setHeight(300);
         } else {
-            $window->setHeight(600)
-                ->setResized(false);
+            $window->setHeight(600);
         }
 
         $button->setCounter($button->getCounter() + 1);
