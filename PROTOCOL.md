@@ -79,7 +79,7 @@ Response:
     "id": 2,
     "method": "setObjectProperty",
     "params": [
-        objectId,
+        lazarusObjectId,
         "propertyName",
         "propertyValue"
     ]
@@ -102,7 +102,7 @@ Response:
     "id": 2,
     "method": "setObjectEventListener",
     "params": [
-        objectId,
+        lazarusObjectId,
         "eventName"
     ]
 }
@@ -114,6 +114,56 @@ Response:
 {
     "id": 2,
     "result": true
+}
+```
+
+### getObjectProperty
+
+```json
+{
+    "callback":false,
+    "id":134,
+    "method":"getObjectProperty",
+    "params":[
+        14,
+        "itemIndex"
+    ]
+}
+```
+
+Response:
+
+```json
+{
+    "id": 134,
+    "result": 1
+}
+```
+
+### callObjectMethod
+
+```json
+{
+    "callback":{},
+    "id":19,
+    "method":"callObjectMethod",
+    "params":[
+        14,
+        "items.addObject",
+        [
+            "Male",
+            0
+        ]
+    ]
+}
+```
+
+Response:
+
+```json
+{
+    "id": 19,
+    "result": 14
 }
 ```
 

@@ -15,6 +15,7 @@ type
     procedure SetObjectProperty;
     procedure GetObjectProperty;
     procedure SetObjectEventListener;
+    procedure CallObjectMethod;
     procedure OutputDebug(Text: String);
   protected
     procedure Execute; override;
@@ -121,6 +122,7 @@ begin
   RegisterClass(TLabel);
   RegisterClass(TShape);
   RegisterClass(TCheckBox);
+  RegisterClass(TRadioGroup);
 
   // Initializes the input pipe (Stdin)
   AStream := TInputPipeStream.Create(StdInputHandle);
@@ -230,6 +232,43 @@ begin
     end else if (jData.FindPath('method').value = 'getObjectProperty') then
     begin
       Synchronize(@GetObjectProperty);
+    end else if (jData.FindPath('method').value = 'callObjectMethod') then
+    begin
+      Synchronize(@CallObjectMethod);
+    end;
+  end;
+end;
+
+procedure TIpcThread.CallObjectMethod;
+var
+  messageId: Integer;
+  objId: Integer;
+  intCtrl : array of Integer;
+  strCtrl : array of String;
+begin
+  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
+  begin
+    objId := jData.FindPath('params[0]').AsInteger;
+    if jData.FindPath('params[1]').AsString = 'items.addObject' then
+    begin
+
+      SetLength(strCtrl, 1);
+      SetLength(intCtrl, 1);
+
+      strCtrl[0] := jData.FindPath('params[2][0]').AsString;
+      intCtrl[0] := jData.FindPath('params[2][1]').AsInteger;
+
+      TRadioGroup(objArray[objId]).Items.AddObject(
+        strCtrl[0],
+        TObject(PtrUint(intCtrl[0]))
+      );
+    end;
+
+    // If it's a command, reply to it
+    if (jData.FindPath('id') <> Nil) then
+    begin
+         messageId := jData.FindPath('id').AsInteger;
+         Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objId) + '}');
     end;
   end;
 end;
