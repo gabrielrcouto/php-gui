@@ -209,7 +209,7 @@ end;
 
 procedure TIpcThread.ParseMessage(Text: String);
 begin
-  OutputDebug(Text);
+  // OutputDebug(Text);
   Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
   jData := GetJSON(Text);
 

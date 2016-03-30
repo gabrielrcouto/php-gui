@@ -92,46 +92,43 @@ class Receiver
             return [];
         }
 
-        $data = array_filter(array_map(
-            function ($data) {
-                if ($data[0] !== '{') {
-                    $data = '{' . $data;
-                }
-                if ($data[strlen($data) - 1] !== '}') {
-                    $data = $data . '}';
-                }
+        $messages = explode('}{', $data);
+        $count = count($messages);
 
-                return $data;
-            },
-            explode('}{', $data)
-        ));
+        if ($count > 1) {
+            for ($i = 0; $i < $count; $i++) {
+                if ($i == 0) {
+                    $messages[$i] .= '}';
+                } elseif ($i == $count - 1) {
+                    $messages[$i] = '{' . $messages[$i];
+                } else {
+                    $messages[$i] = '{' . $messages[$i] . '}';
+                }
+            }
+        }
 
-        return $data;
+        return $messages;
     }
 
     protected static function removeDebug(array $jsons)
     {
-        return array_filter(
-            array_map(
-                function ($message) {
-                    $obj = self::jsonDecode($message);
-                    if (property_exists($obj, 'debug')) {
-                        Output::out('Debug: ' . $message, 'blue');
-                        return null;
-                    }
+        foreach ($jsons as $key => $message) {
+            $obj = self::jsonDecode($message);
 
-                    return $message;
-                },
-                $jsons
-            )
-        );
+            if (property_exists($obj, 'debug')) {
+                Output::out('Debug: ' . $message, 'blue');
+                unset($jsons[$key]);
+            }
+        }
+
+        return $jsons;
     }
 
     protected static function jsonDecode($json)
     {
         $obj = json_decode($json);
 
-        if (json_last_error() === JSON_ERROR_NONE) {
+        if ($obj !== NULL) {
             return $obj;
         } else {
             // @todo throw an exception
@@ -172,6 +169,8 @@ class Receiver
             if (isset($return)) {
                 break;
             }
+
+            usleep(1);
         }
 
         $stdout->resume();
