@@ -1,0 +1,8 @@
+object Form1: TForm1
+  Left = 248
+  Height = 240
+  Top = 125
+  Width = 320
+  Caption = 'PHP GUI'
+  LCLVersion = '1.6.0.4'
+end
