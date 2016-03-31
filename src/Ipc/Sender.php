@@ -49,7 +49,7 @@ class Sender
         $this->application->process->stdin->write($json);
         $this->application->process->stdin->getBuffer()->handleWrite();
 
-        return Receiver::waitMessage(
+        return $this->receiver->waitMessage(
             $this->application->process->stdout,
             $message
         );

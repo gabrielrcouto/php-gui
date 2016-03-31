@@ -16,6 +16,7 @@ type
     procedure GetObjectProperty;
     procedure SetObjectEventListener;
     procedure CallObjectMethod;
+    procedure Ping;
     procedure OutputDebug(Text: String);
   protected
     procedure Execute; override;
@@ -237,8 +238,22 @@ begin
     end else if (jData.FindPath('method').value = 'callObjectMethod') then
     begin
       Synchronize(@CallObjectMethod);
+    end else if (jData.FindPath('method').value = 'ping') then
+    begin
+      Synchronize(@Ping);
     end;
   end;
+end;
+
+procedure TIpcThread.Ping;
+var
+  messageId: Integer;
+  microtime: String;
+begin
+  messageId := jData.FindPath('id').AsInteger;
+  microtime := jData.FindPath('params[0]').AsString;
+
+  Output('{"id": ' + IntToStr(messageId) + ', "result": "' + microtime + '"}');
 end;
 
 procedure TIpcThread.CallObjectMethod;
