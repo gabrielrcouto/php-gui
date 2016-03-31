@@ -81,18 +81,33 @@ abstract class Object
         }
     }
 
-    protected function call($method, $params)
+    protected function call($method, $params, $isCommand = true)
     {
-        $this->application->sendCommand(
+        if ($isCommand) {
+            // It's a command
+            $this->application->sendCommand(
+                'callObjectMethod',
+                [
+                    $this->lazarusObjectId,
+                    $method,
+                    $params
+                ],
+                function ($result) {
+                    // Ok, the property changed
+                }
+            );
+
+            return;
+        }
+
+        // It's a event
+        $this->application->sendEvent(
             'callObjectMethod',
             [
                 $this->lazarusObjectId,
                 $method,
                 $params
-            ],
-            function ($result) {
-                // Ok, the property changed
-            }
+            ]
         );
     }
 

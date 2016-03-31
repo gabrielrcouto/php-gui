@@ -59,11 +59,14 @@ class Receiver
      */
     public function onData($data)
     {
-        $data = self::removeDebug(self::splitMessage($data));
+        $data = $this->removeDebug($this->splitMessage($data));
 
         foreach ($data as $json) {
-            Output::out(self::prepareOutput($json));
-            $message = self::jsonDecode($json);
+            if ($this->application->getVerboseLevel() == 2) {
+                Output::out($this->prepareOutput($json));
+            }
+
+            $message = $this->jsonDecode($json);
 
             // Can be a command or a result
             if ($message && property_exists($message, 'id')) {
@@ -84,7 +87,7 @@ class Receiver
         }
     }
 
-    protected static function splitMessage($message)
+    protected function splitMessage($message)
     {
         $data = trim($message);
 
@@ -110,13 +113,15 @@ class Receiver
         return $messages;
     }
 
-    protected static function removeDebug(array $jsons)
+    protected function removeDebug(array $jsons)
     {
         foreach ($jsons as $key => $message) {
-            $obj = self::jsonDecode($message);
+            $obj = $this->jsonDecode($message);
 
             if (property_exists($obj, 'debug')) {
-                Output::out('Debug: ' . $message, 'blue');
+                if ($this->application->getVerboseLevel() == 2) {
+                    Output::out('Debug: ' . $message, 'blue');
+                }
                 unset($jsons[$key]);
             }
         }
@@ -124,7 +129,7 @@ class Receiver
         return $jsons;
     }
 
-    protected static function jsonDecode($json)
+    protected function jsonDecode($json)
     {
         $obj = json_decode($json);
 
@@ -132,11 +137,13 @@ class Receiver
             return $obj;
         } else {
             // @todo throw an exception
-            Output::err('JSON ERROR: ' . $json);
+            if ($this->application->getVerboseLevel() == 2) {
+                Output::err('JSON ERROR: ' . $json);
+            }
         }
     }
 
-    public static function waitMessage(Stream $stdout, MessageInterface $message)
+    public function waitMessage(Stream $stdout, MessageInterface $message)
     {
         $buffer = [];
 
@@ -146,11 +153,13 @@ class Receiver
             $data = fgets($stream);
 
             if (! empty($data)) {
-                $data = self::removeDebug(self::splitMessage($data));
+                $data = $this->removeDebug($this->splitMessage($data));
 
                 foreach ($data as $json) {
-                    Output::out(self::prepareOutput($json));
-                    $obj = self::jsonDecode($json);
+                    if ($this->application->getVerboseLevel() == 2) {
+                        Output::out($this->prepareOutput($json));
+                    }
+                    $obj = $this->jsonDecode($json);
 
                     // Can be a command or a result
                     if (property_exists($obj, 'id')) {
@@ -160,7 +169,9 @@ class Receiver
                                 break;
                             } else {
                                 $buffer[] = $obj;
-                                Output::out('Skipped: ' . $obj->id, 'yellow');
+                                if ($this->application->getVerboseLevel() == 2) {
+                                    Output::out('Skipped: ' . $obj->id, 'yellow');
+                                }
                             }
                         }
                     }
@@ -176,7 +187,9 @@ class Receiver
         $stdout->resume();
 
         foreach ($buffer as $json) {
-            Output::out('Skipped Sent: ' . $json->id, 'yellow');
+            if ($this->application->getVerboseLevel() == 2) {
+                Output::out('Skipped Sent: ' . $json->id, 'yellow');
+            }
             $stdout->emit(
                 'data',
                 [
@@ -189,7 +202,7 @@ class Receiver
         return $return;
     }
 
-    private static function prepareOutput($string)
+    private function prepareOutput($string)
     {
         return 'Received: ' . $string;
     }

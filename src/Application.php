@@ -4,6 +4,7 @@ namespace Gui;
 
 use Gui\Components\Window;
 use Gui\Ipc\CommandMessage;
+use Gui\Ipc\EventMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
 use Gui\OsDetector;
@@ -20,8 +21,8 @@ class Application
     public $process;
     protected $running = false;
     protected $sender;
+    protected $verboseLevel = 2;
     protected $window;
-
 
     public function __construct(array $defaultAttributes = [])
     {
@@ -80,6 +81,11 @@ class Application
     {
         // @TODO: Check if the object exists
         return $this->objects[$id];
+    }
+
+    public function getVerboseLevel()
+    {
+        return $this->verboseLevel;
     }
 
     public function on($eventName, $eventHandler)
@@ -147,6 +153,17 @@ class Application
         }
 
         $message = new CommandMessage($method, $params, $callback);
+        $this->sender->send($message);
+    }
+
+    public function sendEvent($method, $params)
+    {
+        // @TODO: Put the message on a poll
+        if (! $this->running) {
+            return;
+        }
+
+        $message = new EventMessage($method, $params);
         $this->sender->send($message);
     }
 

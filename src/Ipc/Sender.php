@@ -21,9 +21,12 @@ class Sender
     {
         $this->processMessage($message);
         $json = $this->getLazarusJson($message);
-        Output::out(self::prepareOutput($json));
 
-        if (is_callable($message->callback)) {
+        if ($this->application->getVerboseLevel() == 2) {
+            Output::out(self::prepareOutput($json));
+        }
+
+        if (property_exists($message, 'callback') && is_callable($message->callback)) {
             // It's a command!
             $this->receiver->addMessageCallback($message->id, $message->callback);
         } else {
@@ -38,7 +41,10 @@ class Sender
     {
         $this->processMessage($message);
         $json = $this->getLazarusJson($message);
-        Output::out(self::prepareOutput($json));
+
+        if ($this->application->getVerboseLevel() == 2) {
+            Output::out(self::prepareOutput($json));
+        }
 
         $this->application->process->stdin->write($json);
         $this->application->process->stdin->getBuffer()->handleWrite();

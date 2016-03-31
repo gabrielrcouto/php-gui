@@ -63,7 +63,7 @@ begin
         if jData.FindPath('params[0].lazarusClass').AsString = 'TForm1' then
         begin
             Application.CreateForm(TForm1, obj);
-            TForm1(obj).Show;
+            (obj as TForm1).Show;
         end
         else
         begin
@@ -123,6 +123,8 @@ begin
   RegisterClass(TShape);
   RegisterClass(TCheckBox);
   RegisterClass(TRadioGroup);
+  RegisterClass(TBitmap);
+  RegisterClass(TImage);
 
   // Initializes the input pipe (Stdin)
   AStream := TInputPipeStream.Create(StdInputHandle);
@@ -242,14 +244,17 @@ end;
 procedure TIpcThread.CallObjectMethod;
 var
   messageId: Integer;
+  messageMethodName: String;
   objId: Integer;
-  intCtrl : array of Integer;
-  strCtrl : array of String;
+  intCtrl: array of Integer;
+  strCtrl: array of String;
 begin
   if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
   begin
     objId := jData.FindPath('params[0]').AsInteger;
-    if jData.FindPath('params[1]').AsString = 'items.addObject' then
+    messageMethodName := jData.FindPath('params[1]').AsString;
+
+    if messageMethodName = 'items.addObject' then
     begin
 
       SetLength(strCtrl, 1);
@@ -258,10 +263,18 @@ begin
       strCtrl[0] := jData.FindPath('params[2][0]').AsString;
       intCtrl[0] := jData.FindPath('params[2][1]').AsInteger;
 
-      TRadioGroup(objArray[objId]).Items.AddObject(
+      (objArray[objId] as TRadioGroup).Items.AddObject(
         strCtrl[0],
         TObject(PtrUint(intCtrl[0]))
       );
+    end
+    else if messageMethodName = 'picture.bitmap.canvas.setPixel' then
+    begin
+      (objArray[objId] as TImage).Picture.Bitmap.Canvas.Pixels[jData.FindPath('params[2][0]').AsInteger, jData.FindPath('params[2][1]').AsInteger] := jData.FindPath('params[2][2]').AsInteger;
+    end
+    else if messageMethodName = 'picture.bitmap.setSize' then
+    begin
+      (objArray[objId] as TImage).Picture.Bitmap.SetSize(jData.FindPath('params[2][0]').AsInteger,jData.FindPath('params[2][1]').AsInteger);
     end;
 
     // If it's a command, reply to it
@@ -306,7 +319,7 @@ end;
 
 procedure TIpcThread.SetObjectProperty;
 var  objId: Integer;
-  obj: TControl;
+  obj: TObject;
   propertyName: String;
   propertyValue: Variant;
   propInfo: PPropInfo;
@@ -330,16 +343,15 @@ begin
       begin
         subpropertyName := Copy(propertyName, 1, Pos('.', propertyName) - 1);
         propInfo := GetPropInfo(obj, subpropertyName);  
+        Delete(propertyName, 1, Pos('.', propertyName));
 
         if Assigned(propInfo) then
         begin
-          obj := TControl(GetObjectProp(obj, subpropertyName));
+          obj := GetObjectProp(obj, subpropertyName);
         end else
         begin
           break;
         end;
-
-        Delete(propertyName, 1, Pos('.', propertyName));
       end;
 
       // Get the info about the property
@@ -349,7 +361,6 @@ begin
       if Assigned(propInfo) then
       begin
         // @TODO: Convert propertyValue to a object checking with PropIsType and GetObjectPropClass
-
         SetPropValue(obj, propertyName, propertyValue);
       end;
     end;
