@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="C:\lazarus\fpc\3.0.0\bin\x86_64-win64\fpc.exe" Date="1213098656"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq -FiC:\Users\rodrigo.cardoso-pit\Downloads\git\php-gui\lazarus\lib\x86_64-win64 -FuC:\Users\rodrigo.cardoso-pit\Downloads\git\php-gui\lazarus -FuC:\lazarus\lcl\units\x86_64-win64\win32 -FuC:\lazarus\lcl\units\x86_64-win64 -FuC:\lazarus\components\lazutils\lib\x86_64-win64 -FuC:\lazarus\packager\units\x86_64-win64 -FUC:\Users\rodrigo.cardoso-pit\Downloads\git\php-gui\lazarus\lib\x86_64-win64\ -ophpgui-x86_64-win64.exe -dLCL -dLCLwin32 -dUseCThreads phpgui.lpr"/>
+</CONFIG>
