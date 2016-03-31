@@ -43,6 +43,19 @@ class Application
         return $this->window;
     }
 
+    public function ping()
+    {
+        $now = microtime(true);
+        $this->waitCommand(
+            'ping',
+            [
+                (string) $now
+            ]
+        );
+
+        return microtime(true) - $now;
+    }
+
     /**
      * Put a object to the internal objects array
      * @param Object $object Component Object
