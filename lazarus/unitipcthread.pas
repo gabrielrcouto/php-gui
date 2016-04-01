@@ -37,6 +37,7 @@ type
   end;
 
 var
+   B: String;
    F: Text;
    jData: TJSONData;
    objArray: array of TControl;
@@ -213,34 +214,84 @@ begin
 end;
 
 procedure TIpcThread.ParseMessage(Text: String);
+var
+  i: Integer;
+  buffer: String;
+  currentChar: String;
+  open: Integer;
+  close: Integer;
+  jsons: array of String;
+  char : Integer;
 begin
   // OutputDebug(Text);
-  Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
-  jData := GetJSON(Text);
+  // Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
+  B := B + Text;
 
-  // All messages need a method
-  if (jData.FindPath('method') <> Nil) then
+  char := 1;
+  buffer := '';
+  open := 0;
+  close := 0;
+  for i := 1 to Length(B) do
   begin
-    // Find the corret function for the method
-    // Because we will modify the GUI, we need to Synchronize this thread with the GUI thread
-    if (jData.FindPath('method').value = 'createObject') then
+    currentChar := copy(B, i, 1);
+    buffer := buffer + currentChar;
+
+    if AnsiCompareStr(currentChar, '{') = 0 then
     begin
-      Synchronize(@CreateObject);
-    end else if (jData.FindPath('method').value = 'setObjectEventListener') then
+      open := open + 1;
+    end else if AnsiCompareStr(currentChar, '}') = 0 then
     begin
-      Synchronize(@SetObjectEventListener);
-    end else if (jData.FindPath('method').value = 'setObjectProperty') then
+      close := close + 1;
+    end;
+
+    if (open > 0) AND (open = close) then
     begin
-      Synchronize(@SetObjectProperty);
-    end else if (jData.FindPath('method').value = 'getObjectProperty') then
+      SetLength(jsons, (Length(jsons) + 1));
+      jsons[Length(jsons) - 1] := buffer;
+
+      open := 0;
+      close := 0 ;
+      buffer := '';
+      char := i+1;
+    end;
+  end;
+
+  if ((char - 1) = Length(B)) then
+  begin
+    B := '';
+  end else
+  begin
+    B := copy(B, char , (Length(B) - char));
+  end;
+
+  for i := 0 to (Length(jsons) - 1) do
+  begin
+
+    jData := GetJSON(jsons[i]);
+    // All messages need a method
+    if (jData.FindPath('method') <> Nil) then
     begin
-      Synchronize(@GetObjectProperty);
-    end else if (jData.FindPath('method').value = 'callObjectMethod') then
-    begin
-      Synchronize(@CallObjectMethod);
-    end else if (jData.FindPath('method').value = 'ping') then
-    begin
-      Synchronize(@Ping);
+      // Find the corret function for the method
+      // Because we will modify the GUI, we need to Synchronize this thread with the GUI thread
+      if (jData.FindPath('method').value = 'createObject') then
+      begin
+        Synchronize(@CreateObject);
+      end else if (jData.FindPath('method').value = 'setObjectEventListener') then
+      begin
+        Synchronize(@SetObjectEventListener);
+      end else if (jData.FindPath('method').value = 'setObjectProperty') then
+      begin
+        Synchronize(@SetObjectProperty);
+      end else if (jData.FindPath('method').value = 'getObjectProperty') then
+      begin
+        Synchronize(@GetObjectProperty);
+      end else if (jData.FindPath('method').value = 'callObjectMethod') then
+      begin
+        Synchronize(@CallObjectMethod);
+      end else if (jData.FindPath('method').value = 'ping') then
+      begin
+        Synchronize(@Ping);
+      end;
     end;
   end;
 end;
