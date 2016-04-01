@@ -56,6 +56,23 @@ And OS:
 
 We are developing the first stable version to write a good documentation. You can use the examples (see the examples folder of this repository) while we are finishing the first release.
 
+Here is a very basic tutorial:
+
+```bash
+# clone repository
+git clone https://github.com/gabrielrcouto/php-gui.git
+cd php-gui
+
+# install dependencies
+composer install
+
+# run example
+php examples/01-basic/example.php
+
+```
+
+After that, the window should be already open, use alt+tab (command+tab os OS X) to find it. Autofocus will be added soon.
+
 Basic Application:
 
 ```php
