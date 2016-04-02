@@ -9,7 +9,12 @@ use React\Stream\Stream;
 class Receiver
 {
     public $application;
+    protected $buffer = '';
     public $messageCallbacks = [];
+    protected $isWaitingMessage = false;
+    protected $parseMessagesBuffer = [];
+    protected $waitingMessageId;
+    protected $waitingMessageResult;
 
     public function __construct(Application $application)
     {
@@ -59,74 +64,97 @@ class Receiver
      */
     public function onData($data)
     {
-        $data = $this->removeDebug($this->splitMessage($data));
+        // Add the new messages to the buffer
+        $this->buffer .= $data;
 
-        foreach ($data as $json) {
-            if ($this->application->getVerboseLevel() == 2) {
-                Output::out($this->prepareOutput($json));
+        $openingBraces = 0;
+        $closingBraces = 0;
+
+        $currentPos = 0;
+        $bufferLength = strlen($this->buffer);
+
+        for ($i = 0; $i < $bufferLength; $i++) {
+            if ($this->buffer[$currentPos] == '{') {
+                $openingBraces++;
+            } else if ($this->buffer[$currentPos] == '}') {
+                $closingBraces++;
             }
 
-            $message = $this->jsonDecode($json);
+            $currentPos++;
 
-            // Can be a command or a result
-            if ($message && property_exists($message, 'id')) {
-                if (property_exists($message, 'result')) {
+            if ($openingBraces > 0 && $openingBraces == $closingBraces) {
+                $messageJson = substr($this->buffer, 0, $currentPos);
+                $message = $this->jsonDecode($messageJson);
+
+                // First, remove the message from the buffer
+                if ($currentPos > strlen($this->buffer)) {
+                    $this->buffer = '';
+                } else {
+                    $this->buffer = substr($this->buffer, $currentPos);
+                }
+
+                $currentPos = 0;
+                $openingBraces = 0;
+                $closingBraces = 0;
+
+                // Now, process the message
+                if ($message) {
+                    if ($this->application->getVerboseLevel() == 2) {
+                        Output::out($this->prepareOutput($messageJson), 'green');
+                    }
+
+                    if (property_exists($message, 'debug')) {
+                        $this->parseDebug($message);
+                    } else {
+                        $this->parseNormal($message);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function parseDebug($message)
+    {
+        if ($this->application->getVerboseLevel() == 2) {
+            Output::out('<= Debug: ' . json_encode($message), 'blue');
+        }
+    }
+
+    protected function parseNormal($message)
+    {
+        // Can be a command or a result
+        if ($message && property_exists($message, 'id')) {
+            if (property_exists($message, 'result')) {
+                if ($this->isWaitingMessage) {
+                    if ($message->id == $this->waitingMessageId) {
+                        $this->waitingMessageResult = $message->result;
+                        $this->isWaitingMessage = false;
+                    } else {
+                        $this->parseMessagesBuffer[] = $message;
+                    }
+                } else {
                     $this->callMessageCallback($message->id, $message->result);
-                } else {
-                    // @TODO: Command implementation
                 }
+            } else {
+                // @TODO: Command implementation
             }
 
-            // This is a notification/event!
-            if ($message && ! property_exists($message, 'id')) {
-                if ($message->method == 'callObjectEventListener') {
-                    // @TODO: Check if params contains all the items
-                    $this->callObjectEventListener($message->params[0], $message->params[1]);
-                }
+            return;
+        }
+
+        // It's waiting a message? Store for future parsing
+        if ($this->isWaitingMessage) {
+            $this->parseMessagesBuffer[] = $message;
+            return;
+        }
+
+        // This is a notification/event!
+        if ($message && ! property_exists($message, 'id')) {
+            if ($message->method == 'callObjectEventListener') {
+                // @TODO: Check if params contains all the items
+                $this->callObjectEventListener($message->params[0], $message->params[1]);
             }
         }
-    }
-
-    protected function splitMessage($message)
-    {
-        $data = trim($message);
-
-        if (empty($data)) {
-            return [];
-        }
-
-        $messages = explode('}{', $data);
-        $count = count($messages);
-
-        if ($count > 1) {
-            for ($i = 0; $i < $count; $i++) {
-                if ($i == 0) {
-                    $messages[$i] .= '}';
-                } elseif ($i == $count - 1) {
-                    $messages[$i] = '{' . $messages[$i];
-                } else {
-                    $messages[$i] = '{' . $messages[$i] . '}';
-                }
-            }
-        }
-
-        return $messages;
-    }
-
-    protected function removeDebug(array $jsons)
-    {
-        foreach ($jsons as $key => $message) {
-            $obj = $this->jsonDecode($message);
-
-            if (property_exists($obj, 'debug')) {
-                if ($this->application->getVerboseLevel() == 2) {
-                    Output::out('Debug: ' . $message, 'blue');
-                }
-                unset($jsons[$key]);
-            }
-        }
-
-        return $jsons;
     }
 
     protected function jsonDecode($json)
@@ -149,36 +177,16 @@ class Receiver
 
         $stdout->pause();
         $stream = $stdout->stream;
-        while (! feof($stream)) {
+
+        $this->waitingMessageId = $message->id;
+        $this->isWaitingMessage = true;
+
+        // Read the stdin until we get the message replied
+        while (! feof($stream) && $this->isWaitingMessage) {
             $data = fgets($stream);
 
             if (! empty($data)) {
-                $data = $this->removeDebug($this->splitMessage($data));
-
-                foreach ($data as $json) {
-                    if ($this->application->getVerboseLevel() == 2) {
-                        Output::out($this->prepareOutput($json));
-                    }
-                    $obj = $this->jsonDecode($json);
-
-                    // Can be a command or a result
-                    if (property_exists($obj, 'id')) {
-                        if (property_exists($obj, 'result')) {
-                            if ($obj->id == $message->id) {
-                                $return = $obj->result;
-                                break;
-                            } else {
-                                $buffer[] = $obj;
-                                if ($this->application->getVerboseLevel() == 2) {
-                                    Output::out('Skipped: ' . $obj->id, 'yellow');
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (isset($return)) {
-                break;
+                $this->onData($data);
             }
 
             usleep(1);
@@ -186,24 +194,20 @@ class Receiver
 
         $stdout->resume();
 
-        foreach ($buffer as $json) {
-            if ($this->application->getVerboseLevel() == 2) {
-                Output::out('Skipped Sent: ' . $json->id, 'yellow');
-            }
-            $stdout->emit(
-                'data',
-                [
-                    json_encode($json),
-                    $stdout
-                ]
-            );
+        $result = $this->waitingMessageResult;
+        $this->waitingMessageResult = null;
+
+        foreach ($this->parseMessagesBuffer as $key => $message) {
+            $this->parseNormal($message);
         }
 
-        return $return;
+        $this->parseMessagesBuffer = [];
+
+        return $result;
     }
 
     private function prepareOutput($string)
     {
-        return 'Received: ' . $string;
+        return '<= Received: ' . $string;
     }
 }

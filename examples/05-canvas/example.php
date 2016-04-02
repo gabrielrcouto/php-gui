@@ -35,7 +35,7 @@ $application->on('start', function() use ($application) {
 
     $canvas->setSize(100, 100);
 
-    for ($x = 0; $x < 100; $x++) {
+    for ($x = 50; $x >= 0; $x--) {
         for ($y = 0; $y < 100; $y++) {
             $canvas->setPixel($x, $y, '#ff0000');
         }

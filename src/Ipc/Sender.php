@@ -23,7 +23,7 @@ class Sender
         $json = $this->getLazarusJson($message);
 
         if ($this->application->getVerboseLevel() == 2) {
-            Output::out(self::prepareOutput($json));
+            Output::out(self::prepareOutput($json), 'yellow');
         }
 
         if (property_exists($message, 'callback') && is_callable($message->callback)) {
@@ -43,7 +43,7 @@ class Sender
         $json = $this->getLazarusJson($message);
 
         if ($this->application->getVerboseLevel() == 2) {
-            Output::out(self::prepareOutput($json));
+            Output::out(self::prepareOutput($json), 'yellow');
         }
 
         $this->application->process->stdin->write($json);
@@ -64,16 +64,11 @@ class Sender
 
     private function getLazarusJson(MessageInterface $message)
     {
-        $json = json_encode($message);
-
-        // Escape }{ for message spliting on Lazarus
-        $json = str_replace('}{', '}\{', $json);
-
-        return $json;
+        return json_encode($message);
     }
 
     private static function prepareOutput($json)
     {
-        return 'Sent: ' . $json;
+        return '=> Sent: ' . $json;
     }
 }

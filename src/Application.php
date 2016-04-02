@@ -181,6 +181,11 @@ class Application
         $this->sender->send($message);
     }
 
+    public function setVerboseLevel($verboseLevel)
+    {
+        $this->verboseLevel = $verboseLevel;
+    }
+
     public function waitCommand($method, $params)
     {
         $message = new CommandMessage($method, $params);

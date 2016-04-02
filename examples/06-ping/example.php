@@ -16,18 +16,30 @@ $application = new Application([
 
 $application->on('start', function() use ($application) {
     $label = new Label([
-        'text' => 'Time: ',
+        'text' => 'Speed on your terminal',
         'fontSize' => 20,
         'top' => 10,
         'left' => 10,
     ]);
 
+    $currentSecond = time();
+    $messagesPerSecond = 0;
+
+    // Disable application verbose, to see the speed messages
+    $application->setVerboseLevel(0);
+
     while (true) {
-        $time = $application->ping();
+        $latency = $application->ping();
 
-        $label->setText('Time: ' . $time);
+        if (time() != $currentSecond) {
+            Output::out('Speed: ' . $messagesPerSecond . ' messages/sec', 'red');
 
-        Output::out($time, 'yellow');
+            $messagesPerSecond = 0;
+            $currentSecond = time();
+        }
+
+        $messagesPerSecond++;
+
         usleep(1);
     }
 });

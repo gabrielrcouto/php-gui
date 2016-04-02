@@ -107,14 +107,19 @@ end;
 
 procedure TIpcThread.Execute;
 var
+  // The cumulative Stdin string buffer
+  StdinStringBuffer: String;
   // The Stdin Pipe
-  AStream: TInputPipeStream;
+  StdinStream: TInputPipeStream;
   // The string returned from stdin
-  AString: String;
-  AStringLength: Integer;
+  StdinString: String;
+  StdinStringLength: LongInt;
+
   Counter: Integer;
-  FromPosition: Integer;
-  ToPosition: Integer;
+  CurrentPos: Integer;
+
+  OpeningBraces: Integer;
+  ClosingBraces: Integer;
 begin
   // Register all the classes
   // @TODO - Move it from here!
@@ -129,14 +134,16 @@ begin
   RegisterClass(TImage);
 
   // Initializes the input pipe (Stdin)
-  AStream := TInputPipeStream.Create(StdInputHandle);
+  StdinStream := TInputPipeStream.Create(StdInputHandle);
+  // The buffer starts empty
+  StdinStringBuffer := '';
 
   // Initializes de Stdout
   Assign(F, '');
   Rewrite(F);
 
-  FromPosition := 1;
-  ToPosition := 1;
+  OpeningBraces := 0;
+  ClosingBraces := 0;
 
   while Form1 = Nil do
   begin
@@ -144,53 +151,63 @@ begin
     Sleep(1);
   end;
 
+  // The Form1 needs to be the first object on objArray
   SetLength(objArray, 1);
   objArray[0] := Form1;
 
   while True do
   begin
-    // We have messages?
-    if AStream.NumBytesAvailable > 0 then
-    begin
-      // Read the messages from buffer
-      AStringLength := AStream.NumBytesAvailable; 
-      SetLength(AString, AStringLength);
-      AStream.ReadBuffer(AString[1], AStringLength);
+    // OutputDebug('{"waiting": true}');
 
-      if Trim(AString) <> '' then
+    // We have messages?
+    if StdinStream.NumBytesAvailable > 0 then
+    begin
+      // Read the messages from stdin stream
+      SetLength(StdinString, StdinStream.NumBytesAvailable);
+      StdinStream.Read(StdinString[1], StdinStream.NumBytesAvailable);
+
+      // Add the new stdin to the buffer
+      StdinStringBuffer := StdinStringBuffer + StdinString;
+
+      if StdinStringBuffer <> '' then
       begin
-        // Split the AString into messages
-        // Into AString, we can have more than one message, just search for "}{"
-        // The "}{" into a json string is escaped by "}/{"
-        for Counter := 1 to AStringLength do
+        // Split the StdinStringBuffer into messages
+        // Into StdinStringBuffer, we can have more than one message, just count the { and }
+        // When we have the same number of { and }, it's a complete JSON message
+        CurrentPos := 1;
+
+        for Counter := 1 to Length(StdinStringBuffer) do
         begin
-          if (Counter > 1) then
+
+          // Count how many { or } we have into the string
+          if StdinStringBuffer[CurrentPos] = '{' then
           begin
-            if (AString[Counter - 1] = '}') AND (AString[Counter] = '{') then
-            begin
-              // Ok, we found the message "glue", lets split
-              ToPosition := Counter - 1;
-              ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
-              FromPosition := Counter;
-            end else if Counter = AStringLength then
-            begin
-              if FromPosition = 1 then
-              begin
-                ParseMessage(AString);
-              end
-              else
-              begin
-                // We reached the end of AString, just send the rest
-                ToPosition := Counter;
-                ParseMessage(Copy(AString, FromPosition, (ToPosition - FromPosition) + 1));
-              end;
-            end;
+            Inc(OpeningBraces);
+          end 
+          else if StdinStringBuffer[CurrentPos] = '}' then
+          begin
+            Inc(ClosingBraces);
+          end;
+
+          // We have a full JSON message
+          if (OpeningBraces > 0) AND (OpeningBraces = ClosingBraces) then
+          begin
+            // Parse the message
+            ParseMessage(Copy(StdinStringBuffer, 1, CurrentPos));
+            // Remove the message from the buffer
+            Delete(StdinStringBuffer, 1, CurrentPos);
+
+            CurrentPos := 1;
+            
+            OpeningBraces := 0;
+            ClosingBraces := 0;
+          end
+          else
+          begin
+            Inc(CurrentPos);
           end;
         end;
       end;
-
-      FromPosition := 1;
-      ToPosition := 1;
     end
     else
     begin
@@ -204,7 +221,6 @@ var
   jsonData : TJSONData;
   jObj : TJSONObject;
 begin
-  Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
   jsonData := GetJSON(Text);
 
   jObj := TJSONObject(jsonData);
@@ -214,84 +230,33 @@ begin
 end;
 
 procedure TIpcThread.ParseMessage(Text: String);
-var
-  i: Integer;
-  buffer: String;
-  currentChar: String;
-  open: Integer;
-  close: Integer;
-  jsons: array of String;
-  char : Integer;
 begin
   // OutputDebug(Text);
-  // Text := StringReplace(Text, '}/{', '}{', [rfReplaceAll, rfIgnoreCase]);
-  B := B + Text;
 
-  char := 1;
-  buffer := '';
-  open := 0;
-  close := 0;
-  for i := 1 to Length(B) do
+  jData := GetJSON(Text);
+  // All messages need a method
+  if (jData.FindPath('method') <> Nil) then
   begin
-    currentChar := copy(B, i, 1);
-    buffer := buffer + currentChar;
-
-    if AnsiCompareStr(currentChar, '{') = 0 then
+    // Find the corret function for the method
+    // Because we will modify the GUI, we need to Synchronize this thread with the GUI thread
+    if (jData.FindPath('method').value = 'createObject') then
     begin
-      open := open + 1;
-    end else if AnsiCompareStr(currentChar, '}') = 0 then
+      Synchronize(@CreateObject);
+    end else if (jData.FindPath('method').value = 'setObjectEventListener') then
     begin
-      close := close + 1;
-    end;
-
-    if (open > 0) AND (open = close) then
+      Synchronize(@SetObjectEventListener);
+    end else if (jData.FindPath('method').value = 'setObjectProperty') then
     begin
-      SetLength(jsons, (Length(jsons) + 1));
-      jsons[Length(jsons) - 1] := buffer;
-
-      open := 0;
-      close := 0 ;
-      buffer := '';
-      char := i+1;
-    end;
-  end;
-
-  if ((char - 1) = Length(B)) then
-  begin
-    B := '';
-  end else
-  begin
-    B := copy(B, char , (Length(B) - char));
-  end;
-
-  for i := 0 to (Length(jsons) - 1) do
-  begin
-
-    jData := GetJSON(jsons[i]);
-    // All messages need a method
-    if (jData.FindPath('method') <> Nil) then
+      Synchronize(@SetObjectProperty);
+    end else if (jData.FindPath('method').value = 'getObjectProperty') then
     begin
-      // Find the corret function for the method
-      // Because we will modify the GUI, we need to Synchronize this thread with the GUI thread
-      if (jData.FindPath('method').value = 'createObject') then
-      begin
-        Synchronize(@CreateObject);
-      end else if (jData.FindPath('method').value = 'setObjectEventListener') then
-      begin
-        Synchronize(@SetObjectEventListener);
-      end else if (jData.FindPath('method').value = 'setObjectProperty') then
-      begin
-        Synchronize(@SetObjectProperty);
-      end else if (jData.FindPath('method').value = 'getObjectProperty') then
-      begin
-        Synchronize(@GetObjectProperty);
-      end else if (jData.FindPath('method').value = 'callObjectMethod') then
-      begin
-        Synchronize(@CallObjectMethod);
-      end else if (jData.FindPath('method').value = 'ping') then
-      begin
-        Synchronize(@Ping);
-      end;
+      Synchronize(@GetObjectProperty);
+    end else if (jData.FindPath('method').value = 'callObjectMethod') then
+    begin
+      Synchronize(@CallObjectMethod);
+    end else if (jData.FindPath('method').value = 'ping') then
+    begin
+      Synchronize(@Ping);
     end;
   end;
 end;
