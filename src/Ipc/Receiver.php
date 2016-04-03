@@ -76,7 +76,7 @@ class Receiver
         for ($i = 0; $i < $bufferLength; $i++) {
             if ($this->buffer[$currentPos] == '{') {
                 $openingBraces++;
-            } else if ($this->buffer[$currentPos] == '}') {
+            } elseif ($this->buffer[$currentPos] == '}') {
                 $closingBraces++;
             }
 

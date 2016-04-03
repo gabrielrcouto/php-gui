@@ -127,7 +127,7 @@ class Application
             $processPath = __DIR__ . '/../lazarus/';
         } elseif (OsDetector::isWindows()) {
             $processName = '.\\phpgui-x86_64-win64';
-	    $processPath = __DIR__ . '\\..\\lazarus\\';
+            $processPath = __DIR__ . '\\..\\lazarus\\';
         } else {
             throw new RuntimeException('Operational System not identified by PHP-GUI.');
         }
