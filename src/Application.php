@@ -135,7 +135,7 @@ class Application
         $this->process = $process = new Process($processName, $processPath);
 
         $this->receiver = $receiver = new Receiver($this);
-        $this->sender = new Sender($this, $receiver);
+        $this->sender = $sender = new Sender($this, $receiver);
 
         $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
             $process->start($timer->getLoop());
@@ -154,6 +154,10 @@ class Application
 
             // Bootstrap the application
             $application->fire('start');
+        });
+
+        $application->loop->addPeriodicTimer(0.001, function() use ($sender) {
+            $sender->tick();
         });
 
         $this->loop->run();

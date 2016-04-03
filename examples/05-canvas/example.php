@@ -10,15 +10,15 @@ $application = new Application([
     'title' => 'My PHP Desktop Application',
     'left' => 248,
     'top' => 50,
-    'width' => 860,
-    'height' => 600
+    'width' => 100,
+    'height' => 200
 ]);
 
 $application->on('start', function() use ($application) {
     $button = (new Button())
         ->setCounter(1)
-        ->setLeft(100)
-        ->setTop(100)
+        ->setLeft(10)
+        ->setTop(150)
         ->setValue('Dont click');
 
     $button->on('click', function() use ($button) {
