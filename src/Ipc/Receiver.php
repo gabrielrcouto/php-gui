@@ -88,20 +88,24 @@ class Receiver
 
         $openingBraces = 0;
         $closingBraces = 0;
+        $doubleQuotes = 0;
         $firstOpeningBracePos = 0;
 
         $currentPos = 0;
         $bufferLength = strlen($this->buffer);
 
         for ($i = 0; $i < $bufferLength; $i++) {
-            if ($this->buffer[$currentPos] == '{') {
+            if ($this->buffer[$currentPos] == '{' && $doubleQuotes % 2 == 0) {
                 if ($openingBraces == 0) {
                     $firstOpeningBracePos = $currentPos;
                 }
 
                 $openingBraces++;
-            } elseif ($this->buffer[$currentPos] == '}') {
+            } elseif ($this->buffer[$currentPos] == '}' && $doubleQuotes % 2 == 0) {
                 $closingBraces++;
+            } elseif ($this->buffer[$currentPos] == '"' && ($currentPos == 0 || $this->buffer[$currentPos - 1] != '\\')) {
+                // We are opening or closing a JSON string?
+                $doubleQuotes++;
             }
 
             $currentPos++;
@@ -120,6 +124,7 @@ class Receiver
                 $currentPos = 0;
                 $openingBraces = 0;
                 $closingBraces = 0;
+                $doubleQuotes = 0;
 
                 // Now, process the message
                 if ($message) {

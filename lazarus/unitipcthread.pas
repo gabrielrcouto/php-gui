@@ -120,6 +120,7 @@ var
 
   OpeningBraces: Integer;
   ClosingBraces: Integer;
+  DoubleQuotes: Integer;
 begin
   // Register all the classes
   // @TODO - Move it from here!
@@ -144,6 +145,7 @@ begin
 
   OpeningBraces := 0;
   ClosingBraces := 0;
+  DoubleQuotes := 0;
 
   while Form1 = Nil do
   begin
@@ -180,13 +182,17 @@ begin
         begin
 
           // Count how many { or } we have into the string
-          if StdinStringBuffer[CurrentPos] = '{' then
+          if (StdinStringBuffer[CurrentPos] = '{') and (DoubleQuotes mod 2 = 0) then
           begin
             Inc(OpeningBraces);
           end 
-          else if StdinStringBuffer[CurrentPos] = '}' then
+          else if (StdinStringBuffer[CurrentPos] = '}') and (DoubleQuotes mod 2 = 0) then
           begin
             Inc(ClosingBraces);
+          end
+          else if (StdinStringBuffer[CurrentPos] = '"') and ((CurrentPos = 1) or (StdinStringBuffer[CurrentPos - 1] <> '\\')) then
+          begin
+            Inc(DoubleQuotes);
           end;
 
           // We have a full JSON message
@@ -201,6 +207,7 @@ begin
             
             OpeningBraces := 0;
             ClosingBraces := 0;
+            DoubleQuotes := 0;
           end
           else
           begin
