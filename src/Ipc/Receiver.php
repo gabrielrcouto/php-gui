@@ -59,6 +59,25 @@ class Receiver
     }
 
     /**
+     * Decode a received message
+     * @param  String $json Received json message
+     * @return MessageInterface       Message
+     */
+    protected function jsonDecode($json)
+    {
+        $obj = json_decode($json);
+
+        if ($obj !== null) {
+            return $obj;
+        } else {
+            // @todo throw an exception
+            if ($this->application->getVerboseLevel() == 2) {
+                Output::err('JSON ERROR: ' . $json);
+            }
+        }
+    }
+
+    /**
      * Process Stdout handler
      * @param  String $data Data received
      */
@@ -69,12 +88,17 @@ class Receiver
 
         $openingBraces = 0;
         $closingBraces = 0;
+        $firstOpeningBracePos = 0;
 
         $currentPos = 0;
         $bufferLength = strlen($this->buffer);
 
         for ($i = 0; $i < $bufferLength; $i++) {
             if ($this->buffer[$currentPos] == '{') {
+                if ($openingBraces == 0) {
+                    $firstOpeningBracePos = $currentPos;
+                }
+
                 $openingBraces++;
             } elseif ($this->buffer[$currentPos] == '}') {
                 $closingBraces++;
@@ -83,7 +107,7 @@ class Receiver
             $currentPos++;
 
             if ($openingBraces > 0 && $openingBraces == $closingBraces) {
-                $messageJson = substr($this->buffer, 0, $currentPos);
+                $messageJson = substr($this->buffer, $firstOpeningBracePos, $currentPos);
                 $message = $this->jsonDecode($messageJson);
 
                 // First, remove the message from the buffer
@@ -113,6 +137,10 @@ class Receiver
         }
     }
 
+    /**
+     * Parse a debug message
+     * @param  MessageInterface $message Message
+     */
     protected function parseDebug($message)
     {
         if ($this->application->getVerboseLevel() == 2) {
@@ -120,6 +148,10 @@ class Receiver
         }
     }
 
+    /**
+     * Parse a normal message, can be a command, command result or an event
+     * @param  MessageInterface $message Message
+     */
     protected function parseNormal($message)
     {
         // Can be a command or a result
@@ -157,38 +189,72 @@ class Receiver
         }
     }
 
-    protected function jsonDecode($json)
+    /**
+     * Construct the output string
+     * @param  String $string Output string
+     * @return String         New output string
+     */
+    protected function prepareOutput($string)
     {
-        $obj = json_decode($json);
+        return '<= Received: ' . $string;
+    }
 
-        if ($obj !== null) {
-            return $obj;
-        } else {
-            // @todo throw an exception
-            if ($this->application->getVerboseLevel() == 2) {
-                Output::err('JSON ERROR: ' . $json);
+    /**
+     * Read the stdout pipe from Lazarus process. This function uses
+     * stream_select to be non blocking
+     */
+    public function tick()
+    {
+        $stream = $this->application->process->stdout->stream;
+        $read = [$stream];
+        $write = [];
+        $except = [];
+
+        $result = stream_select($read, $write, $except, 0);
+
+        if ($result === false) {
+            throw new Exception('stream_select failed');
+        }
+
+        if ($result === 0) {
+            return;
+        }
+
+        $status = fstat($stream);
+
+        if ($status['size'] > 0) {
+            $size = $status['size'];
+
+            if ($size > 1) {
+                $size -= 1;
+                // This solves a bug on Windows - If you read the exact size (> 1),
+                // PHP will block
+                $data = stream_get_contents($stream, $size);
+                $data .= stream_get_contents($stream, 1);
+            } else {
+                $data = stream_get_contents($stream, 1);
             }
+
+            $this->application->process->stdout->emit('data', array($data, $this));
         }
     }
 
+    /**
+     * Wait a message result
+     * @param  Stream           $stdout  Stdout Stream
+     * @param  MessageInterface $message Command waiting result
+     * @return Mixed                    The result
+     */
     public function waitMessage(Stream $stdout, MessageInterface $message)
     {
         $buffer = [];
-
-        $stdout->pause();
-        $stream = $stdout->stream;
 
         $this->waitingMessageId = $message->id;
         $this->isWaitingMessage = true;
 
         // Read the stdin until we get the message replied
-        while (! feof($stream) && $this->isWaitingMessage) {
-            $data = fgets($stream);
-
-            if (! empty($data)) {
-                $this->onData($data);
-            }
-
+        while ($this->isWaitingMessage) {
+            $this->tick();
             usleep(1);
         }
 
@@ -204,10 +270,5 @@ class Receiver
         $this->parseMessagesBuffer = [];
 
         return $result;
-    }
-
-    private function prepareOutput($string)
-    {
-        return '<= Received: ' . $string;
     }
 }

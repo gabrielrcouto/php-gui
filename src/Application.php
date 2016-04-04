@@ -140,6 +140,9 @@ class Application
         $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
             $process->start($timer->getLoop());
 
+            // Stdout is paused, we use our own way to read it
+            $process->stdout->pause();
+
             $process->stdout->on('data', function ($data) use ($receiver) {
                 $receiver->onData($data);
             });
@@ -156,8 +159,9 @@ class Application
             $application->fire('start');
         });
 
-        $application->loop->addPeriodicTimer(0.001, function() use ($sender) {
+        $application->loop->addPeriodicTimer(0.001, function() use ($sender, $receiver) {
             $sender->tick();
+            $receiver->tick();
         });
 
         $this->loop->run();
