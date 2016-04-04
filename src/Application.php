@@ -134,6 +134,10 @@ class Application
 
         $this->process = $process = new Process($processName, $processPath);
 
+        $this->process->on('exit', function($exitCode, $termSignal) use ($application) {
+            $application->loop->stop();
+        });
+
         $this->receiver = $receiver = new Receiver($this);
         $this->sender = $sender = new Sender($this, $receiver);
 
@@ -159,9 +163,11 @@ class Application
             $application->fire('start');
         });
 
-        $application->loop->addPeriodicTimer(0.001, function() use ($sender, $receiver) {
-            $sender->tick();
-            $receiver->tick();
+        $application->loop->addPeriodicTimer(0.001, function() use ($application) {
+            $application->sender->tick();
+            if (@is_resource($application->process->stdout->stream)) {
+                $application->receiver->tick();
+            }
         });
 
         $this->loop->run();
