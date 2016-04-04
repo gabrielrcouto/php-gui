@@ -28,4 +28,16 @@ class Window extends Object
     {
         return $this->get('caption');
     }
+
+    public function setIcon($icon)
+    {
+        if (file_exists($icon) && preg_match('/ico$/i', $icon)) {
+            $this->call(
+                'icon.loadFromFile',
+                [$icon]
+            );
+        }
+
+        return $this;
+    }
 }

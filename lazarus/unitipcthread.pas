@@ -313,6 +313,10 @@ begin
     else if messageMethodName = 'picture.bitmap.setSize' then
     begin
       (objArray[objId] as TImage).Picture.Bitmap.SetSize(jData.FindPath('params[2][0]').AsInteger,jData.FindPath('params[2][1]').AsInteger);
+    end
+    else if messageMethodName = 'icon.loadFromFile' then
+    begin
+      (objArray[objId] as TForm1).Icon.LoadFromFile(jData.FindPath('params[2][0]').AsString);
     end;
 
     // If it's a command, reply to it
