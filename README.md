@@ -71,7 +71,7 @@ php examples/01-basic/example.php
 
 ```
 
-After that, the window should be already open, use alt+tab (command+tab os OS X) to find it. Autofocus will be added soon.
+After that, the window should be already open.
 
 Basic Application:
 
