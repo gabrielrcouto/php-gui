@@ -11,7 +11,7 @@ class Canvas extends Object
 {
     protected $lazarusClass = 'TImage';
 
-    public function setPixel(int $x, int $y, $color)
+    public function setPixel($x, $y, $color)
     {
         $this->call(
             'picture.bitmap.canvas.setPixel',
@@ -24,7 +24,7 @@ class Canvas extends Object
         );
     }
 
-    public function setSize(int $width, int $height)
+    public function setSize($width, $height)
     {
         $this->call(
             'picture.bitmap.setSize',

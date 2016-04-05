@@ -140,6 +140,8 @@ class Application
         $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
             $process->start($timer->getLoop());
 
+            // Stdin is paused, we use our own way to write on it
+            $process->stdin->pause();
             // Stdout is paused, we use our own way to read it
             $process->stdout->pause();
 

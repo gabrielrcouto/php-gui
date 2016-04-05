@@ -10,7 +10,7 @@ class Sender
     public $application;
     public $lastId = 0;
     public $receiver;
-    protected $sendLaterMessagesBuffer = [];
+    protected $sendLaterMessagesBuffer = '';
 
     public function __construct(Application $application, Receiver $receiver)
     {
@@ -26,21 +26,6 @@ class Sender
     protected function getLazarusJson(MessageInterface $message)
     {
         return json_encode($message);
-    }
-
-    /**
-     * Check if stdin stream is over the buffer limit
-     * @return boolean True if its over
-     */
-    protected function isStdinOverLimit()
-    {
-        $status = fstat($this->application->process->stdin->stream);
-
-        if ($status['size'] >= 30000) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -76,12 +61,8 @@ class Sender
     {
         $this->processMessage($message);
 
-        // Get the stdin stream length - The max size on Linux and OSX is 65000 bytes
-        // We will use a 30000 limit - If it's over this limit, we put on a queue
-        if ($this->isStdinOverLimit()) {
-            $this->sendLaterMessagesBuffer[] = $message;
-            return;
-        }
+        // But into a buffer and send the max we can
+        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message);
 
         if (property_exists($message, 'callback') && is_callable($message->callback)) {
             // It's a command!
@@ -90,7 +71,7 @@ class Sender
             // @todo throw an exception
         }
 
-        $this->writeOnStream($message);
+        $this->writeOnStream();
     }
 
     /**
@@ -98,15 +79,8 @@ class Sender
      */
     public function tick()
     {
-        if (count($this->sendLaterMessagesBuffer) > 0) {
-            foreach ($this->sendLaterMessagesBuffer as $key => $message) {
-                if (! $this->isStdinOverLimit()) {
-                    $this->writeOnStream($message);
-                    unset($this->sendLaterMessagesBuffer[$key]);
-                } else {
-                    break;
-                }
-            }
+        if (strlen($this->sendLaterMessagesBuffer) > 0) {
+            $this->writeOnStream();
         }
     }
 
@@ -119,7 +93,8 @@ class Sender
     public function waitReturn(MessageInterface $message)
     {
         $this->processMessage($message);
-        $this->writeOnStream($message);
+        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message);
+        $this->writeOnStream();
 
         return $this->receiver->waitMessage(
             $this->application->process->stdout,
@@ -128,17 +103,28 @@ class Sender
     }
 
     /**
-     * Write on stdin stream, converting a message to a json string
-     *
-     * @param  MessageInterface $message Message to send
+     * Write on stdin stream
      */
-    protected function writeOnStream(MessageInterface $message)
+    protected function writeOnStream()
     {
-        $json = $this->getLazarusJson($message);
+        $stream = $this->application->process->stdin->stream;
 
-        $this->out($json);
+        if (is_resource($stream)) {
+            // Send the maximum we can to stream
+            $writtenBytes = fwrite($stream, $this->sendLaterMessagesBuffer);
 
-        $this->application->process->stdin->write($json);
-        $this->application->process->stdin->getBuffer()->handleWrite();
+            if ($writtenBytes === false || $writtenBytes === 0) {
+                echo 'Waiting stdin buffer...' . PHP_EOL;
+                return;
+            }
+
+            if (strlen($this->sendLaterMessagesBuffer) == $writtenBytes) {
+                $this->out($this->sendLaterMessagesBuffer);
+                $this->sendLaterMessagesBuffer = '';
+            } else {
+                $this->out(substr($this->sendLaterMessagesBuffer, 0, $writtenBytes));
+                $this->sendLaterMessagesBuffer = substr($this->sendLaterMessagesBuffer, $writtenBytes);
+            }
+        }
     }
 }

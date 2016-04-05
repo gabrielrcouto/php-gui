@@ -3,6 +3,7 @@
 namespace Gui\Ipc;
 
 use Gui\Application;
+use Gui\OsDetector;
 use Gui\Output;
 use React\Stream\Stream;
 
@@ -225,22 +226,32 @@ class Receiver
             return;
         }
 
-        $status = fstat($stream);
+        // This solves a bug on Windows - If you read the exact size (> 1),
+        // PHP will block
+        if (OsDetector::isWindows()) {
+            $status = fstat($stream);
 
-        if ($status['size'] > 0) {
-            $size = $status['size'];
+            if ($status['size'] > 0) {
+                $size = $status['size'];
 
-            if ($size > 1) {
-                $size -= 1;
-                // This solves a bug on Windows - If you read the exact size (> 1),
-                // PHP will block
-                $data = stream_get_contents($stream, $size);
-                $data .= stream_get_contents($stream, 1);
-            } else {
-                $data = stream_get_contents($stream, 1);
+                if ($size > 1) {
+                    $size -= 1;
+
+                    $data = stream_get_contents($stream, $size);
+                    $data .= stream_get_contents($stream, 1);
+                } else {
+                    $data = stream_get_contents($stream, 1);
+                }
+
+                $this->application->process->stdout->emit('data', array($data, $this));
             }
+        } else {
+            // On Linux and OSX, we don't need to pass a size limit
+            $data = stream_get_contents($stream);
 
-            $this->application->process->stdout->emit('data', array($data, $this));
+            if (! empty($data)) {
+                $this->application->process->stdout->emit('data', array($data, $this));
+            }
         }
     }
 
