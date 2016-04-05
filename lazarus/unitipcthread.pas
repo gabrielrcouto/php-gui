@@ -200,6 +200,7 @@ begin
           begin
             // Parse the message
             ParseMessage(Copy(StdinStringBuffer, 1, CurrentPos));
+
             // Remove the message from the buffer
             Delete(StdinStringBuffer, 1, CurrentPos);
 
@@ -214,6 +215,12 @@ begin
             Inc(CurrentPos);
           end;
         end;
+
+        CurrentPos := 1;
+            
+        OpeningBraces := 0;
+        ClosingBraces := 0;
+        DoubleQuotes := 0;
       end;
     end
     else

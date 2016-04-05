@@ -114,7 +114,7 @@ class Sender
             $writtenBytes = fwrite($stream, $this->sendLaterMessagesBuffer);
 
             if ($writtenBytes === false || $writtenBytes === 0) {
-                echo 'Waiting stdin buffer...' . PHP_EOL;
+                // Waiting stdin pipe buffer...
                 return;
             }
 
