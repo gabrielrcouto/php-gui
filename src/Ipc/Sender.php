@@ -36,7 +36,18 @@ class Sender
     protected function out($text)
     {
         if ($this->application->getVerboseLevel() == 2) {
-            Output::out('=> Sent: ' . $text, 'yellow');
+            $re = explode('}{', $text);
+            foreach ($re as $key => $value) {
+                if (count($re) > 1&& $key == 0) {
+                    Output::out('=> Sent: ' . $value . '}', 'yellow');
+                } elseif (count($re) > 1 && $key == count($re) - 1) {
+                    Output::out('=> Sent: {' . $value, 'yellow');
+                } elseif (count($re) > 1) {
+                    Output::out('=> Sent: {' . $value . '}', 'yellow');
+                } else {
+                    Output::out('=> Sent: ' . $value, 'yellow');
+                }
+            }
         }
     }
 
