@@ -2,6 +2,7 @@
 
 namespace Gui;
 
+use Gui\Components\Object;
 use Gui\Components\Window;
 use Gui\Ipc\CommandMessage;
 use Gui\Ipc\EventMessage;
@@ -11,19 +12,100 @@ use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
 
+/**
+ * This is the Application Class
+ *
+ * This class is used to manipulate the application
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
+ */
 class Application
 {
+    /**
+     * The application object
+     *
+     * @var Application $defaultApplication
+     */
     public static $defaultApplication;
+
+    /**
+     * The internal array of all callbacks
+     *
+     * @var array $eventHandlers
+     */
     protected $eventHandlers = [];
+
+    /**
+     * The application loop
+     *
+     * @var \React\EventLoop\Timer\TimerInterface\LoopInterface $loop
+     */
     public $loop;
+
+    /**
+     * The next object ID available
+     *
+     * @var int $objectId
+     */
     protected $objectId = 0;
+
+    /**
+     * The internal array of all Components Objects in this application
+     *
+     * @var array $objects
+     */
     protected $objects = [];
+
+    /**
+     * The object responsible to manage the lazarus process
+     *
+     * @var Process $process
+     */
     public $process;
+
+    /**
+     * Defines if the application is running
+     *
+     * @var bool $running
+     */
     protected $running = false;
+
+    /**
+     * The responsible object to sent the communication messages
+     *
+     * @var Sender $sender
+     */
     protected $sender;
+
+    /**
+     * The responsible object to receive the communication messages
+     *
+     * @var Receiver $receiver
+     */
+    protected $receiver;
+
+    /**
+     * The verbose level
+     *
+     * @var int $verboseLevel
+     */
     protected $verboseLevel = 2;
+
+    /**
+     * The 1st Window of the Application
+     *
+     * @var Window $window
+     */
     protected $window;
 
+    /**
+     * The constructor method
+     *
+     * @param array $defaultAttributes
+     *
+     * @return void
+     */
     public function __construct(array $defaultAttributes = [])
     {
         $this->window = $window = new Window([], null, $this);
@@ -38,11 +120,21 @@ class Application
         });
     }
 
+    /**
+     * Returns the 1st Window of the Application
+     *
+     * @return Window
+     */
     public function getWindow()
     {
         return $this->window;
     }
 
+    /**
+     * Returns the communication time between php and lazarus
+     *
+     * @return float
+     */
     public function ping()
     {
         $now = microtime(true);
@@ -58,16 +150,22 @@ class Application
 
     /**
      * Put a object to the internal objects array
+     *
      * @param Object $object Component Object
+     *
+     * @return void
      */
-    public function addObject($object)
+    public function addObject(Object $object)
     {
         $this->objects[$object->getLazarusObjectId()] = $object;
     }
 
     /**
      * Fire an application event
-     * @param  String $eventName Event Name
+     *
+     * @param string $eventName Event Name
+     *
+     * @return void
      */
     public function fire($eventName)
     {
@@ -80,6 +178,8 @@ class Application
 
     /**
      * Returns the next avaible object ID
+     *
+     * @return int
      */
     public function getNextObjectId()
     {
@@ -88,20 +188,36 @@ class Application
 
     /**
      * Get a object from the internal objects array
+     *
      * @param int $id Object ID
+     *
+     * @return Object
      */
     public function getObject($id)
     {
-        // @TODO: Check if the object exists
+        // @todo: Check if the object exists
         return $this->objects[$id];
     }
 
+    /**
+     * Returns the verbose level
+     *
+     * @return int
+     */
     public function getVerboseLevel()
     {
         return $this->verboseLevel;
     }
 
-    public function on($eventName, $eventHandler)
+    /**
+     * Returns the next avaible object ID
+     *
+     * @param string $eventName the name of the event
+     * @param callable $eventHandler the callback
+     *
+     * @return void
+     */
+    public function on($eventName, callable $eventHandler)
     {
         if (! array_key_exists($eventName, $this->eventHandlers)) {
             $this->eventHandlers[$eventName] = [];
@@ -110,6 +226,11 @@ class Application
         $this->eventHandlers[$eventName][] = $eventHandler;
     }
 
+    /**
+     * Runs the application
+     *
+     * @return void
+     */
     public function run()
     {
         if (! self::$defaultApplication) {
@@ -175,9 +296,18 @@ class Application
         $this->loop->run();
     }
 
-    public function sendCommand($method, $params, $callback)
+    /**
+     * Send a command
+     *
+     * @param string $method the method name
+     * @param array $params the method params
+     * @param callable $callback the callback
+     *
+     * @return void
+     */
+    public function sendCommand($method, array $params, callable $callback)
     {
-        // @TODO: Put the message on a poll
+        // @todo: Put the message on a poll
         if (! $this->running) {
             return;
         }
@@ -186,9 +316,17 @@ class Application
         $this->sender->send($message);
     }
 
-    public function sendEvent($method, $params)
+    /**
+     * Send an event
+     *
+     * @param string $method the method name
+     * @param array $params the method params
+     *
+     * @return void
+     */
+    public function sendEvent($method, array $params)
     {
-        // @TODO: Put the message on a poll
+        // @todo: Put the message on a poll
         if (! $this->running) {
             return;
         }
@@ -197,12 +335,27 @@ class Application
         $this->sender->send($message);
     }
 
+    /**
+     * Set the verbose level
+     *
+     * @param int $verboseLevel
+     *
+     * @return void
+     */
     public function setVerboseLevel($verboseLevel)
     {
         $this->verboseLevel = $verboseLevel;
     }
 
-    public function waitCommand($method, $params)
+    /**
+     * Send a command and wait the return
+     *
+     * @param string $method the method name
+     * @param array $params the method params
+     *
+     * @return mixed
+     */
+    public function waitCommand($method, array $params)
     {
         $message = new CommandMessage($method, $params);
 

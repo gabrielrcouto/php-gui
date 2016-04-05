@@ -3,16 +3,26 @@
 namespace Gui\Components;
 
 /**
- * Checkbox
+ * This is the Checkbox Class
+ *
+ * It is a visual component for checkbox
+ *
+ * @author Rafael Reis @reisraff
+ * @since 0.1
  */
 class Checkbox extends Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TCheckBox';
 
     /**
      * Get the Checkbox checked
      *
-     * @return mixed
+     * @return bool
      */
     public function getChecked()
     {
@@ -21,6 +31,8 @@ class Checkbox extends Object
 
     /**
      * Set the Checkbox Checked
+     *
+     * @param bool $checked
      *
      * @return self
      */

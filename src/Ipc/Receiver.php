@@ -7,16 +7,72 @@ use Gui\OsDetector;
 use Gui\Output;
 use React\Stream\Stream;
 
+/**
+ * This is the Receiver class
+ *
+ * This class is used to receive communication messages
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
+ */
 class Receiver
 {
+    /**
+     * The application object
+     *
+     * @var Application $application
+     */
     public $application;
+
+    /**
+     * The buffer of received messages
+     *
+     * @var string $buffer
+     */
     protected $buffer = '';
+
+    /**
+     * Array of callbacks
+     *
+     * @var array $messageCallbacks
+     */
     public $messageCallbacks = [];
+
+    /**
+     * Defines if is waiting message
+     *
+     * @var bool $isWaitingMessage
+     */
     protected $isWaitingMessage = false;
+
+    /**
+     * Array of messages in buffer
+     *
+     * @var array $parseMessagesBuffer
+     */
     protected $parseMessagesBuffer = [];
+
+    /**
+     * The id of the waitingMessage
+     *
+     * @var int $waitingMessageId
+     */
     protected $waitingMessageId;
+
+    /**
+     * The return of the waitingMessage
+     *
+     * @var mixed $waitingMessageResult
+     */
     protected $waitingMessageResult;
 
+    /**
+     * The constructor
+     *
+     * @param Application $application
+     *
+     * @return void
+     */
     public function __construct(Application $application)
     {
         $this->application = $application;
@@ -24,18 +80,24 @@ class Receiver
 
     /**
      * When the result of a message arrives, we call a callback
-     * @param int $id       Message ID
-     * @param function $callback Callback function
+     *
+     * @param int $id Message ID
+     * @param callable $callback Callback function
+     *
+     * @return void
      */
-    public function addMessageCallback($id, $callback)
+    public function addMessageCallback($id, callable $callback)
     {
         $this->messageCallbacks[$id] = $callback;
     }
 
     /**
      * Fire a event on a object
-     * @param  int $id Object ID
-     * @param  String $eventName Event Name
+     *
+     * @param int $id Object ID
+     * @param string $eventName Event Name
+     *
+     * @return void
      */
     public function callObjectEventListener($id, $eventName)
     {
@@ -48,8 +110,11 @@ class Receiver
 
     /**
      * Result received, time to call the message callback
-     * @param  int $id Message ID
-     * @param  String|Array|Object|int $result Command Result
+     *
+     * @param int $id Message ID
+     * @param string|Array|Object|int $result Command Result
+     *
+     * @return void
      */
     public function callMessageCallback($id, $result)
     {
@@ -61,8 +126,10 @@ class Receiver
 
     /**
      * Decode a received message
-     * @param  String $json Received json message
-     * @return MessageInterface       Message
+     *
+     * @param string $json Received json message
+     *
+     * @return MessageInterface|void
      */
     protected function jsonDecode($json)
     {
@@ -71,7 +138,7 @@ class Receiver
         if ($obj !== null) {
             return $obj;
         } else {
-            // @todo throw an exception
+            // @todo: throw an exception
             if ($this->application->getVerboseLevel() == 2) {
                 Output::err('JSON ERROR: ' . $json);
             }
@@ -80,7 +147,10 @@ class Receiver
 
     /**
      * Process Stdout handler
-     * @param  String $data Data received
+     *
+     * @param string $data Data received
+     *
+     * @return void
      */
     public function onData($data)
     {
@@ -104,7 +174,9 @@ class Receiver
                 $openingBraces++;
             } elseif ($this->buffer[$currentPos] == '}' && $doubleQuotes % 2 == 0) {
                 $closingBraces++;
-            } elseif ($this->buffer[$currentPos] == '"' && ($currentPos == 0 || $this->buffer[$currentPos - 1] != '\\')) {
+            } elseif ($this->buffer[$currentPos] == '"'
+                && ($currentPos == 0
+                || $this->buffer[$currentPos - 1] != '\\')) {
                 // We are opening or closing a JSON string?
                 $doubleQuotes++;
             }
@@ -145,9 +217,12 @@ class Receiver
 
     /**
      * Parse a debug message
+     *
      * @param  MessageInterface $message Message
+     *
+     * @return void
      */
-    protected function parseDebug($message)
+    protected function parseDebug(MessageInterface $message)
     {
         if ($this->application->getVerboseLevel() == 2) {
             Output::out('<= Debug: ' . json_encode($message), 'blue');
@@ -156,7 +231,10 @@ class Receiver
 
     /**
      * Parse a normal message, can be a command, command result or an event
-     * @param  MessageInterface $message Message
+     *
+     * @param $message Message
+     *
+     * @return void
      */
     protected function parseNormal($message)
     {
@@ -174,7 +252,7 @@ class Receiver
                     $this->callMessageCallback($message->id, $message->result);
                 }
             } else {
-                // @TODO: Command implementation
+                // @todo: Command implementation
             }
 
             return;
@@ -189,7 +267,7 @@ class Receiver
         // This is a notification/event!
         if ($message && ! property_exists($message, 'id')) {
             if ($message->method == 'callObjectEventListener') {
-                // @TODO: Check if params contains all the items
+                // @todo: Check if params contains all the items
                 $this->callObjectEventListener($message->params[0], $message->params[1]);
             }
         }
@@ -197,8 +275,10 @@ class Receiver
 
     /**
      * Construct the output string
-     * @param  String $string Output string
-     * @return String         New output string
+     *
+     * @param string $string Output string
+     *
+     * @return String New output string
      */
     protected function prepareOutput($string)
     {
@@ -208,6 +288,8 @@ class Receiver
     /**
      * Read the stdout pipe from Lazarus process. This function uses
      * stream_select to be non blocking
+     *
+     * @return void
      */
     public function tick()
     {
@@ -257,9 +339,11 @@ class Receiver
 
     /**
      * Wait a message result
-     * @param  Stream           $stdout  Stdout Stream
-     * @param  MessageInterface $message Command waiting result
-     * @return Mixed                    The result
+     *
+     * @param Stream $stdout  Stdout Stream
+     * @param MessageInterface $message Command waiting result
+     *
+     * @return mixed The result
      */
     public function waitMessage(Stream $stdout, MessageInterface $message)
     {

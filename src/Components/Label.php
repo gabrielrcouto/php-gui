@@ -3,10 +3,20 @@
 namespace Gui\Components;
 
 /**
- * Label
+ * This is the Label Class
+ *
+ * It is a visual component for label
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
  */
 class Label extends Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TLabel';
 
     /**
@@ -22,7 +32,7 @@ class Label extends Object
     /**
      * Set the Label text
      *
-     * @param String $value
+     * @param string $value
      *
      * @return self
      */

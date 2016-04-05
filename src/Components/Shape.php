@@ -5,10 +5,20 @@ namespace Gui\Components;
 use Gui\Color;
 
 /**
- * Shape
+ * This is the Shape Class
+ *
+ * It is a visual component for shape
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
  */
 class Shape extends Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TShape';
 
     /**
@@ -24,7 +34,8 @@ class Shape extends Object
     /**
      * Set the background Color
      *
-     * @param String $color Color '#123456'
+     * @param string $color Color '#123456'
+     *
      * @return self
      */
     public function setBackgroundColor($color)
@@ -47,7 +58,8 @@ class Shape extends Object
     /**
      * Set the border Color
      *
-     * @param String $color Color '#123456'
+     * @param string $color Color '#123456'
+     *
      * @return self
      */
     public function setBorderColor($color)

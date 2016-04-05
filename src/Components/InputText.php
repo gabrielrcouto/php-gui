@@ -3,10 +3,20 @@
 namespace Gui\Components;
 
 /**
- * Input Text
+ * This is the InputText Class
+ *
+ * It is a visual component for inputText
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
  */
 class InputText extends Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TEdit';
 
     /**

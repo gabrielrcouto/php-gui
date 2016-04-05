@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+
+exec('rm -rf ' . __DIR__ . '/../docs ' . __DIR__ . '/../doc');
+exec(__DIR__ . '/phpdoc -d  ' . __DIR__ . '/../src/ -t ' . __DIR__ . '/../docs/ --template="xml"');
+exec('mkdir ' . __DIR__ . '/../doc');
+exec(__DIR__ . '/phpdocmd ' . __DIR__ . '/../docs/structure.xml ' . __DIR__ . '/../doc/');
+exec('rm -rf ' . __DIR__ . '/../docs');
+
+exec('rm -rf ' . __DIR__ . '/../doc/ApiIndex.md');
+
+$links = [];
+foreach (new DirectoryIterator(__DIR__ . '/../doc') as $fileInfo) {
+    if ($fileInfo->isDot()) {
+        continue;
+    }
+
+    $fileName = __DIR__ . '/../doc/' . $fileInfo->getFilename();
+
+    $content = file_get_contents($fileName);
+
+    file_put_contents($fileName, preg_replace('/\[(.*)\]\((.*)\)/', '$1', $content));
+
+    $links[] = [
+        'label' => str_replace('-', '\\', substr($fileInfo->getFilename(), 0, -3)),
+        'fileName' => $fileInfo->getFilename()
+    ];
+}
+
+
+function array_orderby()
+{
+    $args = func_get_args();
+    $data = array_shift($args);
+    foreach ($args as $n => $field) {
+        if (is_string($field)) {
+            $tmp = array();
+            foreach ($data as $key => $row)
+                $tmp[$key] = $row[$field];
+            $args[$n] = $tmp;
+            }
+    }
+    $args[] = &$data;
+    call_user_func_array('array_multisort', $args);
+    return array_pop($args);
+}
+
+$links = array_orderby($links, 'label', SORT_ASC);
+
+exec('touch ' . __DIR__ . '/../doc/map.json');
+file_put_contents(__DIR__ . '/../doc/map.json', json_encode($links));

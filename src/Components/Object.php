@@ -5,16 +5,59 @@ namespace Gui\Components;
 use Gui\Application;
 
 /**
- * Object
+ * This is the Button Class
+ *
+ * It is a visual component for button
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
  */
 abstract class Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TObject';
+
+    /**
+     * The communication object id
+     *
+     * @var int $lazarusObjectId
+     */
     protected $lazarusObjectId;
+
+    /**
+     * The application object
+     *
+     * @var Application $application
+     */
     protected $application;
+
+    /**
+     * The array of callbacks
+     *
+     * @var array $eventHandlers
+     */
     protected $eventHandlers = [];
+
+    /**
+     * The array of special properties
+     *
+     * @var array $runTimeProperties
+     */
     protected $runTimeProperties = [];
 
+    /**
+     * The constructor
+     *
+     * @param array $defaultAttributes
+     * @param Window $parent
+     * @param Application $application
+     *
+     * @return void
+     */
     public function __construct(array $defaultAttributes = [], Window $parent = null, $application = null)
     {
         $object = $this;
@@ -58,6 +101,14 @@ abstract class Object
         }
     }
 
+    /**
+     * The special method used to do the getters/setters for special properties
+     *
+     * @param string $method
+     * @param array $params
+     *
+     * @return self|mixed
+     */
     public function __call($method, $params)
     {
         $type = substr($method, 0, 3);
@@ -81,7 +132,16 @@ abstract class Object
         }
     }
 
-    protected function call($method, $params, $isCommand = true)
+    /**
+     * This method is used to send an object command/envent to lazarus
+     *
+     * @param string $method
+     * @param array $params
+     * @param boolean $isCommand
+     *
+     * @return void
+     */
+    protected function call($method, array $params, $isCommand = true)
     {
         if ($isCommand) {
             // It's a command
@@ -114,7 +174,7 @@ abstract class Object
     /**
      * this method is used to send the IPC message when a property is set
      *
-     * @param String $name  Property name
+     * @param string $name  Property name
      * @param mixed $value Property value
      *
      * @return void
@@ -137,7 +197,7 @@ abstract class Object
     /**
      * This magic method is used to send the IPC message when a property is get
      *
-     * @param String $name  Property name
+     * @param string $name Property name
      *
      * @return mixed
      */
@@ -151,7 +211,10 @@ abstract class Object
 
     /**
      * Fire an object event
-     * @param  String $eventName Event Name
+     *
+     * @param string $eventName Event Name
+     *
+     * @return void
      */
     public function fire($eventName)
     {
@@ -164,10 +227,13 @@ abstract class Object
 
     /**
      * Add a listener to an event
-     * @param  String $eventName Event Name
-     * @param  Function $eventHandler Event Handler Function
+     *
+     * @param string $eventName Event Name
+     * @param callable $eventHandler Event Handler Function
+     *
+     * @return void
      */
-    public function on($eventName, $eventHandler)
+    public function on($eventName, callable $eventHandler)
     {
         $eventName = 'on' . $eventName;
 
