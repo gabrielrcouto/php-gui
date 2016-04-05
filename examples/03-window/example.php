@@ -11,7 +11,8 @@ $application = new Application([
     'left' => 248,
     'top' => 50,
     'width' => 860,
-    'height' => 600
+    'height' => 600,
+    'icon' => realpath(__DIR__) . DIRECTORY_SEPARATOR . 'php.png'
 ]);
 
 $application->on('start', function() use ($application) {
