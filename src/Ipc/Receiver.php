@@ -5,6 +5,7 @@ namespace Gui\Ipc;
 use Gui\Application;
 use Gui\Output;
 use React\Stream\Stream;
+use Gui\OsDetector;
 
 class Receiver
 {
@@ -103,7 +104,9 @@ class Receiver
                 $openingBraces++;
             } elseif ($this->buffer[$currentPos] == '}' && $doubleQuotes % 2 == 0) {
                 $closingBraces++;
-            } elseif ($this->buffer[$currentPos] == '"' && ($currentPos == 0 || $this->buffer[$currentPos - 1] != '\\')) {
+            } elseif ($this->buffer[$currentPos] == '"'
+                && ($currentPos == 0
+                || $this->buffer[$currentPos - 1] != '\\')) {
                 // We are opening or closing a JSON string?
                 $doubleQuotes++;
             }
@@ -218,29 +221,33 @@ class Receiver
         $result = stream_select($read, $write, $except, 0);
 
         if ($result === false) {
-            throw new Exception('stream_select failed');
+            throw new \Exception('stream_select failed');
         }
 
         if ($result === 0) {
             return;
         }
 
-        $status = fstat($stream);
+        if (OsDetector::isUnix()) {
+            $this->application->process->stdout->handleData($stream);
+        } else {
+            $status = fstat($stream);
 
-        if ($status['size'] > 0) {
-            $size = $status['size'];
+            if ($status['size'] > 0) {
+                $size = $status['size'];
 
-            if ($size > 1) {
-                $size -= 1;
-                // This solves a bug on Windows - If you read the exact size (> 1),
-                // PHP will block
-                $data = stream_get_contents($stream, $size);
-                $data .= stream_get_contents($stream, 1);
-            } else {
-                $data = stream_get_contents($stream, 1);
+                if ($size > 1) {
+                    $size -= 1;
+                    // This solves a bug on Windows - If you read the exact size (> 1),
+                    // PHP will block
+                    $data = stream_get_contents($stream, $size);
+                    $data .= stream_get_contents($stream, 1);
+                } else {
+                    $data = stream_get_contents($stream, 1);
+                }
+
+                $this->application->process->stdout->emit('data', array($data, $this));
             }
-
-            $this->application->process->stdout->emit('data', array($data, $this));
         }
     }
 
