@@ -167,7 +167,7 @@ class Application
 
         $application->loop->addPeriodicTimer(0.001, function() use ($application) {
             $application->sender->tick();
-            if (@is_resource($application->process->stdout)) {
+            if (@is_resource($application->process->stdout->stream)) {
                 $application->receiver->tick();
             }
         });
