@@ -144,10 +144,16 @@ class Application
         $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
             $process->start($timer->getLoop());
 
+            // We need to pause all default streams
+            // The react/loop uses fread to read data from streams
+            // On Windows, fread always is blocking
+
             // Stdin is paused, we use our own way to write on it
             $process->stdin->pause();
             // Stdout is paused, we use our own way to read it
             $process->stdout->pause();
+            // Stderr is paused for avoiding fread
+            $process->stderr->pause();
 
             $process->stdout->on('data', function ($data) use ($receiver) {
                 $receiver->onData($data);
@@ -165,7 +171,7 @@ class Application
             $application->fire('start');
         });
 
-        $application->loop->addPeriodicTimer(0.001, function() use ($application) {
+        $this->loop->addPeriodicTimer(0.001, function() use ($application) {
             $application->sender->tick();
             if (@is_resource($application->process->stdout->stream)) {
                 $application->receiver->tick();
