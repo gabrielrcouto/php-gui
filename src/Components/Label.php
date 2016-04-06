@@ -2,6 +2,8 @@
 
 namespace Gui\Components;
 
+use Gui\Color;
+
 /**
  * This is the Label Class
  *
@@ -20,25 +22,49 @@ class Label extends Object
     protected $lazarusClass = 'TLabel';
 
     /**
-     * Get the Label text
+     * Get the font color
      *
-     * @return mixed
+     * @return String
      */
-    public function getText()
+    public function getFontColor()
     {
-        return $this->get('caption');
+        return $this->get('font.color');
     }
 
     /**
-     * Set the Label text
+     * Set the font Color
      *
-     * @param string $value
+     * @param string $color Color '#123456'
      *
      * @return self
      */
-    public function setText($value)
+    public function setFontColor($color)
     {
-        $this->set('caption', $value);
+        $this->set('font.color', Color::toLazarus($color));
+
+        return $this;
+    }
+
+    /**
+     * Get the font family
+     *
+     * @return String
+     */
+    public function getFontFamily()
+    {
+        return $this->get('font.name');
+    }
+
+    /**
+     * Set the font Family
+     *
+     * @param string $family Family name (ex: Arial)
+     *
+     * @return self
+     */
+    public function setFontFamily($family)
+    {
+        $this->set('font.name', $family);
 
         return $this;
     }
@@ -63,6 +89,30 @@ class Label extends Object
     public function setFontSize($size)
     {
         $this->set('font.size', $size);
+
+        return $this;
+    }
+
+    /**
+     * Get the Label text
+     *
+     * @return mixed
+     */
+    public function getText()
+    {
+        return $this->get('caption');
+    }
+
+    /**
+     * Set the Label text
+     *
+     * @param string $value
+     *
+     * @return self
+     */
+    public function setText($value)
+    {
+        $this->set('caption', $value);
 
         return $this;
     }

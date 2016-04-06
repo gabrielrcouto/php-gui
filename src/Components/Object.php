@@ -3,6 +3,7 @@
 namespace Gui\Components;
 
 use Gui\Application;
+use Gui\Color;
 
 /**
  * This is the Button Class
@@ -53,12 +54,12 @@ abstract class Object
      * The constructor
      *
      * @param array $defaultAttributes
-     * @param Window $parent
+     * @param Object $parent
      * @param Application $application
      *
      * @return void
      */
-    public function __construct(array $defaultAttributes = [], Window $parent = null, $application = null)
+    public function __construct(array $defaultAttributes = [], Object $parent = null, $application = null)
     {
         $object = $this;
 
@@ -252,25 +253,49 @@ abstract class Object
     }
 
     /**
-     * Gets the value of top in pixel.
+     * Get the auto size
      *
-     * @return int
+     * @return Boolean
      */
-    public function getTop()
+    public function getAutoSize()
     {
-        return $this->get('top');
+        return $this->get('color');
     }
 
     /**
-     * Sets the value of top in pixel.
+     * Set the auto size
      *
-     * @param int $top the top
+     * @param Boolean $autoSize True = Enabled
      *
      * @return self
      */
-    public function setTop($top)
+    public function setAutoSize($autoSize)
     {
-        $this->set('top', $top);
+        $this->set('autosize', $autoSize);
+
+        return $this;
+    }
+
+    /**
+     * Get the background color
+     *
+     * @return String
+     */
+    public function getBackgroundColor()
+    {
+        return $this->get('color');
+    }
+
+    /**
+     * Set the background Color
+     *
+     * @param string $color Color '#123456'
+     *
+     * @return self
+     */
+    public function setBackgroundColor($color)
+    {
+        $this->set('color', Color::toLazarus($color));
 
         return $this;
     }
@@ -297,6 +322,50 @@ abstract class Object
         $this->set('bottom', $bottom);
 
         return $this;
+    }
+
+    /**
+     * Gets the value of height in pixel.
+     *
+     * @return int
+     */
+    public function getHeight()
+    {
+        return $this->get('height');
+    }
+
+    /**
+     * Sets the value of height in pixel.
+     *
+     * @param int $height the height
+     *
+     * @return self
+     */
+    public function setHeight($height)
+    {
+        $this->set('height', $height);
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of lazarusObjectId.
+     *
+     * @return mixed
+     */
+    public function getLazarusObjectId()
+    {
+        return $this->lazarusObjectId;
+    }
+
+    /**
+     * Gets the value of lazarusClass.
+     *
+     * @return mixed
+     */
+    public function getLazarusClass()
+    {
+        return $this->lazarusClass;
     }
 
     /**
@@ -348,25 +417,25 @@ abstract class Object
     }
 
     /**
-     * Gets the value of height in pixel.
+     * Gets the value of top in pixel.
      *
      * @return int
      */
-    public function getHeight()
+    public function getTop()
     {
-        return $this->get('height');
+        return $this->get('top');
     }
 
     /**
-     * Sets the value of height in pixel.
+     * Sets the value of top in pixel.
      *
-     * @param int $height the height
+     * @param int $top the top
      *
      * @return self
      */
-    public function setHeight($height)
+    public function setTop($top)
     {
-        $this->set('height', $height);
+        $this->set('top', $top);
 
         return $this;
     }
@@ -417,25 +486,5 @@ abstract class Object
         $this->set('visible', $visible);
 
         return $this;
-    }
-
-    /**
-     * Gets the value of lazarusObjectId.
-     *
-     * @return mixed
-     */
-    public function getLazarusObjectId()
-    {
-        return $this->lazarusObjectId;
-    }
-
-    /**
-     * Gets the value of lazarusClass.
-     *
-     * @return mixed
-     */
-    public function getLazarusClass()
-    {
-        return $this->lazarusClass;
     }
 }

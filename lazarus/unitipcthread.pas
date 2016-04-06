@@ -133,6 +133,7 @@ begin
   RegisterClass(TRadioGroup);
   RegisterClass(TBitmap);
   RegisterClass(TImage);
+  RegisterClass(TScrollBox);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
