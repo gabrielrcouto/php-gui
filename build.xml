@@ -10,6 +10,7 @@
         <phingCall target="phplint" />
         <phingCall target="phpunit" />
         <phingCall target="phpcs" />
+        <phingCall target="generatedoc" />
 
         <echo msg="Finished Build" />
     </target>
@@ -29,5 +30,9 @@
     <target name="phpcs" description="Coding Standards Analysis">
         <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${source}" checkreturn="true" />
         <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${examples}" checkreturn="true" />
+    </target>
+
+    <target name="generatedoc" description="Generate Doc">
+        <exec passthru="true" command="${bindir}/generatedoc" checkreturn="true"/>
     </target>
 </project>

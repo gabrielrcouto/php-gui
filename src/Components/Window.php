@@ -3,14 +3,26 @@
 namespace Gui\Components;
 
 /**
- * Window
+ * This is the Window Class
+ *
+ * It is a visual component for window
+ *
+ * @author Rafael Reis @reisraff
+ * @since 0.1
  */
 class Window extends Object
 {
+    /**
+     * The lazarus class as string
+     *
+     * @var string $lazarusClass
+     */
     protected $lazarusClass = 'TForm1';
 
     /**
-     * @param String $title
+     * Sets the window title
+     *
+     * @param string $title
      *
      * @return self
      */
@@ -22,6 +34,8 @@ class Window extends Object
     }
 
     /**
+     * Gets the window title
+     *
      * @return String
      */
     public function getTitle()
@@ -29,6 +43,13 @@ class Window extends Object
         return $this->get('caption');
     }
 
+    /**
+     * Sets the icon
+     *
+     * @param string $icon
+     *
+     * @return self
+     */
     public function setIcon($icon)
     {
         if (file_exists($icon) && preg_match('/ico$/i', $icon)) {

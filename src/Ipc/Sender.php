@@ -5,13 +5,52 @@ namespace Gui\Ipc;
 use Gui\Application;
 use Gui\Output;
 
+/**
+ * This is the Sender class
+ *
+ * This class is used to send communication messages
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
+ */
 class Sender
 {
+    /**
+     * The application object
+     *
+     * @var Application $application
+     */
     public $application;
+
+    /**
+     * The latest id available
+     *
+     * @var int $lastId
+     */
     public $lastId = 0;
+
+    /**
+     * The receiver object
+     *
+     * @var Receiver $receiver
+     */
     public $receiver;
+
+    /**
+     * The buffer of messages to be sent
+     *
+     * @var string $sendLaterMessagesBuffer
+     */
     protected $sendLaterMessagesBuffer = '';
 
+    /**
+     * The constructor
+     *
+     * @param Application $application
+     * @param Receiver $receiver
+     *
+     * @return void
+     */
     public function __construct(Application $application, Receiver $receiver)
     {
         $this->application = $application;
@@ -20,8 +59,10 @@ class Sender
 
     /**
      * Get a valid Lazarus RPC JSON String
-     * @param  MessageInterface $message Message to send
-     * @return String                    Lazarus JSON string
+     *
+     * @param MessageInterface $message Message to send
+     *
+     * @return String Lazarus JSON string
      */
     protected function getLazarusJson(MessageInterface $message)
     {
@@ -31,7 +72,9 @@ class Sender
     /**
      * Print debug information
      *
-     * @param  String $text Text to print
+     * @param String $text Text to print
+     *
+     * @return void
      */
     protected function out($text)
     {
@@ -54,7 +97,9 @@ class Sender
     /**
      * Process a message before sending - Useful to incrementing IDs
      *
-     * @param  MessageInterface $message Message
+     * @param MessageInterface $message Message
+     *
+     * @return void
      */
     protected function processMessage(MessageInterface $message)
     {
@@ -66,7 +111,9 @@ class Sender
     /**
      * Send a message
      *
-     * @param  MessageInterface $message Message to send
+     * @param MessageInterface $message Message to send
+     *
+     * @return void
      */
     public function send(MessageInterface $message)
     {
@@ -79,7 +126,7 @@ class Sender
             // It's a command!
             $this->receiver->addMessageCallback($message->id, $message->callback);
         } else {
-            // @todo throw an exception
+            // @todo: throw an exception
         }
 
         $this->writeOnStream();
@@ -87,6 +134,8 @@ class Sender
 
     /**
      * Check and send queued messages
+     *
+     * @return void
      */
     public function tick()
     {
@@ -98,8 +147,9 @@ class Sender
     /**
      * Send a message and wait for the return
      *
-     * @param  MessageInterface $message
-     * @return Mixed                    The return of the message
+     * @param MessageInterface $message
+     *
+     * @return mixed The return of the message
      */
     public function waitReturn(MessageInterface $message)
     {
@@ -115,6 +165,8 @@ class Sender
 
     /**
      * Write on stdin stream
+     *
+     * @return void
      */
     protected function writeOnStream()
     {

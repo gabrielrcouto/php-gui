@@ -21,11 +21,6 @@ $application->on('start', function() use ($application) {
         ->setTop(150)
         ->setValue('Dont click');
 
-    $button->on('click', function() use ($button) {
-        $button->setCounter($button->getCounter() + 1);
-        $button->setValue('Click' . $button->getCounter());
-    });
-
     $canvas = new Canvas([
         'top' => 0,
         'left' => 0,
@@ -40,6 +35,17 @@ $application->on('start', function() use ($application) {
             $canvas->setPixel($x, $y, '#ff0000');
         }
     }
+
+    $button->on('click', function() use ($canvas) {
+        if ($canvas->getDone() !== true) {
+            $canvas->setDone(true);
+            for ($x = 100; $x >= 51; $x--) {
+                for ($y = 0; $y < 100; $y++) {
+                    $canvas->setPixel($x, $y, '#0000ff');
+                }
+            }
+        }
+    });
 });
 
 $application->run();

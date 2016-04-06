@@ -1,10 +1,22 @@
 <?php
+
 namespace Gui;
 
+/**
+ * This is the Color Class
+ *
+ * This class is used to manipulate color
+ *
+ * @author Gabriel Couto @gabrielrcouto
+ * @since 0.1
+ */
 class Color
 {
     /**
      * Convert a HTML hex color (#rrggbb) to Lazarus Color (integer)
+     *
+     * @param string $color
+     *
      * @return int
      */
     public static function toLazarus($color)
