@@ -10,14 +10,13 @@ use Gui\Components\Shape;
 use Gui\Components\Window;
 use Gui\Components\Checkbox;
 use Gui\Components\Radio;
-use Gui\Components\Select;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
     'left' => 30,
     'top' => 40,
     'width' => 480,
-    'height' => 450
+    'height' => 350
 ]);
 
 $application->on('start', function() use ($application) {
@@ -35,7 +34,7 @@ $application->on('start', function() use ($application) {
         'left' => 40,
         'top' => 60,
         'width' => 400,
-        'height' => 275
+        'height' => 240
     ]);
 
     $data = [
@@ -89,67 +88,15 @@ $application->on('start', function() use ($application) {
         'object' => $checkboxOfAge
     ];
 
-    $labelState = new Label([
-        'text' => 'State:',
-        'top' => 238,
-        'left' => 45,
-        'fontSize' => 10,
-    ]);
-
-    $selectState = new Select([
-        'top' => 235,
-        'left' => 110,
-        'width' => 320,
-        'height' => 50
-    ]);
-
-    $states = [
-        ['Acre (AC)', 0],
-        ['Alagoas (AL)', 1],
-        ['Amapá (AP)', 2],
-        ['Amazonas (AM)', 3],
-        ['Bahia (BA)', 4],
-        ['Ceará (CE)', 5],
-        ['Distrito Federal (DF)', 6],
-        ['Espírito Santo (ES)', 7],
-        ['Goiás (GO)', 8],
-        ['Maranhão (MA)', 9],
-        ['Mato Grosso (MT)', 10],
-        ['Mato Grosso do Sul (MS)', 11],
-        ['Minas Gerais (MG)', 12],
-        ['Pará (PA) ', 13],
-        ['Paraíba (PB)', 14],
-        ['Paraná (PR)', 15],
-        ['Pernambuco (PE)', 16],
-        ['Piauí (PI)', 17],
-        ['Rio de Janeiro (RJ)', 18],
-        ['Rio Grande do Norte (RN)', 19],
-        ['Rio Grande do Sul (RS)', 20],
-        ['Rondônia (RO)', 21],
-        ['Roraima (RR)', 22],
-        ['Santa Catarina (SC)', 23],
-        ['São Paulo (SP)', 24],
-        ['Sergipe (SE)', 25],
-        ['Tocantins (TO)', 26],
-    ];
-    $selectState->setItems($states);
-    $selectState->setReadOnly(true);
-
-    $form[] = [
-        'key' => 'state',
-        'label' => 'State',
-        'object' => $selectState
-    ];
-
     $labelGender = new Label([
         'text' => 'Gender:',
-        'top' => 278,
+        'top' => 243,
         'left' => 45,
         'fontSize' => 10,
     ]);
 
     $checkboxGender = new Radio([
-        'top' => 275,
+        'top' => 241,
         'left' => 110,
         'height' => 50
     ]);
@@ -168,12 +115,12 @@ $application->on('start', function() use ($application) {
 
     $button = new Button([
         'value' => 'Save',
-        'top' => 340,
+        'top' => 315,
         'left' => 40,
         'width' => 400
     ]);
 
-    $button->on('click', function () use ($form, $items, $states) {
+    $button->on('click', function () use ($form, $items) {
         $window = new Window([
             'title' => 'Form1 Info',
             'width' => 400,
@@ -202,8 +149,6 @@ $application->on('start', function() use ($application) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
             } elseif ($value['object'] instanceof Radio) {
                 $objValue = $items[$value['object']->getChecked()][0];
-            } elseif ($value['object'] instanceof Select) {
-                $objValue = $states[$value['object']->getChecked()][0];
             }
 
             ${$value['key']} = new Label(

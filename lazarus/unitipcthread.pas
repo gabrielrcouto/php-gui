@@ -134,7 +134,6 @@ begin
   RegisterClass(TBitmap);
   RegisterClass(TImage);
   RegisterClass(TScrollBox);
-  RegisterClass(TComboBox);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -310,20 +309,10 @@ begin
       strCtrl[0] := jData.FindPath('params[2][0]').AsString;
       intCtrl[0] := jData.FindPath('params[2][1]').AsInteger;
 
-      if objArray[objId].InheritsFrom(TRadioGroup) then
-      begin
-        (objArray[objId] as TRadioGroup).Items.AddObject(
-          strCtrl[0],
-          TObject(PtrUint(intCtrl[0]))
-        );
-      end
-      else
-      begin
-        (objArray[objId] as TComboBox).Items.AddObject(
-          strCtrl[0],
-          TObject(PtrUint(intCtrl[0]))
-        );
-      end;
+      (objArray[objId] as TRadioGroup).Items.AddObject(
+        strCtrl[0],
+        TObject(PtrUint(intCtrl[0]))
+      );
     end
     else if messageMethodName = 'picture.bitmap.canvas.setPixel' then
     begin
