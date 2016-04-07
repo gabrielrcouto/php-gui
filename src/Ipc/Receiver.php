@@ -218,11 +218,11 @@ class Receiver
     /**
      * Parse a debug message
      *
-     * @param  MessageInterface $message Message
+     * @param $message Message
      *
      * @return void
      */
-    protected function parseDebug(MessageInterface $message)
+    protected function parseDebug($message)
     {
         if ($this->application->getVerboseLevel() == 2) {
             Output::out('<= Debug: ' . json_encode($message), 'blue');

@@ -59,7 +59,7 @@ class Select extends Object
     }
 
     /**
-     * Set read only
+     * Set if is read only
      *
      * @param bool
      *
@@ -68,5 +68,7 @@ class Select extends Object
     public function setReadOnly($val)
     {
         $this->set('readOnly', $val);
+
+        return $this;
     }
 }
