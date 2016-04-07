@@ -2,12 +2,14 @@
 
 <p align="center">Extensionless PHP Graphic User Interface library.</p>
 
+<p align="center">
 [![Build Status](https://travis-ci.org/gabrielrcouto/php-gui.svg?branch=master)](https://travis-ci.org/gabrielrcouto/php-gui)
 [![Latest Stable Version](https://poser.pugx.org/gabrielrcouto/php-gui/v/stable)](https://packagist.org/packages/gabrielrcouto/php-gui)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://gabrielrcouto.mit-license.org/)
 [![Packagist](https://img.shields.io/badge/packagist-install-brightgreen.svg)](https://packagist.org/packages/gabrielrcouto/php-gui)
+</p>
 
-<p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14037217/07de6574-f220-11e5-8020-bb7e625db151.png" alt="made with PHP S2" /></p>
+<p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14338716/85ef00a2-fc4f-11e5-8ae8-7a0d5be74723.gif" alt="made with PHP S2" /></p>
 
 ## Table of Contents
 
