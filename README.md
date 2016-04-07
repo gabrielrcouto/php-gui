@@ -1,8 +1,11 @@
 <p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14036936/f3457ba0-f21c-11e5-886a-f754e8109c28.png" alt="php-gui" /></p>
 
-Extensionless PHP Graphic User Interface library.
+<p align="center">Extensionless PHP Graphic User Interface library.</p>
 
-# ALPHA - Please, don't use it for production.
+[![Build Status](https://travis-ci.org/gabrielrcouto/php-gui.svg?branch=master)](https://travis-ci.org/gabrielrcouto/php-gui)
+[![Latest Stable Version](https://poser.pugx.org/gabrielrcouto/php-gui/v/stable)](https://packagist.org/packages/gabrielrcouto/php-gui)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://gabrielrcouto.mit-license.org/)
+[![Packagist](https://img.shields.io/badge/packagist-install-brightgreen.svg)](https://packagist.org/packages/gabrielrcouto/php-gui)
 
 <p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14037217/07de6574-f220-11e5-8020-bb7e625db151.png" alt="made with PHP S2" /></p>
 
@@ -48,9 +51,9 @@ The following PHP versions are supported:
 
 And OS:
 
-+ Linux x64 (x86 will be supported)
-+ Windows
-+ Mac OSX
++ Linux x64
++ Windows x64
++ Mac OSX (tested on 10.10.x and 10.11.x)
 
 ## Documentation
 
