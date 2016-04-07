@@ -136,6 +136,7 @@ begin
   RegisterClass(TImage);
   RegisterClass(TScrollBox);
   RegisterClass(TComboBox);
+  RegisterClass(TMemo);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -303,6 +304,8 @@ var
   objId: Integer;
   intCtrl: array of Integer;
   strCtrl: array of String;
+  sent: Boolean;
+  counter: Integer;
 begin
   if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
   begin
@@ -344,10 +347,43 @@ begin
     else if messageMethodName = 'icon.loadFromFile' then
     begin
       (objArray[objId] as TForm1).Icon.LoadFromFile(jData.FindPath('params[2][0]').AsString);
+    end
+    else if messageMethodName = 'lines.clear' then
+    begin
+      (objArray[objId] as TMemo).Lines.Clear;
+    end
+    else if messageMethodName = 'lines.add' then
+    begin
+      (objArray[objId] as TMemo).Lines.Add(jData.FindPath('params[2][0]').AsString);
+    end
+    else if messageMethodName = 'lines.getAll' then
+    begin
+      SetLength(strCtrl, 1);
+      SetLength(intCtrl, 1);
+
+      // The index 0 will be the string to be sent
+      strCtrl[0] := '';
+      intCtrl[0] := (objArray[objId] as TMemo).Lines.Count - 1;
+
+      for counter := 0 to intCtrl[0] do
+      begin
+        if (counter = 0) then
+        begin
+          strCtrl[0] := (objArray[objId] as TMemo).Lines.Strings[counter];
+        end
+        else
+        begin
+          strCtrl[0] := strCtrl[0] + '\n' + (objArray[objId] as TMemo).Lines.Strings[counter]
+        end;;
+      end;
+
+      messageId := jData.FindPath('id').AsInteger;
+      Output('{"id": ' + IntToStr(messageId) + ', "result": "' + strCtrl[0] + '"}');
+      sent := true;
     end;
 
     // If it's a command, reply to it
-    if (jData.FindPath('id') <> Nil) then
+    if (jData.FindPath('id') <> Nil) AND (sent = false) then
     begin
          messageId := jData.FindPath('id').AsInteger;
          Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objId) + '}');

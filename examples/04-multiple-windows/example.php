@@ -11,13 +11,14 @@ use Gui\Components\Window;
 use Gui\Components\Checkbox;
 use Gui\Components\Radio;
 use Gui\Components\Select;
+use Gui\Components\TextArea;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
     'left' => 30,
     'top' => 40,
     'width' => 480,
-    'height' => 450
+    'height' => 490
 ]);
 
 $application->on('start', function() use ($application) {
@@ -35,7 +36,7 @@ $application->on('start', function() use ($application) {
         'left' => 40,
         'top' => 60,
         'width' => 400,
-        'height' => 275
+        'height' => 380
     ]);
 
     $data = [
@@ -166,9 +167,23 @@ $application->on('start', function() use ($application) {
         'object' => $checkboxGender
     ];
 
+    $textArea = new TextArea([
+        'value' => 'Obs',
+        'top' => 340,
+        'left' => 50,
+        'width' => 380,
+        'height' => 90
+    ]);
+
+    $form[] = [
+        'key' => 'obs',
+        'label' => 'Obs',
+        'object' => $textArea
+    ];
+
     $button = new Button([
         'value' => 'Save',
-        'top' => 340,
+        'top' => 450,
         'left' => 40,
         'width' => 400
     ]);
@@ -196,7 +211,7 @@ $application->on('start', function() use ($application) {
 
             $objValue = null;
 
-            if ($value['object'] instanceof InputText) {
+            if ($value['object'] instanceof InputText || $value['object'] instanceof TextArea) {
                 $objValue = $value['object']->getValue();
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
