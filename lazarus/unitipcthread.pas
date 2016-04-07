@@ -121,6 +121,7 @@ var
   OpeningBraces: Integer;
   ClosingBraces: Integer;
   DoubleQuotes: Integer;
+  FirstOpeningBracePos: Integer;
 begin
   // Register all the classes
   // @TODO - Move it from here!
@@ -148,6 +149,7 @@ begin
   OpeningBraces := 0;
   ClosingBraces := 0;
   DoubleQuotes := 0;
+  FirstOpeningBracePos := 1;
 
   while Form1 = Nil do
   begin
@@ -187,6 +189,11 @@ begin
           if (StdinStringBuffer[CurrentPos] = '{') and (DoubleQuotes mod 2 = 0) then
           begin
             Inc(OpeningBraces);
+
+            if OpeningBraces = 1 then
+            begin
+              FirstOpeningBracePos := CurrentPos;
+            end;
           end 
           else if (StdinStringBuffer[CurrentPos] = '}') and (DoubleQuotes mod 2 = 0) then
           begin
@@ -201,16 +208,17 @@ begin
           if (OpeningBraces > 0) AND (OpeningBraces = ClosingBraces) then
           begin
             // Parse the message
-            ParseMessage(Copy(StdinStringBuffer, 1, CurrentPos));
+            ParseMessage(Copy(StdinStringBuffer, FirstOpeningBracePos, CurrentPos));
 
             // Remove the message from the buffer
-            Delete(StdinStringBuffer, 1, CurrentPos);
+            Delete(StdinStringBuffer, FirstOpeningBracePos, CurrentPos);
 
             CurrentPos := 1;
             
             OpeningBraces := 0;
             ClosingBraces := 0;
             DoubleQuotes := 0;
+            FirstOpeningBracePos := 1;
           end
           else
           begin
