@@ -50,9 +50,9 @@ $application->on('start', function() use ($application) {
 
         if ($counter < 10) {
             $input->setValue($phrases[$counter - 1]);
-        } else if ($counter < 20) {
+        } elseif ($counter < 20) {
             $input->setValue('Please, stop! You already clicked ' . $counter . ' times');
-        } else if ($counter == 20) {
+        } elseif ($counter == 20) {
             $input->setValue('Hehe, click again!');
             $button->setVisible(false);
         }
@@ -63,7 +63,7 @@ $application->on('start', function() use ($application) {
 
         $color = $counter * (1.0 / 6);
 
-        $r = (int)(3 * sin($color                 ) + 3);
+        $r = (int)(3 * sin($color) + 3);
         $g = (int)(3 * sin($color + 2 * (M_PI / 3)) + 3);
         $b = (int)(3 * sin($color + 4 * (M_PI / 3)) + 3);
 
