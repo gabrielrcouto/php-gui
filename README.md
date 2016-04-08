@@ -1,6 +1,6 @@
 <p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14036936/f3457ba0-f21c-11e5-886a-f754e8109c28.png" alt="php-gui" /></p>
 
-<p align="center">Extensionless PHP Graphic User Interface library.</p>
+<p align="center">Extensionless PHP Graphic User Interface library</p>
 
 <p align="center"><img src="https://cloud.githubusercontent.com/assets/2197005/14338716/85ef00a2-fc4f-11e5-8ae8-7a0d5be74723.gif" alt="made with PHP S2" /></p>
 
@@ -12,13 +12,14 @@
 ## Table of Contents
 
 + [Why](#why)
-+ [Installation](#installation)
 + [Requirements](#requirements)
++ [Usage](#usage)
 + [Documentation](#documentation)
 + [How it works](#how-it-works)
 + [Contributors Guide](#contributors-guide)
 + [TO-DO](#to-do)
 + [Credits](#credits)
++ [License](#license)
 
 ## Why
 
@@ -32,14 +33,6 @@ This project aims to solve the most common problems of existing "GUI Projects":
 - Cross platform
 - No external dependencies
 - Easy to install (composer require php-gui) / Easy to use ($button = new Button)
-
-## Installation
-
-Using [composer](https://packagist.org/packages/gabrielrcouto/php-gui):
-
-```bash
-$ composer require gabrielrcouto/php-gui
-```
 
 ## Requirements
 
@@ -55,30 +48,20 @@ And OS:
 + Windows x64
 + Mac OSX (tested on 10.10.x and 10.11.x)
 
-## Documentation
+## Usage
 
-We are developing the first stable version to write a good documentation. You can use the examples (see the examples folder of this repository) while we are finishing the first release.
-
-Here is a very basic tutorial:
+Download the library using [composer](https://packagist.org/packages/gabrielrcouto/php-gui):
 
 ```bash
-# clone repository
-git clone https://github.com/gabrielrcouto/php-gui.git
-cd php-gui
-
-# install dependencies
-composer install
-
-# run example
-php examples/01-basic/example.php
-
+$ composer require gabrielrcouto/php-gui
 ```
 
-After that, the window should be already open.
+Now, you can build a GUI application. Let's do a Hello World!
 
-Basic Application:
+Create the file 'myapp.php':
 
 ```php
+
 require 'vendor/autoload.php';
 
 use Gui\Application;
@@ -99,6 +82,42 @@ $application->on('start', function() use ($application) {
 });
 
 $application->run();
+
+```
+
+Now, run it:
+
+```bash
+php myapp.php
+
+```
+
+Simple? :clap: You don't need to compile anything, just download the library via composer and use it! :smile:
+
+
+## Documentation
+
+We have a [Documentation Page](https://gabrielrcouto.github.io/php-gui/dist/#/home)
+
+But, if you want to see some examples, just follow the instructions below.
+
+```bash
+# clone the repository
+git clone https://github.com/gabrielrcouto/php-gui.git
+cd php-gui
+
+# install dependencies
+composer install
+
+# run examples
+php examples/01-basic/example.php
+php examples/02-animation/example.php
+php examples/03-window/example.php
+php examples/04-multiple-windows/example.php
+php examples/05-canvas/example.php
+php examples/06-ping/example.php
+php examples/07-php-internals/example.php
+
 ```
 
 ## How it works
@@ -123,7 +142,7 @@ To be an easy to use library, this project will use HTML friendly names for the 
 
 Examples:
 
-- On Lazarus, the property "caption" is for the text of a button. On php-gui, the property name is "value" (like HTML).
+- On Lazarus, the property "caption" is for the text of a button. On php-gui, the property name is "value".
 - On Lazarus, "Edit" is the component for text input, on php-gui, it's "InputText".
 
 ### Compiling Lazarus App
@@ -159,3 +178,7 @@ The "Issues" page from this repository is being used for TO-DO management, just 
 [@gabrielrcouto](http://www.twitter.com/gabrielrcouto)
 
 [@reisraff](http://www.twitter.com/reisraff)
+
+## License
+
+[MIT License](http://gabrielrcouto.mit-license.org/)
