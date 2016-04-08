@@ -61,7 +61,7 @@ Now, you can build a GUI application. Let's do a Hello World!
 Create the file 'myapp.php':
 
 ```php
-
+<?php
 require 'vendor/autoload.php';
 
 use Gui\Application;
