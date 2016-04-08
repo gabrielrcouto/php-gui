@@ -7,7 +7,7 @@ use Gui\Components\Label;
 use Gui\Output;
 
 $application = new Application([
-    'title' => 'My PHP Desktop Application',
+    'title' => 'PHP <=> Lazarus Speed Tester',
     'left' => 248,
     'top' => 50,
     'width' => 400,
@@ -16,7 +16,7 @@ $application = new Application([
 
 $application->on('start', function() use ($application) {
     $label = new Label([
-        'text' => 'Speed on your terminal',
+        'text' => "See the speed on your terminal. \nThis app measures the speed of IPC \nmessages between PHP and Lazarus",
         'fontSize' => 20,
         'top' => 10,
         'left' => 10,
