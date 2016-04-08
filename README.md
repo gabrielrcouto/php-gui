@@ -147,13 +147,19 @@ Examples:
 
 ### Compiling Lazarus App
 
-First, you need to [install Lazarus](http://www.lazarus-ide.org/index.php?page=downloads). For compiling the lazarus binary:
+#### On your Local Machine
+
+First, you need to [install Lazarus](http://www.lazarus-ide.org/index.php?page=downloads). 
+
+For compiling the lazarus binary:
 
 ```bash
 lazbuild phpgui.lpr
 ```
 
-For generating the Linux binary, you can use Docker:
+#### Using Docker
+
+If you are generating the Linux binary, you can use Docker:
 
 ```bash
 lazarus/linux-docker.sh
