@@ -122,7 +122,7 @@ php examples/07-php-internals/example.php
 
 ## How it works
 
-To create a GUI without the need of an extension, PHP executes a binary with proc_open and communicate with it using Stdin/Stdout Pipes, it's a fast and cross plataform solution.
+To create a GUI without the need of an extension, PHP executes a binary with proc_open and communicate with it using Stdin/Stdout Pipes, it's a fast and cross platform solution.
 
 PHP <=> Stdin/Stdout Pipes <=> Lazarus Application <=> GUI
 
@@ -149,7 +149,7 @@ Examples:
 
 #### On your Local Machine
 
-First, you need to [install Lazarus](http://www.lazarus-ide.org/index.php?page=downloads). 
+First, you need to [install Lazarus](http://www.lazarus-ide.org/index.php?page=downloads).
 
 For compiling the lazarus binary:
 
