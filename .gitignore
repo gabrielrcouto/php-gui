@@ -1,3 +1,6 @@
 vendor
 bin
 composer.lock
+material/
+lazarus/
+doc/
