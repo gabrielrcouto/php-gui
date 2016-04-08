@@ -16,7 +16,8 @@ $application = new Application([
 
 $application->on('start', function() use ($application) {
     $label = new Label([
-        'text' => "See the speed on your terminal. \nThis app measures the speed of IPC \nmessages between PHP and Lazarus",
+        'text' => "See the speed on your terminal. \nThis app measures the speed of" .
+            "\nIPC messages between PHP and Lazarus",
         'fontSize' => 20,
         'top' => 10,
         'left' => 10,
