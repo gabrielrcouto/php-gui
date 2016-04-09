@@ -259,7 +259,7 @@ abstract class Object
      */
     public function getAutoSize()
     {
-        return $this->get('color');
+        return $this->get('autosize');
     }
 
     /**
