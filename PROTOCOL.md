@@ -43,7 +43,7 @@ This protocol is based on JSON RPC.
 }
 ```
 
-## Commands avaible:
+## Commands available:
 
 ### createObject
 
