@@ -61,4 +61,29 @@ class Window extends Object
 
         return $this;
     }
+
+    /**
+     * Sets the window state. Can be one of the following values: fullscreen, minimized, maximized, normal
+     *
+     * @param string $state
+     *
+     * @return self
+     */
+    public function setWindowState($state = 'normal')
+    {
+        $validStates = [
+            'fullscreen',
+            'minimized',
+            'maximized',
+            'normal'
+        ];
+
+        if (!in_array($state, $validStates)) {
+            throw new \InvalidArgumentException('Unknown state: ' . $state);
+        }
+
+        $this->set('windowState', 'ws' . ucfirst($state));
+
+        return $this;
+    }
 }
