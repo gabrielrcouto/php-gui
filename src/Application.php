@@ -197,8 +197,7 @@ class Application
      */
     public function getObject($id)
     {
-        // @todo: Check if the object exists
-        return $this->objects[$id];
+        return (isset($this->objects[$id]) && $this->objects[$id] !== null) ? $this->objects[$id] : null;
     }
 
     /**
