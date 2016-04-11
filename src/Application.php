@@ -11,6 +11,7 @@ use Gui\Ipc\Sender;
 use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 
 /**
  * This is the Application Class
@@ -39,7 +40,7 @@ class Application
     /**
      * The application loop
      *
-     * @var \React\EventLoop\Timer\TimerInterface\LoopInterface $loop
+     * @var LoopInterface $loop
      */
     public $loop;
 
@@ -104,11 +105,12 @@ class Application
      *
      * @param array $defaultAttributes
      *
-     * @return void
+     * @param LoopInterface $loop
      */
-    public function __construct(array $defaultAttributes = [])
+    public function __construct(array $defaultAttributes = [], LoopInterface $loop = null)
     {
         $this->window = $window = new Window([], null, $this);
+        $this->loop = $loop ?: Factory::create();
 
         $this->on('start', function () use ($window, $defaultAttributes) {
             foreach ($defaultAttributes as $attr => $value) {
@@ -238,7 +240,6 @@ class Application
         }
 
         $application = $this;
-        $this->loop = Factory::create();
 
         if (OsDetector::isMacOS()) {
             $processName = './phpgui-i386-darwin';
