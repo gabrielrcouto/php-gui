@@ -10,8 +10,11 @@ namespace Gui\Components;
  * @author Rafael Reis @reisraff
  * @since 0.1
  */
-class Window extends Object
+class Window extends Object implements ParentObjectInterface
 {
+
+    use ParentObjectTrait;
+
     /**
      * The lazarus class as string
      *

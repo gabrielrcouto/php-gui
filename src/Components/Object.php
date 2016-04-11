@@ -13,7 +13,7 @@ use Gui\Color;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-abstract class Object
+abstract class Object implements LazarusObjectInterface, ScreenObjectInterface
 {
     /**
      * The lazarus class as string
@@ -59,7 +59,7 @@ abstract class Object
      *
      * @return void
      */
-    public function __construct(array $defaultAttributes = [], Object $parent = null, $application = null)
+    public function __construct(array $defaultAttributes = [], ParentObjectInterface $parent = null, $application = null)
     {
         $object = $this;
 
@@ -78,6 +78,7 @@ abstract class Object
         // Get the next object id
         $this->lazarusObjectId = $this->application->getNextObjectId();
         $this->application->addObject($this);
+        $parent->appendChild($this);
 
         if ($this->lazarusObjectId !== 0) {
             // Send the createObject command
