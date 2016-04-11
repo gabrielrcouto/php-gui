@@ -3,17 +3,16 @@
 namespace Gui\Components;
 
 use Gui\Application;
-use Gui\Color;
 
 /**
- * This is the Button Class
+ * This is the Object class
  *
- * It is a visual component for button
+ * It is base abstraction for Lazarus Object
  *
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-abstract class Object
+abstract class Object implements LazarusObjectInterface
 {
     /**
      * The lazarus class as string
@@ -54,13 +53,16 @@ abstract class Object
      * The constructor
      *
      * @param array $defaultAttributes
-     * @param Object $parent
+     * @param ContainerObjectInterface $parent
      * @param Application $application
      *
      * @return void
      */
-    public function __construct(array $defaultAttributes = [], Object $parent = null, $application = null)
-    {
+    public function __construct(
+        array $defaultAttributes = [],
+        ContainerObjectInterface $parent = null,
+        $application = null
+    ) {
         $object = $this;
 
         // We can use multiple applications, but, if no one is defined, we use the
@@ -80,6 +82,7 @@ abstract class Object
         $this->application->addObject($this);
 
         if ($this->lazarusObjectId !== 0) {
+            $parent->appendChild($this);
             // Send the createObject command
             $this->application->sendCommand(
                 'createObject',
@@ -211,12 +214,24 @@ abstract class Object
     }
 
     /**
-     * Fire an object event
-     *
-     * @param string $eventName Event Name
-     *
-     * @return void
-     */
+    * {@inheritdoc}
+    */
+    public function getLazarusObjectId()
+    {
+        return $this->lazarusObjectId;
+    }
+
+    /**
+    * {@inheritdoc}
+    */
+    public function getLazarusClass()
+    {
+        return $this->lazarusClass;
+    }
+
+    /**
+    * {@inheritdoc}
+    */
     public function fire($eventName)
     {
         if (array_key_exists($eventName, $this->eventHandlers)) {
@@ -227,13 +242,8 @@ abstract class Object
     }
 
     /**
-     * Add a listener to an event
-     *
-     * @param string $eventName Event Name
-     * @param callable $eventHandler Event Handler Function
-     *
-     * @return void
-     */
+    * {@inheritdoc}
+    */
     public function on($eventName, callable $eventHandler)
     {
         $eventName = 'on' . $eventName;
@@ -250,241 +260,5 @@ abstract class Object
         }
 
         $this->eventHandlers[$eventName][] = $eventHandler;
-    }
-
-    /**
-     * Get the auto size
-     *
-     * @return Boolean
-     */
-    public function getAutoSize()
-    {
-        return $this->get('autosize');
-    }
-
-    /**
-     * Set the auto size
-     *
-     * @param Boolean $autoSize True = Enabled
-     *
-     * @return self
-     */
-    public function setAutoSize($autoSize)
-    {
-        $this->set('autosize', $autoSize);
-
-        return $this;
-    }
-
-    /**
-     * Get the background color
-     *
-     * @return String
-     */
-    public function getBackgroundColor()
-    {
-        return $this->get('color');
-    }
-
-    /**
-     * Set the background Color
-     *
-     * @param string $color Color '#123456'
-     *
-     * @return self
-     */
-    public function setBackgroundColor($color)
-    {
-        $this->set('color', Color::toLazarus($color));
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of bottom in pixel.
-     *
-     * @return int
-     */
-    public function getBottom()
-    {
-        return $this->get('bottom');
-    }
-
-    /**
-     * Sets the value of bottom in pixel.
-     *
-     * @param int $bottom the bottom
-     *
-     * @return self
-     */
-    public function setBottom($bottom)
-    {
-        $this->set('bottom', $bottom);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of height in pixel.
-     *
-     * @return int
-     */
-    public function getHeight()
-    {
-        return $this->get('height');
-    }
-
-    /**
-     * Sets the value of height in pixel.
-     *
-     * @param int $height the height
-     *
-     * @return self
-     */
-    public function setHeight($height)
-    {
-        $this->set('height', $height);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of lazarusObjectId.
-     *
-     * @return mixed
-     */
-    public function getLazarusObjectId()
-    {
-        return $this->lazarusObjectId;
-    }
-
-    /**
-     * Gets the value of lazarusClass.
-     *
-     * @return mixed
-     */
-    public function getLazarusClass()
-    {
-        return $this->lazarusClass;
-    }
-
-    /**
-     * Gets the value of left in pixel.
-     *
-     * @return int
-     */
-    public function getLeft()
-    {
-        return $this->get('left');
-    }
-
-    /**
-     * Sets the value of left in pixel.
-     *
-     * @param int $left the left
-     *
-     * @return self
-     */
-    public function setLeft($left)
-    {
-        $this->set('left', $left);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of right in pixel.
-     *
-     * @return int
-     */
-    public function getRight()
-    {
-        return $this->get('right');
-    }
-
-    /**
-     * Sets the value of right in pixel.
-     *
-     * @param int $right the right
-     *
-     * @return self
-     */
-    public function setRight($right)
-    {
-        $this->set('right', $right);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of top in pixel.
-     *
-     * @return int
-     */
-    public function getTop()
-    {
-        return $this->get('top');
-    }
-
-    /**
-     * Sets the value of top in pixel.
-     *
-     * @param int $top the top
-     *
-     * @return self
-     */
-    public function setTop($top)
-    {
-        $this->set('top', $top);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of width in pixel.
-     *
-     * @return int
-     */
-    public function getWidth()
-    {
-        return $this->get('width');
-    }
-
-    /**
-     * Sets the value of width in pixel.
-     *
-     * @param int $width the width
-     *
-     * @return self
-     */
-    public function setWidth($width)
-    {
-        $this->set('width', $width);
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of visible in pixel.
-     *
-     * @return boolean
-     */
-    public function getVisible()
-    {
-        return $this->get('visible');
-    }
-
-    /**
-     * Sets the value of visible in pixel.
-     *
-     * @param boolean $visible the visible
-     *
-     * @return self
-     */
-    public function setVisible($visible)
-    {
-        $this->set('visible', $visible);
-
-        return $this;
     }
 }

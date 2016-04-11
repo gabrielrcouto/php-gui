@@ -10,7 +10,7 @@ namespace Gui\Components;
  * @author Rafael Reis @reisraff
  * @since 0.1
  */
-class Radio extends Object
+class Radio extends VisualObject
 {
     /**
      * The lazarus class as string

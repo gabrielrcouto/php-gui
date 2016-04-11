@@ -10,7 +10,7 @@ namespace Gui\Components;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class Div extends Object
+class Div extends ContainerObject
 {
     /**
      * The lazarus class as string

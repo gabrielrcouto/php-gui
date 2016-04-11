@@ -10,7 +10,7 @@ namespace Gui\Components;
  * @author Rafael Reis @reisraff
  * @since 0.1
  */
-class TextArea extends Object
+class TextArea extends VisualObject
 {
     /**
      * The lazarus class as string
