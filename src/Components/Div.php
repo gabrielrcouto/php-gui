@@ -10,8 +10,10 @@ namespace Gui\Components;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class Div extends Object
+class Div extends Object implements ParentObjectInterface
 {
+    use ParentObjectTrait;
+
     /**
      * The lazarus class as string
      *
