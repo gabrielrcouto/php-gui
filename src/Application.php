@@ -42,7 +42,7 @@ class Application
      *
      * @var LoopInterface $loop
      */
-    public $loop;
+    protected $loop;
 
     /**
      * The next object ID available
@@ -366,5 +366,15 @@ class Application
         $message = new CommandMessage($method, $params);
 
         return $this->sender->waitReturn($message);
+    }
+
+    /**
+     * Get the event loop
+     *
+     * @return LoopInterface
+     */
+    public function getLoop()
+    {
+        return $this->loop;
     }
 }

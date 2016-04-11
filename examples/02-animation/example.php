@@ -45,7 +45,7 @@ $application->on('start', function() use ($application) {
     };
 
     // Let's animate the shape!
-    $application->loop->addPeriodicTimer(0.01, function() use ($shape, $animationCache, $easeOutBounce) {
+    $application->getLoop()->addPeriodicTimer(0.01, function() use ($shape, $animationCache, $easeOutBounce) {
         if ($animationCache->frame < 200) {
             $shape->setTop(ceil($easeOutBounce($animationCache->frame++, 0, 175, 200)));
         }

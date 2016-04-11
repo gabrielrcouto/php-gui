@@ -40,7 +40,7 @@ $application->on('start', function() use ($application) {
         'top' => 80,
     ]);
 
-    $application->loop->addTimer(1, function() use ($application, $loading) {
+    $application->getLoop()->addTimer(1, function() use ($application, $loading) {
         $messages = Rss::getLastest();
         $postWindow = null;
 
