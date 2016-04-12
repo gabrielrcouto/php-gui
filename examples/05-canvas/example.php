@@ -416,7 +416,7 @@ $application->on('start', function() use ($application, $pixels) {
 
     $canvas->setSize(82, 42);
 
-    $application->loop->addTimer(1, function() use ($canvas, $pixels) {
+    $application->getLoop()->addTimer(1, function() use ($canvas, $pixels) {
         $count = 0;
 
         for ($x = 0; $x < 82; $x++) {
