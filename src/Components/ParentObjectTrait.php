@@ -6,7 +6,7 @@ trait ParentObjectTrait
 {
     protected $children = [];
 
-    public function appendChild(Object $object)
+    public function appendChild(LazarusObjectInterface $object)
     {
     	$this->children[$object->getLazarusObjectId()] = $object;
     }
