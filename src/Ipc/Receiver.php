@@ -128,21 +128,21 @@ class Receiver
      * Decode a received message
      *
      * @param string $json Received json message
-     *
      * @return MessageInterface|void
+     * @throws \Exception
      */
     protected function jsonDecode($json)
     {
         $obj = json_decode($json);
-
-        if ($obj !== null) {
-            return $obj;
-        } else {
-            // @todo: throw an exception
+        if ($obj === null) {
+            $strErr = 'JSON ERROR: ' . $json;
             if ($this->application->getVerboseLevel() == 2) {
-                Output::err('JSON ERROR: ' . $json);
+                Output::err($strErr);
             }
+            throw new \Exception($strErr);
         }
+
+        return $obj;
     }
 
     /**
