@@ -13,7 +13,7 @@ trait ParentObjectTrait
 
     public function getChild($lazarusObjectId)
     {
-        if(!isset($this->children[$lazarusObjectId])){
+        if (!isset($this->children[$lazarusObjectId])) {
             throw new \Exception("Child object not found");
         }
 
