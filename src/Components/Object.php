@@ -54,13 +54,16 @@ abstract class Object implements LazarusObjectInterface, ScreenObjectInterface
      * The constructor
      *
      * @param array $defaultAttributes
-     * @param Object $parent
+     * @param ParentObjectInterface $parent
      * @param Application $application
      *
      * @return void
      */
-    public function __construct(array $defaultAttributes = [], ParentObjectInterface $parent = null, $application = null)
-    {
+    public function __construct(
+        array $defaultAttributes = [],
+        ParentObjectInterface $parent = null,
+        $application = null
+    ) {
         $object = $this;
 
         // We can use multiple applications, but, if no one is defined, we use the
