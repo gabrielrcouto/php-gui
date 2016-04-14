@@ -3,6 +3,7 @@
 namespace Gui\Ipc;
 
 use Gui\Application;
+use Gui\Exception\ComponentException;
 use Gui\OsDetector;
 use Gui\Output;
 use React\Stream\Stream;
@@ -129,17 +130,17 @@ class Receiver
      *
      * @param string $json Received json message
      * @return MessageInterface|void
-     * @throws \Exception
+     * @throws ComponentException
      */
     protected function jsonDecode($json)
     {
-        $obj = json_decode($json);
-        if ($obj === null) {
+        $obj = @json_decode($json);
+        if (json_last_error() !== JSON_ERROR_NONE) {
             $strErr = 'JSON ERROR: ' . $json;
             if ($this->application->getVerboseLevel() == 2) {
                 Output::err($strErr);
             }
-            throw new \Exception($strErr);
+            throw new ComponentException($strErr);
         }
 
         return $obj;
@@ -185,6 +186,7 @@ class Receiver
 
             if ($openingBraces > 0 && $openingBraces == $closingBraces) {
                 $messageJson = substr($this->buffer, $firstOpeningBracePos, $currentPos);
+                // @todo: Handle ComponentException
                 $message = $this->jsonDecode($messageJson);
 
                 // First, remove the message from the buffer
