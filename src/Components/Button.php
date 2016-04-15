@@ -10,7 +10,7 @@ namespace Gui\Components;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class Button extends Object
+class Button extends VisualObject
 {
     /**
      * The lazarus class as string

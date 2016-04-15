@@ -12,7 +12,7 @@ use Gui\Color;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class Canvas extends Object
+class Canvas extends VisualObject
 {
     /**
      * The lazarus class as string

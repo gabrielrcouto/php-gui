@@ -12,7 +12,7 @@ use Gui\Color;
  * @author Rafael Reis @reisraff
  * @since 0.1
  */
-class Select extends Object
+class Select extends VisualObject
 {
     /**
      * The lazarus class as string

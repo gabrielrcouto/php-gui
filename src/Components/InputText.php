@@ -10,7 +10,7 @@ namespace Gui\Components;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class InputText extends Object
+class InputText extends VisualObject
 {
     /**
      * The lazarus class as string

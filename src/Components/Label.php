@@ -12,7 +12,7 @@ use Gui\Color;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-class Label extends Object
+class Label extends VisualObject
 {
     /**
      * The lazarus class as string
