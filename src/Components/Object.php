@@ -82,7 +82,9 @@ abstract class Object implements LazarusObjectInterface
         $this->application->addObject($this);
 
         if ($this->lazarusObjectId !== 0) {
-            $parent->appendChild($this);
+            if ($this instanceof VisualObjectInterface) {
+                $parent->appendChild($this);
+            }
             // Send the createObject command
             $this->application->sendCommand(
                 'createObject',
