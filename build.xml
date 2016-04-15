@@ -2,6 +2,7 @@
 <project name="php-gui" basedir="." default="main">
     <property name="examples" value="examples" />
     <property name="source" value="src" />
+    <property name="test" value="test" />
     <property name="bindir" value="bin" />
 
     <target name="main" description="Start analyzing our application">
@@ -30,6 +31,7 @@
     <target name="phpcs" description="Coding Standards Analysis">
         <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${source}" checkreturn="true" />
         <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${examples}" checkreturn="true" />
+        <exec passthru="true" command="${bindir}/phpcs --standard=PSR2 ${test}" checkreturn="true" />
     </target>
 
     <target name="generatedoc" description="Generate Doc">
