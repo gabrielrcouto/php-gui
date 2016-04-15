@@ -17,4 +17,12 @@ class ColorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_int($lazarusColor));
         $this->assertEquals(3351057, $lazarusColor);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testShouldThrowExceptionWithInvalidHexColor()
+    {
+        $lazarusColor = Color::toLazarus('#11AAGG');
+    }
 }

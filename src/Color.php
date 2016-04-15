@@ -25,11 +25,23 @@ class Color
             $color = substr($color, 1);
         }
 
+        if (!ctype_xdigit($color)) {
+            throw new \InvalidArgumentException('Color must be a hexdec string');
+        }
+
         if (strlen($color) == 3) {
-            $color = $color[0] . $color[0] . $color[1] . $color[1] . $color[2] . $color[2];
+            list($r, $g, $b) = str_split($color, 1);
+
+            $r = $r . $r;
+            $g = $g . $g;
+            $b = $b . $b;
+        } elseif (strlen($color) == 6) {
+            list($r, $g, $b) = str_split($color, 2);
+        } else {
+            throw new \InvalidArgumentException('Color must have a valid hexdec color format');
         }
 
         // Lazarus uses #bbggrr
-        return hexdec($color[4] . $color[5] . $color[2] . $color[3] . $color[0] . $color[1]);
+        return hexdec($b . $g . $r);
     }
 }
