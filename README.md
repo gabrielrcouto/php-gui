@@ -29,7 +29,7 @@ For many years, GUI projects are being developed for PHP, like [PHP-GTK](http://
 
 This project aims to solve the most common problems of existing "GUI Projects":
 
-- The need of installing an extension
+- The need for installing an extension
 - Cross platform
 - No external dependencies
 - Easy to install (composer require php-gui) / Easy to use ($button = new Button)
@@ -122,17 +122,17 @@ php examples/07-php-internals/example.php
 
 ## How it works
 
-To create a GUI without the need of an extension, PHP executes a binary with proc_open and communicate with it using Stdin/Stdout Pipes, it's a fast and cross platform solution.
+To create a GUI without the need for an extension, PHP executes a binary with proc_open and communicates with it using Stdin/Stdout Pipes--it's a fast and cross platform solution.
 
 PHP <=> Stdin/Stdout Pipes <=> Lazarus Application <=> GUI
 
-The binary is made using Lazarus (Free Pascal). After a big research, I found a good advantage of Lazarus over other desktop languages (like C#, Java...):
+The binary is created using Lazarus (Free Pascal). After much research, I found a large advantage by using Lazarus over other desktop languages (like C#, Java...):
 
 <p align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/LCLArchitecture.png/440px-LCLArchitecture.png" alt="LCL graph, showing that LCL will use an interface for building the GUI according to the operation system" /></p>
 
-It doesn't have any dependencies (ok, on Linux needs GTK), has a good component library, is compiled, open source and has a nice slogan (Write Once, Compile Anywhere).
+It doesn't have any dependencies (except for Linux, which needs GTK), has a good component library, is compiled, open source and has a nice slogan (Write Once, Compile Anywhere).
 
-The communication (IPC) between PHP and Lazarus is made using a protocol based on JSON RPC. You can see the specification [here](PROTOCOL.md).
+The communication (IPC) between PHP and Lazarus is performed using a protocol based on JSON RPC. You can view the specification [here](PROTOCOL.md).
 
 ## Contributors Guide
 
