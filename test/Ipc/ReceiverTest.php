@@ -5,6 +5,7 @@ namespace Test\Ipc;
 use Gui\Application;
 use Gui\Exception\ComponentException;
 use Gui\Ipc\Receiver;
+use Test\Util;
 
 class ReceiverTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,24 +80,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
         $receiver = new Receiver($app);
         $strJson = '{ data: "Nice data but not a valid JSON string" }';
         $this->setExpectedException('\Gui\Exception\ComponentException');
-        $this->invokeMethod($receiver, 'jsonDecode', array($strJson));
-    }
-
-    /**
-     * Call protected/private method of a class.
-     *
-     * @param object &$object    Instantiated object that we will run method on.
-     * @param string $methodName Method name to call
-     * @param array  $parameters Array of parameters to pass into method.
-     *
-     * @return mixed Method return.
-     */
-    public function invokeMethod(&$object, $methodName, array $parameters = array())
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
+        $util = new Util();
+        $util->invokeMethod($receiver, 'jsonDecode', array($strJson));
     }
 }
