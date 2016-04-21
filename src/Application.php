@@ -104,8 +104,9 @@ class Application
      * The constructor method
      *
      * @param array $defaultAttributes
-     *
      * @param LoopInterface $loop
+     *
+     * @return void
      */
     public function __construct(array $defaultAttributes = [], LoopInterface $loop = null)
     {
