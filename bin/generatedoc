@@ -18,8 +18,10 @@ foreach (new DirectoryIterator(__DIR__ . '/../doc') as $fileInfo) {
     $fileName = __DIR__ . '/../doc/' . $fileInfo->getFilename();
 
     $content = file_get_contents($fileName);
+    $content = preg_replace('/\[(.*)\]\((.*)\)/', '$1', $content);
+    $content = preg_replace('/ - \&lt;p\&gt;.*\&lt;\/p\&gt;/', '', $content);
 
-    file_put_contents($fileName, preg_replace('/\[(.*)\]\((.*)\)/', '$1', $content));
+    file_put_contents($fileName, $content);
 
     $links[] = [
         'label' => str_replace('-', '\\', substr($fileInfo->getFilename(), 0, -3)),
