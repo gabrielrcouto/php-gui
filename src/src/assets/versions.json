@@ -1,7 +1,7 @@
 [
     {
-        "version": "0.1",
-        "label" : "v0.1",
+        "version": "0.1.0",
+        "label" : "v0.1.0",
         "stable" : true
     }
 ]
