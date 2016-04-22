@@ -28,10 +28,11 @@ interface LazarusObjectInterface
      * Fire an object event
      *
      * @param string $eventName Event Name
+     * @param array $arguments Aguments
      *
      * @return void
      */
-    public function fire($eventName);
+    public function fire($eventName, array $arguments = []);
 
     /**
      * Add a listener to an event
