@@ -9,6 +9,9 @@ uses
   fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants;
 
 type
+
+  { TIpcThread }
+
   TIpcThread = class(TThread)
   private
     procedure CreateObject;
@@ -17,6 +20,7 @@ type
     procedure SetObjectEventListener;
     procedure CallObjectMethod;
     procedure Ping;
+    procedure ShowMessage;
     procedure OutputDebug(Text: String);
   protected
     procedure Execute; override;
@@ -279,6 +283,9 @@ begin
     end else if (jData.FindPath('method').value = 'callObjectMethod') then
     begin
       Synchronize(@CallObjectMethod);
+    end else if (jData.FindPath('method').value = 'showMessage') then
+    begin
+      Synchronize(@ShowMessage);
     end else if (jData.FindPath('method').value = 'ping') then
     begin
       Synchronize(@Ping);
@@ -295,6 +302,14 @@ begin
   microtime := jData.FindPath('params[0]').AsString;
 
   Output('{"id": ' + IntToStr(messageId) + ', "result": "' + microtime + '"}');
+end;
+
+procedure TIpcThread.ShowMessage;
+var
+  Message : string;
+begin
+  Message := StringReplace(jData.FindPath('params[0]').AsString, '\n', sLineBreak, [rfReplaceAll] );
+  Application.MessageBox( @Message[1], @ApplicationName[1] );
 end;
 
 procedure TIpcThread.CallObjectMethod;
