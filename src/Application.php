@@ -394,7 +394,7 @@ class Application
         }
         $this->sendCommand(
             'showMessage',
-            array($message, $title),
+            [$message, $title],
             function ($result) {
                 // Dummy
             }
