@@ -306,10 +306,19 @@ end;
 
 procedure TIpcThread.ShowMessage;
 var
+  Title,
   Message : string;
 begin
+  if (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[1]').AsString <> '') then
+  begin
+    Title := jData.FindPath('params[1]').AsString;
+  end
+  else
+  begin
+    Title := Application.MainForm.Caption;
+  end;
   Message := StringReplace(jData.FindPath('params[0]').AsString, '\n', sLineBreak, [rfReplaceAll] );
-  Application.MessageBox( @Message[1], @ApplicationName[1] );
+  Application.MessageBox( @Message[1], @Title[1] );
 end;
 
 procedure TIpcThread.CallObjectMethod;

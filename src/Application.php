@@ -382,18 +382,19 @@ class Application
     /**
      * Shows an alert dialog
      *
-     * @param mixed $message Array or String message to display
+     * @param mixed  $message Array or String message to display
+     * @param string $title   Title of the alert
      *
      * @return void
      */
-    public function alert($message)
+    public function alert($message, $title = '')
     {
         if (is_array($message)) {
             $message = implode('\n', $message);
         }
         $this->sendCommand(
             'showMessage',
-            array($message),
+            array($message, $title),
             function ($result) {
                 // Dummy
             }
