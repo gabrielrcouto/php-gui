@@ -244,6 +244,9 @@ class Application
         if (OsDetector::isMacOS()) {
             $processName = './phpgui-i386-darwin';
             $processPath = __DIR__ . '/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
+        } elseif (OsDetector::isFreeBSD()) {
+            $processName = './phpgui-x86_64-freebsd';
+            $processPath = __DIR__ . '/../lazarus/';
         } elseif (OsDetector::isUnix()) {
             $processName = './phpgui-x86_64-linux';
             $processPath = __DIR__ . '/../lazarus/';

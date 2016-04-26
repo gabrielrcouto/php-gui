@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/local/bin/fpc" Date="1458178467"/>
+  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/usr/home/andrew/src/php-gui/lazarus/lib/x86_64-freebsd -Fu/usr/home/andrew/src/php-gui/lazarus -Fu/home/andrew/.lazarus/lib/units/x86_64-freebsd/gtk2 -Fu/home/andrew/.lazarus/lib/LCLBase/units/x86_64-freebsd -Fu/home/andrew/.lazarus/lib/LazUtils/lib/x86_64-freebsd -Fu/usr/local/share/lazarus-1.6.0/packager/units/x86_64-freebsd -FU/usr/home/andrew/src/php-gui/lazarus/lib/x86_64-freebsd/ -ophpgui-x86_64-freebsd -dLCL -dLCLgtk2 -dUseCThreads phpgui.lpr"/>
+</CONFIG>

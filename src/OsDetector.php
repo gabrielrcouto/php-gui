@@ -33,6 +33,16 @@ class OsDetector
     }
 
     /**
+     * This method is used to check if the current OS is FreeBSD
+     *
+     * @return bool
+     */
+    public static function isFreeBSD()
+    {
+        return false !== strpos(php_uname('s'), 'FreeBSD');
+    }
+
+    /**
      * This method is used to check if the current OS is Windows
      *
      * @return bool
