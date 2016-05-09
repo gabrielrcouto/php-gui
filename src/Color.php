@@ -21,9 +21,7 @@ class Color
      */
     public static function toLazarus($color)
     {
-        if ($color[0] == '#') {
-            $color = substr($color, 1);
-        }
+        $color = ltrim($color, '#');
 
         if (!ctype_xdigit($color)) {
             throw new \InvalidArgumentException('Color must be a hexdec string');
