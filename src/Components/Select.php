@@ -31,15 +31,15 @@ class Select extends VisualObject
     public function setItems(array $items)
     {
         foreach ($items as $key => $item) {
-            if (! is_string($item[0]) || ! is_int($item[1])) {
+            if (! $item instanceof item) {
                 // @todo: throw an exception
                 unset($item[$key]);
             } else {
                 $this->call(
                     'items.addObject',
                     [
-                        $item[0],
-                        $item[1]
+                        $item->getLabel(),
+                        $item->getId()
                     ]
                 );
             }
