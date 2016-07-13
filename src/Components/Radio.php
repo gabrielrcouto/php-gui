@@ -20,24 +20,24 @@ class Radio extends VisualObject
     protected $lazarusClass = 'TRadioGroup';
 
     /**
-     * Sets the items
+     * Sets the options
      *
-     * @param array $items
+     * @param array $options
      *
      * @return self
      */
-    public function setItems(array $items)
+    public function setOptions(array $options)
     {
-        foreach ($items as $key => $item) {
-            if (! $item instanceof item) {
+        foreach ($options as $key => $option) {
+            if (! $option instanceof Option) {
                 // @todo: throw an exception
-                unset($item[$key]);
+                unset($option[$key]);
             } else {
                 $this->call(
                     'items.addObject',
                     [
-                        $item->getLabel(),
-                        $item->getId()
+                        $option->getLabel(),
+                        $option->getValue()
                     ]
                 );
             }

@@ -5,29 +5,31 @@ namespace Gui\Components;
 use Gui\Application;
 
 /**
- * This is the Item class
+ * This is the Option class
  *
  * @author Alex Silva
  * @since 0.1
  */
-class Item
+class Option
 {
     /**
+     * The label for the option
      *
      * @var string $label
      */
     private $label;
 
     /**
+     * The value for the option
      *
-     * @var int $id
+     * @var int $value
      */
-    private $id;
+    private $value;
 
-    public function __construct($label, $id)
+    public function __construct($label, $value)
     {
         $this->label = $label;
-        $this->id = $id;
+        $this->value = $value;
     }
 
     /**
@@ -41,13 +43,13 @@ class Item
     }
 
     /**
-     * This method is used to set an integer id for the object instance
+     * This method is used to set an integer value for the object instance
      *
-     * @param integer $id
+     * @param integer $value
      */
-    public function setId($id)
+    public function setValue($value)
     {
-        $this->id = $id;
+        $this->value = $value;
     }
 
     /**
@@ -61,12 +63,12 @@ class Item
     }
 
     /**
-     * This method returns the instance id
+     * This method returns the instance value
      *
      * @return integer
      */
-    public function getId()
+    public function getValue()
     {
-        return (int) $this->id;
+        return (int) $this->value;
     }
 }

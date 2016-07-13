@@ -12,7 +12,7 @@ use Gui\Components\Checkbox;
 use Gui\Components\Radio;
 use Gui\Components\Select;
 use Gui\Components\TextArea;
-use Gui\Components\Item;
+use Gui\Components\Option;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
@@ -106,35 +106,35 @@ $application->on('start', function() use ($application) {
     ]);
 
     $states = [
-        new Item('Acre (AC)', 0),
-        new Item('Alagoas (AL)', 1),
-        new Item('Amapá (AP)', 2),
-        new Item('Amazonas (AM)', 3),
-        new Item('Bahia (BA)', 4),
-        new Item('Ceará (CE)', 5),
-        new Item('Distrito Federal (DF)', 6),
-        new Item('Espírito Santo (ES)', 7),
-        new Item('Goiás (GO)', 8),
-        new Item('Maranhão (MA)', 9),
-        new Item('Mato Grosso (MT)', 10),
-        new Item('Mato Grosso do Sul (MS)', 11),
-        new Item('Minas Gerais (MG)', 12),
-        new Item('Pará (PA) ', 13),
-        new Item('Paraíba (PB)', 14),
-        new Item('Paraná (PR)', 15),
-        new Item('Pernambuco (PE)', 16),
-        new Item('Piauí (PI)', 17),
-        new Item('Rio de Janeiro (RJ)', 18),
-        new Item('Rio Grande do Norte (RN)', 19),
-        new Item('Rio Grande do Sul (RS)', 20),
-        new Item('Rondônia (RO)', 21),
-        new Item('Roraima (RR)', 22),
-        new Item('Santa Catarina (SC)', 23),
-        new Item('São Paulo (SP)', 24),
-        new Item('Sergipe (SE)', 25),
-        new Item('Tocantins (TO)', 26),
+        new Option('Acre (AC)', 0),
+        new Option('Alagoas (AL)', 1),
+        new Option('Amapá (AP)', 2),
+        new Option('Amazonas (AM)', 3),
+        new Option('Bahia (BA)', 4),
+        new Option('Ceará (CE)', 5),
+        new Option('Distrito Federal (DF)', 6),
+        new Option('Espírito Santo (ES)', 7),
+        new Option('Goiás (GO)', 8),
+        new Option('Maranhão (MA)', 9),
+        new Option('Mato Grosso (MT)', 10),
+        new Option('Mato Grosso do Sul (MS)', 11),
+        new Option('Minas Gerais (MG)', 12),
+        new Option('Pará (PA) ', 13),
+        new Option('Paraíba (PB)', 14),
+        new Option('Paraná (PR)', 15),
+        new Option('Pernambuco (PE)', 16),
+        new Option('Piauí (PI)', 17),
+        new Option('Rio de Janeiro (RJ)', 18),
+        new Option('Rio Grande do Norte (RN)', 19),
+        new Option('Rio Grande do Sul (RS)', 20),
+        new Option('Rondônia (RO)', 21),
+        new Option('Roraima (RR)', 22),
+        new Option('Santa Catarina (SC)', 23),
+        new Option('São Paulo (SP)', 24),
+        new Option('Sergipe (SE)', 25),
+        new Option('Tocantins (TO)', 26),
     ];
-    $selectState->setItems($states);
+    $selectState->setOptions($states);
     $selectState->setReadOnly(true);
 
     $form[] = [
@@ -156,11 +156,11 @@ $application->on('start', function() use ($application) {
         'height' => 50
     ]);
 
-    $items = [
-        new Item('Male', 0),
-        new Item('Female', 1),
+    $options = [
+        new Option('Male', 0),
+        new Option('Female', 1),
     ];
-    $checkboxGender->setItems($items);
+    $checkboxGender->setOptions($options);
 
     $form[] = [
         'key' => 'gender',
@@ -189,7 +189,7 @@ $application->on('start', function() use ($application) {
         'width' => 400
     ]);
 
-    $button->on('click', function () use ($form, $items, $states) {
+    $button->on('click', function () use ($form, $options, $states) {
         $window = new Window([
             'title' => 'Form1 Info',
             'width' => 400,
@@ -217,7 +217,7 @@ $application->on('start', function() use ($application) {
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
             } elseif ($value['object'] instanceof Radio) {
-                $objValue = $items[$value['object']->getChecked()]->getLabel();
+                $objValue = $options[$value['object']->getChecked()]->getLabel();
             } elseif ($value['object'] instanceof Select) {
                 $objValue = $states[$value['object']->getChecked()]->getLabel();
             }
