@@ -194,8 +194,14 @@ abstract class Object implements LazarusObjectInterface
                 $name,
                 $value
             ],
-            function ($result) {
-                // Ok, the property changed
+            function ($result) use ($name, $value) {
+                $this->fire(
+                    'onpropertySet',
+                    [
+                        $name,
+                        $value
+                    ]
+                );
             }
         );
     }
@@ -234,11 +240,11 @@ abstract class Object implements LazarusObjectInterface
     /**
     * {@inheritdoc}
     */
-    public function fire($eventName)
+    public function fire($eventName, array $arguments = [])
     {
         if (array_key_exists($eventName, $this->eventHandlers)) {
             foreach ($this->eventHandlers[$eventName] as $eventHandler) {
-                $eventHandler();
+                call_user_func_array($eventHandler, $arguments);
             }
         }
     }

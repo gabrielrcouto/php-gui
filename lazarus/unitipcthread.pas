@@ -453,6 +453,7 @@ var  objId: Integer;
   propertyValue: Variant;
   propInfo: PPropInfo;
   subpropertyName: String;
+  messageId: Integer;
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -491,6 +492,9 @@ begin
       begin
         // @TODO: Convert propertyValue to a object checking with PropIsType and GetObjectPropClass
         SetPropValue(obj, propertyName, propertyValue);
+
+        messageId := jData.FindPath('id').AsInteger;
+        Output('{"id": ' + IntToStr(messageId) + ',"result": { "propertyName": "' + propertyName + '", "propertyValue": "' + VarToStr(propertyValue) + '"}}');
       end;
     end;
   end;
