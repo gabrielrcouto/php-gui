@@ -12,6 +12,7 @@ use Gui\Components\Checkbox;
 use Gui\Components\Radio;
 use Gui\Components\Select;
 use Gui\Components\TextArea;
+use Gui\Components\Option;
 
 $application = new Application([
     'title' => 'My PHP Desktop Application',
@@ -105,35 +106,35 @@ $application->on('start', function() use ($application) {
     ]);
 
     $states = [
-        ['Acre (AC)', 0],
-        ['Alagoas (AL)', 1],
-        ['Amapá (AP)', 2],
-        ['Amazonas (AM)', 3],
-        ['Bahia (BA)', 4],
-        ['Ceará (CE)', 5],
-        ['Distrito Federal (DF)', 6],
-        ['Espírito Santo (ES)', 7],
-        ['Goiás (GO)', 8],
-        ['Maranhão (MA)', 9],
-        ['Mato Grosso (MT)', 10],
-        ['Mato Grosso do Sul (MS)', 11],
-        ['Minas Gerais (MG)', 12],
-        ['Pará (PA) ', 13],
-        ['Paraíba (PB)', 14],
-        ['Paraná (PR)', 15],
-        ['Pernambuco (PE)', 16],
-        ['Piauí (PI)', 17],
-        ['Rio de Janeiro (RJ)', 18],
-        ['Rio Grande do Norte (RN)', 19],
-        ['Rio Grande do Sul (RS)', 20],
-        ['Rondônia (RO)', 21],
-        ['Roraima (RR)', 22],
-        ['Santa Catarina (SC)', 23],
-        ['São Paulo (SP)', 24],
-        ['Sergipe (SE)', 25],
-        ['Tocantins (TO)', 26],
+        new Option('Acre (AC)', 0),
+        new Option('Alagoas (AL)', 1),
+        new Option('Amapá (AP)', 2),
+        new Option('Amazonas (AM)', 3),
+        new Option('Bahia (BA)', 4),
+        new Option('Ceará (CE)', 5),
+        new Option('Distrito Federal (DF)', 6),
+        new Option('Espírito Santo (ES)', 7),
+        new Option('Goiás (GO)', 8),
+        new Option('Maranhão (MA)', 9),
+        new Option('Mato Grosso (MT)', 10),
+        new Option('Mato Grosso do Sul (MS)', 11),
+        new Option('Minas Gerais (MG)', 12),
+        new Option('Pará (PA) ', 13),
+        new Option('Paraíba (PB)', 14),
+        new Option('Paraná (PR)', 15),
+        new Option('Pernambuco (PE)', 16),
+        new Option('Piauí (PI)', 17),
+        new Option('Rio de Janeiro (RJ)', 18),
+        new Option('Rio Grande do Norte (RN)', 19),
+        new Option('Rio Grande do Sul (RS)', 20),
+        new Option('Rondônia (RO)', 21),
+        new Option('Roraima (RR)', 22),
+        new Option('Santa Catarina (SC)', 23),
+        new Option('São Paulo (SP)', 24),
+        new Option('Sergipe (SE)', 25),
+        new Option('Tocantins (TO)', 26),
     ];
-    $selectState->setItems($states);
+    $selectState->setOptions($states);
     $selectState->setReadOnly(true);
 
     $form[] = [
@@ -155,11 +156,11 @@ $application->on('start', function() use ($application) {
         'height' => 50
     ]);
 
-    $items = [
-        ['Male', 0],
-        ['Female', 1],
+    $options = [
+        new Option('Male', 0),
+        new Option('Female', 1),
     ];
-    $checkboxGender->setItems($items);
+    $checkboxGender->setOptions($options);
 
     $form[] = [
         'key' => 'gender',
@@ -188,7 +189,7 @@ $application->on('start', function() use ($application) {
         'width' => 400
     ]);
 
-    $button->on('click', function () use ($form, $items, $states) {
+    $button->on('click', function () use ($form, $options, $states) {
         $window = new Window([
             'title' => 'Form1 Info',
             'width' => 400,
@@ -216,9 +217,9 @@ $application->on('start', function() use ($application) {
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
             } elseif ($value['object'] instanceof Radio) {
-                $objValue = $items[$value['object']->getChecked()][0];
+                $objValue = $options[$value['object']->getChecked()]->getLabel();
             } elseif ($value['object'] instanceof Select) {
-                $objValue = $states[$value['object']->getChecked()][0];
+                $objValue = $states[$value['object']->getChecked()]->getLabel();
             }
 
             ${$value['key']} = new Label(

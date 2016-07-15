@@ -22,24 +22,24 @@ class Select extends VisualObject
     protected $lazarusClass = 'TComboBox';
 
     /**
-     * Sets the items
+     * Sets the options
      *
-     * @param array $items
+     * @param array $options
      *
      * @return self
      */
-    public function setItems(array $items)
+    public function setOptions(array $options)
     {
-        foreach ($items as $key => $item) {
-            if (! is_string($item[0]) || ! is_int($item[1])) {
+        foreach ($options as $key => $option) {
+            if (! $option instanceof Option) {
                 // @todo: throw an exception
-                unset($item[$key]);
+                unset($option[$key]);
             } else {
                 $this->call(
                     'items.addObject',
                     [
-                        $item[0],
-                        $item[1]
+                        $option->getLabel(),
+                        $option->getValue()
                     ]
                 );
             }
