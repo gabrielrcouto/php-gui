@@ -296,8 +296,9 @@ class Application
             $application->fire('start');
         });
 
-        $this->loop->addPeriodicTimer(0.001, function() use ($application) {
+        $this->loop->addPeriodicTimer(0.001, function () use ($application) {
             $application->sender->tick();
+
             if (@is_resource($application->process->stdout->stream)) {
                 $application->receiver->tick();
             }
@@ -381,7 +382,7 @@ class Application
     {
         return $this->loop;
     }
-    
+
     /**
      * Shows an alert dialog
      *
