@@ -108,7 +108,7 @@ end;
 
 procedure TIpcThread.Output(Text: String);
 begin
-  Write(F, Text);
+  Write(F, Text + #0);
   Flush(F);
 end;
 
@@ -120,6 +120,7 @@ var
   StdinString: String;
   LastTimestamp: TTimeStamp;
   CurrentTimestamp: TTimeStamp;
+  BytesAvailable: Integer;
 begin
   // Register all the classes
   // @TODO - Move it from here!
@@ -163,11 +164,14 @@ begin
   begin
     // OutputDebug('{"waiting": true}');
 
+    BytesAvailable := StdinStream.NumBytesAvailable;
+
     // We have messages?
-    if StdinStream.NumBytesAvailable > 0 then
+    if BytesAvailable > 0 then
     begin
+      SetLength(StdinString, BytesAvailable);
       // Read the messages from stdin stream
-      StdinStream.ReadBuffer(StdinString[1], 1);
+      StdinStream.ReadBuffer(StdinString[1], BytesAvailable);
 
       // Add the new stdin to the buffer
       StdinStringBuffer := Concat(StdinStringBuffer, StdinString);
@@ -234,65 +238,19 @@ end;
 
 procedure TIpcThread.ProcessMessages();
 var
-  Counter: Integer;
   CurrentPos: Integer;
-
-  OpeningBraces: Integer;
-  ClosingBraces: Integer;
-  DoubleQuotes: Integer;
-  FirstOpeningBracePos: Integer;
 begin
-  // Split the StdinStringBuffer into messages
-  // Into StdinStringBuffer, we can have more than one message, just count the { and }
-  // When we have the same number of { and }, it's a complete JSON message
-  CurrentPos := 1;
-  OpeningBraces := 0;
-  ClosingBraces := 0;
-  DoubleQuotes := 0;
-  FirstOpeningBracePos := 1;
+  CurrentPos := Pos(#0, StdinStringBuffer);
 
-  for Counter := 1 to Length(StdinStringBuffer) do
+  while CurrentPos > 0 do
   begin
-    // Count how many { or } we have into the string
-    if (StdinStringBuffer[CurrentPos] = '{') and (DoubleQuotes mod 2 = 0) then
-    begin
-      Inc(OpeningBraces);
+    // Parse the message
+    ParseMessage(Copy(StdinStringBuffer, 1, CurrentPos));
 
-      if OpeningBraces = 1 then
-      begin
-        FirstOpeningBracePos := CurrentPos;
-      end;
-    end 
-    else if (StdinStringBuffer[CurrentPos] = '}') and (DoubleQuotes mod 2 = 0) then
-    begin
-      Inc(ClosingBraces);
-    end
-    else if (StdinStringBuffer[CurrentPos] = '"') and ((CurrentPos = 1) or (StdinStringBuffer[CurrentPos - 1] <> '\\')) then
-    begin
-      Inc(DoubleQuotes);
-    end;
+    // Remove the message from the buffer
+    Delete(StdinStringBuffer, 1, CurrentPos);
 
-    // We have a full JSON message
-    if (OpeningBraces > 0) AND (OpeningBraces = ClosingBraces) then
-    begin
-
-      // Parse the message
-      ParseMessage(Copy(StdinStringBuffer, FirstOpeningBracePos, CurrentPos));
-
-      // Remove the message from the buffer
-      Delete(StdinStringBuffer, FirstOpeningBracePos, CurrentPos);
-
-      CurrentPos := 1;
-      
-      OpeningBraces := 0;
-      ClosingBraces := 0;
-      DoubleQuotes := 0;
-      FirstOpeningBracePos := 1;
-    end
-    else
-    begin
-      Inc(CurrentPos);
-    end;
+    CurrentPos := Pos(#0, StdinStringBuffer);
   end;
 end;
 

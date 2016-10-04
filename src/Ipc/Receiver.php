@@ -158,62 +158,29 @@ class Receiver
         // Add the new messages to the buffer
         $this->buffer .= $data;
 
-        $openingBraces = 0;
-        $closingBraces = 0;
-        $doubleQuotes = 0;
-        $firstOpeningBracePos = 0;
+        // Find the NULL character position
+        $nulPos = strpos($this->buffer, "\0");
 
-        $currentPos = 0;
-        $bufferLength = strlen($this->buffer);
+        while ($nulPos !== false) {
+            $messageJson = substr($this->buffer, 0, $nulPos);
+            $message = $this->jsonDecode($messageJson);
 
-        for ($i = 0; $i < $bufferLength; $i++) {
-            if ($this->buffer[$currentPos] == '{' && $doubleQuotes % 2 == 0) {
-                if ($openingBraces == 0) {
-                    $firstOpeningBracePos = $currentPos;
+            $this->buffer = substr($this->buffer, $nulPos + 1);
+
+            // Now, process the message
+            if ($message) {
+                if ($this->application->getVerboseLevel() == 2) {
+                    Output::out($this->prepareOutput($messageJson), 'green');
                 }
 
-                $openingBraces++;
-            } elseif ($this->buffer[$currentPos] == '}' && $doubleQuotes % 2 == 0) {
-                $closingBraces++;
-            } elseif ($this->buffer[$currentPos] == '"'
-                && ($currentPos == 0
-                || $this->buffer[$currentPos - 1] != '\\')) {
-                // We are opening or closing a JSON string?
-                $doubleQuotes++;
-            }
-
-            $currentPos++;
-
-            if ($openingBraces > 0 && $openingBraces == $closingBraces) {
-                $messageJson = substr($this->buffer, $firstOpeningBracePos, $currentPos);
-                // @todo: Handle ComponentException
-                $message = $this->jsonDecode($messageJson);
-
-                // First, remove the message from the buffer
-                if ($currentPos > strlen($this->buffer)) {
-                    $this->buffer = '';
+                if (property_exists($message, 'debug')) {
+                    $this->parseDebug($message);
                 } else {
-                    $this->buffer = substr($this->buffer, $currentPos);
-                }
-
-                $currentPos = 0;
-                $openingBraces = 0;
-                $closingBraces = 0;
-                $doubleQuotes = 0;
-
-                // Now, process the message
-                if ($message) {
-                    if ($this->application->getVerboseLevel() == 2) {
-                        Output::out($this->prepareOutput($messageJson), 'green');
-                    }
-
-                    if (property_exists($message, 'debug')) {
-                        $this->parseDebug($message);
-                    } else {
-                        $this->parseNormal($message);
-                    }
+                    $this->parseNormal($message);
                 }
             }
+
+            $nulPos = strpos($this->buffer, "\0");
         }
     }
 

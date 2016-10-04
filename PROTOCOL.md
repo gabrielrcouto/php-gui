@@ -4,6 +4,8 @@ This file describes the IPC protocol used for the PHP <-> Lazarus communication.
 
 This protocol is based on JSON RPC.
 
+Each message needs to be terminated by NULL character (PHP = "\0", Lazarus = #0). This will be used to identify each message on the stream.
+
 ## Request (Command):
 
 ```json

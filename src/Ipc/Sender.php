@@ -120,7 +120,8 @@ class Sender
         $this->processMessage($message);
 
         // But into a buffer and send the max we can
-        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message);
+        // Each message is terminated by the NULL character
+        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\0";
 
         if (property_exists($message, 'callback') && is_callable($message->callback)) {
             // It's a command!
@@ -154,7 +155,9 @@ class Sender
     public function waitReturn(MessageInterface $message)
     {
         $this->processMessage($message);
-        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message);
+
+        // Each message is terminated by the NULL character
+        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\0";
         $this->writeOnStream();
 
         return $this->receiver->waitMessage(
