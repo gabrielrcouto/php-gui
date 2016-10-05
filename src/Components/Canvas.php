@@ -21,6 +21,21 @@ class Canvas extends VisualObject
      */
     protected $lazarusClass = 'TImage';
 
+    public function putImageData($pixels)
+    {
+        foreach ($pixels as $key => $value) {
+            $pixels[$key] = Color::toLazarus($value);
+        }
+
+        $this->call(
+            'picture.bitmap.canvas.putImageData',
+            $pixels,
+            $isCommand = false
+        );
+
+        return $this;
+    }
+
     /**
      * Sets the pixel color
      *

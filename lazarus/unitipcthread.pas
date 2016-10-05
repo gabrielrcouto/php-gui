@@ -291,6 +291,9 @@ var
   strCtrl: array of String;
   sent: Boolean;
   counter: Integer;
+  max: Integer;
+  x: Integer;
+  y: Integer;
 begin
   if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
   begin
@@ -324,6 +327,24 @@ begin
     else if messageMethodName = 'picture.bitmap.canvas.setPixel' then
     begin
       (objArray[objId] as TImage).Picture.Bitmap.Canvas.Pixels[jData.FindPath('params[2][0]').AsInteger, jData.FindPath('params[2][1]').AsInteger] := jData.FindPath('params[2][2]').AsInteger;
+    end
+    else if messageMethodName = 'picture.bitmap.canvas.putImageData' then
+    begin
+      counter := 0;
+      max := (jData.FindPath('params[2]') as TJSONArray).Count;
+
+      for x := 0 to (objArray[objId] as TImage).Picture.Bitmap.Width - 1 do
+      begin
+        for y := 0 to (objArray[objId] as TImage).Picture.Bitmap.Height - 1 do
+        begin
+          if counter < max then
+          begin
+            (objArray[objId] as TImage).Picture.Bitmap.Canvas.Pixels[x, y] := (jData.FindPath('params[2]') as TJSONArray).Integers[counter];
+          end;
+
+          Inc(counter);
+        end;
+      end;
     end
     else if messageMethodName = 'picture.bitmap.setSize' then
     begin
