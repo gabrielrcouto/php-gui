@@ -30,8 +30,7 @@ class Radio extends VisualObject
     {
         foreach ($options as $key => $option) {
             if (! $option instanceof Option) {
-                // @todo: throw an exception
-                unset($option[$key]);
+                throw new \InvalidArgumentException('Element in array options must be an instance of Option');
             } else {
                 $this->call(
                     'items.addObject',
