@@ -117,6 +117,8 @@ php examples/04-multiple-windows/example.php
 php examples/05-canvas/example.php
 php examples/06-ping/example.php
 php examples/07-php-internals/example.php
+php examples/08-alert/example.php   
+php examples/09-3d-perspective/example.php 
 
 ```
 
