@@ -41,7 +41,8 @@ $application->on('start', function () use ($application) {
 
     $lastFrame = array_fill(0, $canvasWidth * $canvasHeight, '#000000');
 
-    $application->getLoop()->addPeriodicTimer(0.03, function () use ($canvas, &$pixels, $canvasWidth, $canvasHeight, $fov, &$lastFrame) {
+    $application->getLoop()
+    ->addPeriodicTimer(0.03, function () use ($canvas, &$pixels, $canvasWidth, $canvasHeight, $fov, &$lastFrame) {
         $currentPixel = count($pixels);
         $newFrame = array_fill(0, $canvasWidth * $canvasHeight, '#000000');
 
