@@ -536,7 +536,7 @@ end;
 
 procedure TEventHandler.Output(Text: String);
 begin
-  Write(F, Text);
+  Write(F, Text + #0);
   Flush(F);
 end;
 
