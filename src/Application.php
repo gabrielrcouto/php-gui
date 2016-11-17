@@ -164,6 +164,32 @@ class Application
     }
 
     /**
+     * Destroy a object
+     *
+     * @param Object $object Component Object
+     *
+     * @return void
+     */
+    public function destroyObject(Object $object)
+    {
+        $application = $this;
+
+        $this->sendCommand(
+            'destroyObject',
+            [
+                $object->getLazarusObjectId()
+            ],
+            function ($result) use (& $object, $application) {
+                if ($result == $object->getLazarusObjectId()) {
+                    if ($application->getObject($result)) {
+                        unset($object, $application->{$result});
+                    }
+                }
+            }
+        );
+    }
+
+    /**
      * Fire an application event
      *
      * @param string $eventName Event Name
@@ -403,5 +429,19 @@ class Application
                 // Dummy
             }
         );
+    }
+
+    /**
+     * Unset the object referency from the stack
+     *
+     * @param $objectId
+     *
+     * @return void
+     */
+    public function __unset($objectId)
+    {
+        if ($this->getObject($objectId)) {
+            unset($this->objects[$objectId]);
+        }
     }
 }
