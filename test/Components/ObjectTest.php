@@ -65,7 +65,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->assertEquals('TObject', $mock->getLazarusClass());
+        $this->assertTrue(is_int($mock->getLazarusClass()));
     }
 
     public function testGetLazarusObjectId()

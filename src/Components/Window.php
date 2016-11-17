@@ -2,6 +2,8 @@
 
 namespace Gui\Components;
 
+use Gui\Ipc\IpcMap;
+
 /**
  * This is the Window Class
  *
@@ -14,11 +16,11 @@ class Window extends ContainerObject
 {
 
     /**
-     * The lazarus class as string
+     * The lazarus class as int
      *
-     * @var string $lazarusClass
+     * @var int $lazarusClass
      */
-    protected $lazarusClass = 'TForm1';
+    protected $lazarusClass = 1;
 
     /**
      * Sets the window title
@@ -55,8 +57,10 @@ class Window extends ContainerObject
     {
         if (file_exists($icon) && preg_match('/ico$/i', $icon)) {
             $this->call(
-                'icon.loadFromFile',
-                [$icon]
+                IpcMap::OBJECT_METHOD_ICON_LOAD_FROM_FILE,
+                [
+                    IpcMap::PARAMS_DATA => $icon,
+                ]
             );
         }
 

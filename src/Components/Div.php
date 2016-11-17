@@ -17,5 +17,5 @@ class Div extends ContainerObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TScrollBox';
+    protected $lazarusClass = 5;
 }

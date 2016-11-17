@@ -3,6 +3,7 @@
 namespace Gui\Components;
 
 use Gui\Color;
+use Gui\Ipc\IpcMap;
 
 /**
  * This is the Canvas Class
@@ -15,11 +16,11 @@ use Gui\Color;
 class Canvas extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as int
      *
-     * @var string $lazarusClass
+     * @var int $lazarusClass
      */
-    protected $lazarusClass = 'TImage';
+    protected $lazarusClass = 3;
 
     public function putImageData($pixels)
     {
@@ -28,9 +29,10 @@ class Canvas extends VisualObject
         }
 
         $this->call(
-            'picture.bitmap.canvas.putImageData',
-            $pixels,
-            $isCommand = false
+            IpcMap::OBJECT_METHOD_PICTURE_BITMAP_CANVAS_PUT_IMAGE_DATA,
+            [
+                IpcMap::PARAMS_DATA => $pixels,
+            ]
         );
 
         return $this;
@@ -48,13 +50,12 @@ class Canvas extends VisualObject
     public function setPixel($x, $y, $color)
     {
         $this->call(
-            'picture.bitmap.canvas.setPixel',
+            IpcMap::OBJECT_METHOD_PICTURE_BITMAP_CANVAS_SET_PIXEL,
             [
-                $x,
-                $y,
-                Color::toLazarus($color)
-            ],
-            $isCommand = false
+                IpcMap::PARAMS_DATA => $x,
+                IpcMap::PARAMS_DATA1 => $y,
+                IpcMap::PARAMS_DATA2 => Color::toLazarus($color)
+            ]
         );
 
         return $this;
@@ -71,10 +72,10 @@ class Canvas extends VisualObject
     public function setSize($width, $height)
     {
         $this->call(
-            'picture.bitmap.setSize',
+            IpcMap::OBJECT_METHOD_PICTURE_BITMAP_SET_SIZE,
             [
-                $width,
-                $height
+                IpcMap::PARAMS_DATA => $width,
+                IpcMap::PARAMS_DATA1 => $height
             ]
         );
 

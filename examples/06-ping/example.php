@@ -29,20 +29,21 @@ $application->on('start', function() use ($application) {
     // Disable application verbose, to see the speed messages
     $application->setVerboseLevel(0);
 
-    while (true) {
-        $latency = $application->ping();
+    $application->getLoop()->addPeriodicTimer(
+        0.000001,
+        function() use ($application, & $currentSecond, & $messagesPerSecond) {
+            $latency = $application->ping();
 
-        if (time() != $currentSecond) {
-            Output::out('Speed: ' . $messagesPerSecond . ' messages/sec', 'red');
+            if (time() != $currentSecond) {
+                Output::out('Speed: ' . $messagesPerSecond . ' messages/sec', 'red');
 
-            $messagesPerSecond = 0;
-            $currentSecond = time();
+                $messagesPerSecond = 0;
+                $currentSecond = time();
+            }
+
+            $messagesPerSecond++;
         }
-
-        $messagesPerSecond++;
-
-        usleep(1);
-    }
+    );
 });
 
 $application->run();

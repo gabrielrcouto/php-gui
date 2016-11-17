@@ -2,6 +2,8 @@
 
 namespace Gui\Components;
 
+use Gui\Ipc\IpcMap;
+
 /**
  * This is the Radio Class
  *
@@ -17,7 +19,7 @@ class Radio extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TRadioGroup';
+    protected $lazarusClass = 8;
 
     /**
      * Sets the options
@@ -33,10 +35,10 @@ class Radio extends VisualObject
                 throw new \InvalidArgumentException('Element in array options must be an instance of Option');
             } else {
                 $this->call(
-                    'items.addObject',
+                    IpcMap::OBJECT_METHOD_ITEMS_ADD_OBJECT,
                     [
-                        $option->getLabel(),
-                        $option->getValue()
+                        IpcMap::PARAMS_DATA => $option->getLabel(),
+                        IpcMap::PARAMS_DATA1 => $option->getValue()
                     ]
                 );
             }

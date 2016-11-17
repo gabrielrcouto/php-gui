@@ -4,10 +4,9 @@ namespace Gui;
 
 use Gui\Components\Object;
 use Gui\Components\Window;
-use Gui\Ipc\CommandMessage;
-use Gui\Ipc\EventMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
+use Gui\Ipc\IpcMap;
 use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
@@ -141,12 +140,12 @@ class Application
     public function ping()
     {
         $now = microtime(true);
-        $this->waitCommand(
-            'ping',
-            [
-                (string) $now
+        $this->waitMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_PING,
+            IpcMap::ROOT_PARAMS_KEY => [
+                IpcMap::PARAMS_DATA => $now,
             ]
-        );
+        ]);
 
         return microtime(true) - $now;
     }
@@ -174,10 +173,12 @@ class Application
     {
         $application = $this;
 
-        $this->sendCommand(
-            'destroyObject',
+        $this->sendMessage(
             [
-                $object->getLazarusObjectId()
+                IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_DESTROY_OBJECT,
+                IpcMap::ROOT_PARAMS_KEY => [
+                    IpcMap::PARAMS_OBJECT_ID_KEY => $object->getLazarusObjectId()
+                ]
             ],
             function ($result) use (& $object, $application) {
                 if ($result == $object->getLazarusObjectId()) {
@@ -286,6 +287,7 @@ class Application
         $this->process = $process = new Process($processName, $processPath);
 
         $this->process->on('exit', function () use ($application) {
+            $this->running = false;
             $application->loop->stop();
         });
 
@@ -334,42 +336,38 @@ class Application
     }
 
     /**
-     * Send a command
+     * Send a Message
      *
-     * @param string $method the method name
-     * @param array $params the method params
+     * @param array $message the message
      * @param callable $callback the callback
      *
      * @return void
      */
-    public function sendCommand($method, array $params, callable $callback)
+    public function sendMessage(array $message, callable $callback = null)
     {
         // @todo: Put the message on a poll
         if (! $this->running) {
             return;
         }
 
-        $message = new CommandMessage($method, $params, $callback);
-        $this->sender->send($message);
+        $this->sender->send($message, $callback);
     }
 
     /**
-     * Send an event
+     * Send a massage and wait the return
      *
-     * @param string $method the method name
-     * @param array $params the method params
+     * @param array $message the message
      *
-     * @return void
+     * @return mixed
      */
-    public function sendEvent($method, array $params)
+    public function waitMessage(array $message)
     {
         // @todo: Put the message on a poll
         if (! $this->running) {
             return;
         }
 
-        $message = new EventMessage($method, $params);
-        $this->sender->send($message);
+        return $this->sender->waitReturn($message);
     }
 
     /**
@@ -382,21 +380,6 @@ class Application
     public function setVerboseLevel($verboseLevel)
     {
         $this->verboseLevel = $verboseLevel;
-    }
-
-    /**
-     * Send a command and wait the return
-     *
-     * @param string $method the method name
-     * @param array $params the method params
-     *
-     * @return mixed
-     */
-    public function waitCommand($method, array $params)
-    {
-        $message = new CommandMessage($method, $params);
-
-        return $this->sender->waitReturn($message);
     }
 
     /**
@@ -422,13 +405,13 @@ class Application
         if (is_array($message)) {
             $message = implode('\n', $message);
         }
-        $this->sendCommand(
-            'showMessage',
-            [$message, $title],
-            function ($result) {
-                // Dummy
-            }
-        );
+        $this->sendMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_SHOW_MESSAGE,
+            IpcMap::ROOT_PARAMS_KEY => [
+                IpcMap::PARAMS_DATA => $message,
+                IpcMap::PARAMS_DATA1 => $title,
+            ]
+        ]);
     }
 
     /**
@@ -443,5 +426,17 @@ class Application
         if ($this->getObject($objectId)) {
             unset($this->objects[$objectId]);
         }
+    }
+
+    /**
+     * Gets the Defines if the application is running.
+     *
+     * @return bool $running
+     */
+    public function isRunning()
+    {
+        $this->running = ! $this->process->isRunning() ? false : $this->running;
+
+        return $this->running;
     }
 }

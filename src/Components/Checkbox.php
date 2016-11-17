@@ -17,7 +17,7 @@ class Checkbox extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TCheckBox';
+    protected $lazarusClass = 4;
 
     /**
      * Get the Checkbox checked

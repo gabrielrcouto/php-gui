@@ -17,7 +17,7 @@ class InputText extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TEdit';
+    protected $lazarusClass = 6;
 
     /**
      * Sets the value of value.

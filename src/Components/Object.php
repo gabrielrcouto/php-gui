@@ -3,6 +3,7 @@
 namespace Gui\Components;
 
 use Gui\Application;
+use Gui\Ipc\IpcMap;
 
 /**
  * This is the Object class
@@ -15,11 +16,11 @@ use Gui\Application;
 abstract class Object implements LazarusObjectInterface
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as int
      *
-     * @var string $lazarusClass
+     * @var int $lazarusClass
      */
-    protected $lazarusClass = 'TObject';
+    protected $lazarusClass = 0;
 
     /**
      * The communication object id
@@ -85,14 +86,14 @@ abstract class Object implements LazarusObjectInterface
             if ($this instanceof VisualObjectInterface) {
                 $parent->appendChild($this);
             }
-            // Send the createObject command
-            $this->application->sendCommand(
-                'createObject',
+
+            $this->application->sendMessage(
                 [
-                    [
-                        'lazarusClass' => $this->lazarusClass,
-                        'lazarusObjectId' => $this->lazarusObjectId,
-                        'parent' => $parent->getLazarusObjectId()
+                    IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_CREATE_OBJECT,
+                    IpcMap::ROOT_PARAMS_KEY => [
+                        IpcMap::PARAMS_OBJECT_ID_KEY => $this->lazarusObjectId,
+                        IpcMap::PARAMS_OBJECT_CLASS_KEY => $this->lazarusClass,
+                        IpcMap::PARAMS_PARENT_ID_KEY => $parent->getLazarusObjectId(),
                     ]
                 ],
                 function ($result) use ($object, $defaultAttributes) {
@@ -141,40 +142,19 @@ abstract class Object implements LazarusObjectInterface
     /**
      * This method is used to send an object command/envent to lazarus
      *
-     * @param string $method
+     * @param int$method
      * @param array $params
-     * @param boolean $isCommand
      *
      * @return void
      */
-    protected function call($method, array $params, $isCommand = true)
+    protected function call($method, array $params = [])
     {
-        if ($isCommand) {
-            // It's a command
-            $this->application->sendCommand(
-                'callObjectMethod',
-                [
-                    $this->lazarusObjectId,
-                    $method,
-                    $params
-                ],
-                function ($result) {
-                    // Ok, the property changed
-                }
-            );
-
-            return;
-        }
-
-        // It's a event
-        $this->application->sendEvent(
-            'callObjectMethod',
-            [
-                $this->lazarusObjectId,
-                $method,
-                $params
-            ]
-        );
+        $params[IpcMap::PARAMS_OBJECT_ID_KEY] = $this->lazarusObjectId;
+        $params[IpcMap::PARAMS_OBJECT_METHOD_NAME_KEY] = $method;
+        $this->application->sendMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_CALL_OBJECT_METHOD,
+            IpcMap::ROOT_PARAMS_KEY => $params
+        ]);
     }
 
     /**
@@ -187,17 +167,14 @@ abstract class Object implements LazarusObjectInterface
      */
     protected function set($name, $value)
     {
-        $this->application->sendCommand(
-            'setObjectProperty',
-            [
-                $this->lazarusObjectId,
-                $name,
-                $value
-            ],
-            function ($result) {
-                // Ok, the property changed
-            }
-        );
+        $this->application->sendMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_SET_OBJECT_PROPERTY,
+            IpcMap::ROOT_PARAMS_KEY => [
+                IpcMap::PARAMS_OBJECT_ID_KEY => $this->lazarusObjectId,
+                IpcMap::PARAMS_OBJECT_PROPERTY_NAME_KEY => $name,
+                IpcMap::PARAMS_OBJECT_PROPERTY_VALUE_KEY => $value,
+            ]
+        ]);
     }
 
     /**
@@ -209,9 +186,12 @@ abstract class Object implements LazarusObjectInterface
      */
     protected function get($name)
     {
-        return $this->application->waitCommand('getObjectProperty', [
-            $this->lazarusObjectId,
-            $name
+        return $this->application->waitMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_GET_OBJECT_PROPERTY,
+            IpcMap::ROOT_PARAMS_KEY => [
+                IpcMap::PARAMS_OBJECT_ID_KEY => $this->lazarusObjectId,
+                IpcMap::PARAMS_OBJECT_PROPERTY_NAME_KEY => $name,
+            ]
         ]);
     }
 
@@ -250,12 +230,18 @@ abstract class Object implements LazarusObjectInterface
     {
         $eventName = 'on' . $eventName;
 
-        $this->application->sendCommand('setObjectEventListener', [
-            $this->lazarusObjectId,
-            $eventName
-        ], function ($result) {
-            // Ok, the event listener created
-        });
+        $this->application->sendMessage(
+            [
+                IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_SET_OBJECT_EVENT_LISTENER,
+                IpcMap::ROOT_PARAMS_KEY => [
+                    IpcMap::PARAMS_OBJECT_ID_KEY => $this->lazarusObjectId,
+                    IpcMap::PARAMS_EVENT_NAME_KEY => $eventName,
+                ]
+            ],
+            function ($result) {
+                // Ok, the event listener created
+            }
+        );
 
         if (! array_key_exists($eventName, $this->eventHandlers)) {
             $this->eventHandlers[$eventName] = [];

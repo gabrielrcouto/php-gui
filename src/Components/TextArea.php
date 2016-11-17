@@ -2,6 +2,8 @@
 
 namespace Gui\Components;
 
+use Gui\Ipc\IpcMap;
+
 /**
  * This is the TextArea Class
  *
@@ -17,7 +19,7 @@ class TextArea extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TMemo';
+    protected $lazarusClass = 11;
 
     /**
      * Sets the value of value.
@@ -28,10 +30,15 @@ class TextArea extends VisualObject
      */
     public function setValue($value)
     {
-        $this->call('lines.clear', []);
+        $this->call(IpcMap::OBJECT_METHOD_LINES_CLEAR);
 
         foreach (explode("\n", $value) as $value) {
-            $this->call('lines.add', [$value]);
+            $this->call(
+                IpcMap::OBJECT_METHOD_LINES_ADD,
+                [
+                    IpcMap::PARAMS_DATA => $value
+                ]
+            );
         }
 
         return $this;
@@ -44,13 +51,12 @@ class TextArea extends VisualObject
      */
     public function getValue()
     {
-        return $this->application->waitCommand(
-            'callObjectMethod',
-            [
-                $this->lazarusObjectId,
-                'lines.getAll',
-                []
-            ]
-        );
+        return $this->application->waitMessage([
+            IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_CALL_OBJECT_METHOD,
+            IpcMap::ROOT_PARAMS_KEY => [
+                IpcMap::PARAMS_OBJECT_ID_KEY => $this->getLazarusObjectId(),
+                IpcMap::PARAMS_OBJECT_METHOD_NAME_KEY => IpcMap::OBJECT_METHOD_LINES_GET_ALL
+            ],
+        ]);
     }
 }
