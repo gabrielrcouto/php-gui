@@ -77,4 +77,46 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $application->setVerboseLevel(1);
         $this->assertEquals(1, $application->getVerboseLevel());
     }
+
+    public function testDestroyObject()
+    {
+        $appMock = $this->getMockBuilder('Gui\Application')
+            ->setMethods(['getWindow', 'sendCommand'])
+            ->getMock();
+
+        $window = $this->getMockBuilder(
+            'Gui\Components\Window',
+            [
+                [],
+                null,
+                $appMock
+            ]
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $appMock->expects($this->any())
+            ->method('getWindow')
+            ->will($this->returnValue($window));
+
+        $mock = $this->getMockForAbstractClass(
+            'Gui\Components\Object',
+            [
+                [],
+                null,
+                $appMock
+            ]
+        );
+
+        $appMock->expects($this->once())
+            ->method('sendCommand')
+            ->with(
+                'destroyObject',
+                [$mock->getLazarusObjectId()],
+                function () {
+                }
+            );
+
+        $appMock->destroyObject($mock);
+    }
 }
