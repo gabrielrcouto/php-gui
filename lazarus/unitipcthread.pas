@@ -15,6 +15,7 @@ type
   TIpcThread = class(TThread)
   private
     procedure CreateObject;
+    procedure DestroyObject;
     procedure SetObjectProperty;
     procedure GetObjectProperty;
     procedure SetObjectEventListener;
@@ -103,6 +104,25 @@ begin
         end;
       end;
     end;
+  end;
+end;
+
+procedure TIpcThread.DestroyObject;
+var obj: TControl;
+  objId: Integer;
+  messageId: Integer;
+begin
+  // param[0] = objectId
+  // check if objectId is valid
+  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[0]').AsInteger < Length(objArray)) then
+  begin
+    objId := jData.FindPath('params[0]').AsInteger;
+    obj := objArray[objId];
+
+    FreeAndNil(obj);
+
+    messageId := jData.FindPath('id').AsInteger;
+    Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objId) + '}');
   end;
 end;
 
@@ -214,6 +234,9 @@ begin
     if (jData.FindPath('method').value = 'createObject') then
     begin
       CreateObject;
+    end else if (jData.FindPath('method').value = 'destroyObject') then
+    begin
+      DestroyObject;
     end else if (jData.FindPath('method').value = 'setObjectEventListener') then
     begin
       SetObjectEventListener;
