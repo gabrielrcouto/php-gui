@@ -1,6 +1,11 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php';
+$autoload = __DIR__ . '/../../vendor/autoload.php')
+
+if (!file_exists($autoload) {
+	$autoload = __DIR__ . '/../../../../autoload.php'
+}
+require $autoload;
 require __DIR__ . '/Rss.php';
 
 use Example\Rss;
