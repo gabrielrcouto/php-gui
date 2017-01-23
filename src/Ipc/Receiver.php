@@ -327,7 +327,7 @@ class Receiver
             usleep(1);
         }
 
-        $stdout->resume();
+        //$stdout->resume();
 
         $result = $this->waitingMessageResult;
         $this->waitingMessageResult = null;
