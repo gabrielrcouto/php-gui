@@ -314,7 +314,7 @@ class Receiver
      *
      * @return mixed The result
      */
-    public function waitMessage(Stream $stdout, MessageInterface $message)
+    public function waitMessage(Stream $stdout, MessageInterface $message, Application $application)
     {
         $buffer = [];
 
@@ -322,7 +322,7 @@ class Receiver
         $this->isWaitingMessage = true;
 
         // Read the stdin until we get the message replied
-        while ($this->isWaitingMessage) {
+        while ($this->isWaitingMessage && $application->isRunning()) {
             $this->tick();
             usleep(1);
         }

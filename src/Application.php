@@ -286,6 +286,8 @@ class Application
         $this->process = $process = new Process($processName, $processPath);
 
         $this->process->on('exit', function () use ($application) {
+            $this->fire('exit');
+            $this->running = false;
             $application->loop->stop();
         });
 
@@ -457,5 +459,17 @@ class Application
         if ($this->getObject($objectId)) {
             unset($this->objects[$objectId]);
         }
+    }
+
+    /**
+     * Gets the Defines if the application is running.
+     *
+     * @return bool $running
+     */
+    public function isRunning()
+    {
+        $this->running = ! $this->process->isRunning() ? false : $this->running;
+
+        return $this->running;
     }
 }
