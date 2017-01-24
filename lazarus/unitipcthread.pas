@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls;
 
 type
 
@@ -156,6 +156,7 @@ begin
   RegisterClass(TScrollBox);
   RegisterClass(TComboBox);
   RegisterClass(TMemo);
+  RegisterClass(TProgressBar);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
