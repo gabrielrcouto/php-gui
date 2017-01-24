@@ -11,7 +11,8 @@ namespace Gui\Components;
  * @since 0.1
  */
 
-class ProgressBar extends VisualObject{
+class ProgressBar extends VisualObject
+{
     /**
      * The lazarus class as string
      *
@@ -19,7 +20,8 @@ class ProgressBar extends VisualObject{
      */
     protected $lazarusClass = 'TProgressBar';
 
-    public function setStep($step){
+    public function setStep($step)
+	{
         $this->set('step', $step);
 
         return $this;
