@@ -333,11 +333,11 @@ class Application
         $this->loop->run();
     }
 
-	/**
-	 * Terminates the application
-	 *
-	 * @return void
-	 */
+    /**
+     * Terminates the application
+     *
+     * @return void
+     */
     public function terminate()
     {
         $this->sendCommand("exit", [], function(){});
