@@ -21,7 +21,7 @@ class ProgressBar extends VisualObject
     protected $lazarusClass = 'TProgressBar';
 
     public function setStep($step)
-	{
+    {
         $this->set('step', $step);
 
         return $this;
