@@ -162,7 +162,8 @@ class Sender
 
         return $this->receiver->waitMessage(
             $this->application->process->stdout,
-            $message
+            $message,
+            $this->application
         );
     }
 
