@@ -333,6 +333,18 @@ class Application
         $this->loop->run();
     }
 
+	/**
+	 * Terminates the application
+	 *
+	 * @return void
+	 */
+    public function terminate()
+	{
+		$this->sendCommand("exit", [], function(){});
+		$this->process->terminate();
+		$this->process->close();
+	}
+
     /**
      * Send a command
      *
