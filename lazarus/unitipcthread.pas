@@ -50,87 +50,67 @@ var
   // The cumulative Stdin string buffer
   StdinStringBuffer: String;
 
+const
+  ROOT_MESSAGE_ID_KEY = '1';
+  ROOT_METHOD_ID_KEY = '2';
+  ROOT_PARAMS_KEY = '3';
+  ROOT_RESPONSE_TYPE = '4';
+  ROOT_RESULT_VALUE = '5';
+  ROOT_RESPONSE_NOTIFICATION_EVENT_OBJECTID = '6';
+  ROOT_RESPONSE_NOTIFICATION_EVENT_EVENT = '7';
+  ROOT_DEBUG_KEY = '99';
+
+  PARAMS_OBJECT_ID_KEY = '1';
+  PARAMS_OBJECT_CLASS_KEY = '2';
+  PARAMS_OBJECT_PROPERTY_NAME_KEY = '3';
+  PARAMS_OBJECT_PROPERTY_VALUE_KEY = '4';
+  PARAMS_OBJECT_METHOD_NAME_KEY = '5';
+  PARAMS_EVENT_NAME_KEY = '6';
+  PARAMS_PARENT_ID_KEY = '7';
+  PARAMS_DATA = '8';
+  PARAMS_DATA1 = '9';
+  PARAMS_DATA2 = '10';
+  PARAMS_DATA3 = '11';
+  PARAMS_DATA4 = '12';
+  PARAMS_DATA5 = '13';
+
+  COMMAND_METHOD_CREATE_OBJECT = 0;
+  COMMAND_METHOD_GET_OBJECT_PROPERTY = 1;
+  COMMAND_METHOD_SET_OBJECT_PROPERTY = 2;
+  COMMAND_METHOD_SET_OBJECT_EVENT_LISTENER = 3;
+  COMMAND_METHOD_CALL_OBJECT_METHOD = 4;
+  COMMAND_METHOD_DESTROY_OBJECT = 5;
+  COMMAND_METHOD_SHOW_MESSAGE = 6;
+  COMMAND_METHOD_PING = 7;
+
+  RESPONSE_TYPE_RESULT = 0;
+  RESPONSE_TYPE_NOTIFICATION_EVENT = 1;
+
+  TOBJECT_KEY = 0;
+  TFORM1_KEY = 1;
+  TBUTTON_KEY = 2;
+  TIMAGE_KEY = 3;
+  TCHECKBOX_KEY = 4;
+  TSCROLLBOX_KEY = 5;
+  TEDIT_KEY = 6;
+  TLABEL_KEY = 7;
+  TRADIOGROUP_KEY = 8;
+  TCOMBOBOX_KEY = 9;
+  TSHAPE_KEY = 10;
+  TMEMO_KEY = 11;
+
+  OBJECT_METHOD_ITEMS_ADD_OBJECT = 0;
+  OBJECT_METHOD_PICTURE_BITMAP_CANVAS_SET_PIXEL = 1;
+  OBJECT_METHOD_PICTURE_BITMAP_CANVAS_PUT_IMAGE_DATA = 2;
+  OBJECT_METHOD_PICTURE_BITMAP_SET_SIZE = 3;
+  OBJECT_METHOD_ICON_LOAD_FROM_FILE = 4;
+  OBJECT_METHOD_LINES_CLEAR = 5;
+  OBJECT_METHOD_LINES_ADD = 6;
+  OBJECT_METHOD_LINES_GET_ALL = 7;
+
 implementation
 
-procedure TIpcThread.CreateObject;
-var obj: TControl;
-  objClass: TPersistentClass;
-  objIndex: Integer;
-  parent: Integer;
-  messageId: Integer;
-begin
-  if (jData.FindPath('params[0].lazarusClass') <> Nil) AND (jData.FindPath('params[0].lazarusObjectId') <> Nil) AND (jData.FindPath('params[0].parent') <> Nil) then
-  begin
-    // The class name of the object, like TButton
-    objClass := GetClass(jData.FindPath('params[0].lazarusClass').value);
 
-    if objClass <> Nil then
-    begin
-      // It's a TControl?
-      if objClass.InheritsFrom(TControl) then
-      begin
-
-        if jData.FindPath('params[0].lazarusClass').AsString = 'TForm1' then
-        begin
-            Application.CreateForm(TForm1, obj);
-            (obj as TForm1).Show;
-        end
-        else
-        begin
-          // Create the object, base on the class passed
-
-          parent := jData.FindPath('params[0].parent').AsInteger;
-
-          obj := TControl(TControlClass(objClass).Create(objArray[parent]));
-          obj.Parent := TWinControl(objArray[parent]);
-        end;
-
-        // The index of the object on the object array
-        objIndex := jData.FindPath('params[0].lazarusObjectId').AsInteger;
-
-        // We need to alocate more space on the object array?
-        if Length(objArray) <= objIndex then
-        begin
-          SetLength(objArray, objIndex + 1);
-        end;
-
-        objArray[objIndex] := obj;
-
-        // If it's a command, reply to it
-        if (jData.FindPath('id') <> Nil) then
-        begin
-             messageId := jData.FindPath('id').AsInteger;
-             Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objIndex) + '}');
-        end;
-      end;
-    end;
-  end;
-end;
-
-procedure TIpcThread.DestroyObject;
-var obj: TControl;
-  objId: Integer;
-  messageId: Integer;
-begin
-  // param[0] = objectId
-  // check if objectId is valid
-  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[0]').AsInteger < Length(objArray)) then
-  begin
-    objId := jData.FindPath('params[0]').AsInteger;
-    obj := objArray[objId];
-
-    FreeAndNil(obj);
-
-    messageId := jData.FindPath('id').AsInteger;
-    Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objId) + '}');
-  end;
-end;
-
-procedure TIpcThread.Output(Text: String);
-begin
-  Write(F, Text + #0);
-  Flush(F);
-end;
 
 procedure TIpcThread.Execute;
 var
@@ -146,16 +126,16 @@ begin
   // @TODO - Move it from here!
   RegisterClass(TForm1);
   RegisterClass(TButton);
+  RegisterClass(TImage);
+  RegisterClass(TCheckBox);
+  RegisterClass(TScrollBox);
   RegisterClass(TEdit);
   RegisterClass(TLabel);
-  RegisterClass(TShape);
-  RegisterClass(TCheckBox);
   RegisterClass(TRadioGroup);
-  RegisterClass(TBitmap);
-  RegisterClass(TImage);
-  RegisterClass(TScrollBox);
   RegisterClass(TComboBox);
+  RegisterClass(TShape);
   RegisterClass(TMemo);
+  RegisterClass(TBitmap);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -208,57 +188,6 @@ begin
   end;
 end;
 
-procedure TIpcThread.OutputDebug(Text: String);
-var
-  jsonData : TJSONData;
-  jObj : TJSONObject;
-begin
-  jsonData := GetJSON(Text);
-
-  jObj := TJSONObject(jsonData);
-  jObj.Add('debug', true);
-  Output(jObj.AsJSON);
-  jObj.Free;
-end;
-
-procedure TIpcThread.ParseMessage(Text: String);
-begin
-  // OutputDebug(Text);
-
-  jData := GetJSON(Text);
-  // All messages need a method
-  if (jData.FindPath('method') <> Nil) then
-  begin
-    // Find the corret function for the method
-    // Because we will modify the GUI, we need to Synchronize this thread with the GUI thread
-    if (jData.FindPath('method').value = 'createObject') then
-    begin
-      CreateObject;
-    end else if (jData.FindPath('method').value = 'destroyObject') then
-    begin
-      DestroyObject;
-    end else if (jData.FindPath('method').value = 'setObjectEventListener') then
-    begin
-      SetObjectEventListener;
-    end else if (jData.FindPath('method').value = 'setObjectProperty') then
-    begin
-      SetObjectProperty;
-    end else if (jData.FindPath('method').value = 'getObjectProperty') then
-    begin
-      GetObjectProperty;
-    end else if (jData.FindPath('method').value = 'callObjectMethod') then
-    begin
-      CallObjectMethod;
-    end else if (jData.FindPath('method').value = 'showMessage') then
-    begin
-      ShowMessage;
-    end else if (jData.FindPath('method').value = 'ping') then
-    begin
-      Ping;
-    end;
-  end;
-end;
-
 procedure TIpcThread.ProcessMessages();
 var
   CurrentPos: Integer;
@@ -277,38 +206,135 @@ begin
   end;
 end;
 
-procedure TIpcThread.Ping;
-var
-  messageId: Integer;
-  microtime: String;
+procedure TIpcThread.ParseMessage(Text: String);
 begin
-  messageId := jData.FindPath('id').AsInteger;
-  microtime := jData.FindPath('params[0]').AsString;
+  jData := GetJSON(Text);
 
-  Output('{"id": ' + IntToStr(messageId) + ', "result": "' + microtime + '"}');
+  if (jData.FindPath(ROOT_METHOD_ID_KEY) <> Nil) then
+  begin
+
+    case jData.FindPath(ROOT_METHOD_ID_KEY).AsInteger of
+      COMMAND_METHOD_CREATE_OBJECT : CreateObject;
+      COMMAND_METHOD_DESTROY_OBJECT : DestroyObject;
+      COMMAND_METHOD_GET_OBJECT_PROPERTY : GetObjectProperty;
+      COMMAND_METHOD_SET_OBJECT_PROPERTY : SetObjectProperty;
+      COMMAND_METHOD_SET_OBJECT_EVENT_LISTENER : SetObjectEventListener;
+      COMMAND_METHOD_CALL_OBJECT_METHOD : CallObjectMethod;
+      COMMAND_METHOD_SHOW_MESSAGE : ShowMessage;
+      COMMAND_METHOD_PING : Ping;
+    end;
+
+  end;
 end;
 
-procedure TIpcThread.ShowMessage;
-var
-  Title,
-  Message : string;
+procedure TIpcThread.Output(Text: String);
 begin
-  if (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[1]').AsString <> '') then
+  Write(F, Text + #0);
+  Flush(F);
+end;
+
+procedure TIpcThread.OutputDebug(Text: String);
+var
+  jsonData : TJSONData;
+  jObj : TJSONObject;
+begin
+  jsonData := GetJSON(Text);
+
+  jObj := TJSONObject(jsonData);
+  jObj.Add(ROOT_DEBUG_KEY, 1);
+  Output(jObj.AsJSON);
+  jObj.Free;
+end;
+
+procedure TIpcThread.CreateObject;
+var obj: TControl;
+  objClassId: Integer;
+  objClass: TPersistentClass;
+  objIndex: Integer;
+  parent: Integer;
+  messageId: Integer;
+  objName: String;
+begin
+  objClassId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_CLASS_KEY).AsInteger;
+
+  objName := '';
+  case objClassId of
+    TOBJECT_KEY : objName := 'TObject';
+    TFORM1_KEY : objName := 'TForm1';
+    TBUTTON_KEY : objName := 'TButton';
+    TIMAGE_KEY : objName := 'TImage';
+    TCHECKBOX_KEY : objName := 'TCheckBox';
+    TSCROLLBOX_KEY : objName := 'TScrollBox';
+    TEDIT_KEY : objName := 'TEdit';
+    TLABEL_KEY : objName := 'TLabel';
+    TRADIOGROUP_KEY : objName := 'TRadioGroup';
+    TCOMBOBOX_KEY : objName := 'TComboBox';
+    TSHAPE_KEY : objName := 'TShape';
+    TMEMO_KEY : objName := 'TMemo';
+  end;
+
+  objClass := GetClass(objName);
+
+  if objClassId = TFORM1_KEY then
   begin
-    Title := jData.FindPath('params[1]').AsString;
+      Application.CreateForm(TForm1, obj);
+      (obj as TForm1).Show;
   end
   else
   begin
-    Title := Application.MainForm.Caption;
+    // Create the object, base on the class passed
+    parent := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_PARENT_ID_KEY).AsInteger;
+    obj := TControl(TControlClass(objClass).Create(objArray[parent]));
+    obj.Parent := TWinControl(objArray[parent]);
   end;
-  Message := StringReplace(jData.FindPath('params[0]').AsString, '\n', sLineBreak, [rfReplaceAll] );
-  Application.MessageBox( @Message[1], @Title[1] );
+
+  // The index of the object on the object array
+  objIndex := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+
+  // We need to alocate more space on the object array?
+  if Length(objArray) <= objIndex then
+  begin
+    SetLength(objArray, objIndex + 1);
+  end;
+
+  objArray[objIndex] := obj;
+
+  // If it's a command, reply to it
+   messageId := jData.FindPath(ROOT_MESSAGE_ID_KEY).AsInteger;
+   Output('{'
+    + '"' + ROOT_MESSAGE_ID_KEY + '":' + IntToStr(messageId) + ','
+    + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_RESULT) + ','
+    + '"' + ROOT_RESULT_VALUE + '":' + IntToStr(objIndex)
+    + '}');
+
+end;
+
+procedure TIpcThread.DestroyObject;
+var obj: TControl;
+  objId: Integer;
+  messageId: Integer;
+begin
+  objId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+  if (objId < Length(objArray)) then
+  begin
+    obj := objArray[objId];
+
+    FreeAndNil(obj);
+
+    messageId := jData.FindPath(ROOT_MESSAGE_ID_KEY).AsInteger;
+    Output('{'
+      + '"' + ROOT_MESSAGE_ID_KEY + '":' + IntToStr(messageId) + ','
+      + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_RESULT) + ','
+      + '"' + ROOT_RESULT_VALUE + '":' + IntToStr(objId)
+      + '}');
+
+  end;
 end;
 
 procedure TIpcThread.CallObjectMethod;
 var
   messageId: Integer;
-  messageMethodName: String;
+  messageMethodName: Integer;
   objId: Integer;
   intCtrl: array of Integer;
   strCtrl: array of String;
@@ -317,20 +343,20 @@ var
   max: Integer;
   x: Integer;
   y: Integer;
+  resultValue: String;
 begin
-  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
-  begin
-    objId := jData.FindPath('params[0]').AsInteger;
-    messageMethodName := jData.FindPath('params[1]').AsString;
 
-    if messageMethodName = 'items.addObject' then
+  objId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+  resultValue := IntToStr(objId);
+
+  case jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_METHOD_NAME_KEY).AsInteger of
+    OBJECT_METHOD_ITEMS_ADD_OBJECT :
     begin
-
       SetLength(strCtrl, 1);
       SetLength(intCtrl, 1);
 
-      strCtrl[0] := jData.FindPath('params[2][0]').AsString;
-      intCtrl[0] := jData.FindPath('params[2][1]').AsInteger;
+      strCtrl[0] := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsString;
+      intCtrl[0] := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1).AsInteger;
 
       if objArray[objId].InheritsFrom(TRadioGroup) then
       begin
@@ -346,15 +372,21 @@ begin
           TObject(PtrUint(intCtrl[0]))
         );
       end;
-    end
-    else if messageMethodName = 'picture.bitmap.canvas.setPixel' then
+    end;
+    OBJECT_METHOD_PICTURE_BITMAP_CANVAS_SET_PIXEL :
     begin
-      (objArray[objId] as TImage).Picture.Bitmap.Canvas.Pixels[jData.FindPath('params[2][0]').AsInteger, jData.FindPath('params[2][1]').AsInteger] := jData.FindPath('params[2][2]').AsInteger;
-    end
-    else if messageMethodName = 'picture.bitmap.canvas.putImageData' then
+      (objArray[objId] as TImage)
+        .Picture
+        .Bitmap
+        .Canvas
+        .Pixels[
+          jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsInteger,
+          jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1).AsInteger] := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA2).AsInteger;
+    end;
+    OBJECT_METHOD_PICTURE_BITMAP_CANVAS_PUT_IMAGE_DATA :
     begin
       counter := 0;
-      max := (jData.FindPath('params[2]') as TJSONArray).Count;
+      max := (jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA) as TJSONArray).Count;
 
       for x := 0 to (objArray[objId] as TImage).Picture.Bitmap.Width - 1 do
       begin
@@ -362,30 +394,44 @@ begin
         begin
           if counter < max then
           begin
-            (objArray[objId] as TImage).Picture.Bitmap.Canvas.Pixels[x, y] := (jData.FindPath('params[2]') as TJSONArray).Integers[counter];
+            (objArray[objId] as TImage)
+              .Picture
+              .Bitmap
+              .Canvas
+              .Pixels[x, y] := (jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA) as TJSONArray).Integers[counter];
           end;
 
           Inc(counter);
         end;
       end;
-    end
-    else if messageMethodName = 'picture.bitmap.setSize' then
+    end;
+    OBJECT_METHOD_PICTURE_BITMAP_SET_SIZE :
     begin
-      (objArray[objId] as TImage).Picture.Bitmap.SetSize(jData.FindPath('params[2][0]').AsInteger,jData.FindPath('params[2][1]').AsInteger);
-    end
-    else if messageMethodName = 'icon.loadFromFile' then
+      (objArray[objId] as TImage)
+        .Picture
+        .Bitmap
+        .SetSize(
+          jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsInteger,
+          jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1).AsInteger
+        );
+    end;
+    OBJECT_METHOD_ICON_LOAD_FROM_FILE :
     begin
-      (objArray[objId] as TForm1).Icon.LoadFromFile(jData.FindPath('params[2][0]').AsString);
-    end
-    else if messageMethodName = 'lines.clear' then
+      (objArray[objId] as TForm1)
+        .Icon
+        .LoadFromFile(jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsString);
+    end;
+    OBJECT_METHOD_LINES_CLEAR :
     begin
       (objArray[objId] as TMemo).Lines.Clear;
-    end
-    else if messageMethodName = 'lines.add' then
+    end;
+    OBJECT_METHOD_LINES_ADD :
     begin
-      (objArray[objId] as TMemo).Lines.Add(jData.FindPath('params[2][0]').AsString);
-    end
-    else if messageMethodName = 'lines.getAll' then
+      (objArray[objId] as TMemo)
+        .Lines
+        .Add(jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsString);
+    end;
+    OBJECT_METHOD_LINES_GET_ALL :
     begin
       SetLength(strCtrl, 1);
       SetLength(intCtrl, 1);
@@ -402,22 +448,19 @@ begin
         end
         else
         begin
-          strCtrl[0] := strCtrl[0] + '\n' + (objArray[objId] as TMemo).Lines.Strings[counter]
-        end;;
+          strCtrl[0] := strCtrl[0] + '\n' + (objArray[objId] as TMemo).Lines.Strings[counter];
+        end;
       end;
-
-      messageId := jData.FindPath('id').AsInteger;
-      Output('{"id": ' + IntToStr(messageId) + ', "result": "' + strCtrl[0] + '"}');
-      sent := true;
-    end;
-
-    // If it's a command, reply to it
-    if (jData.FindPath('id') <> Nil) AND (sent = false) then
-    begin
-         messageId := jData.FindPath('id').AsInteger;
-         Output('{"id": ' + IntToStr(messageId) + ', "result": ' + IntToStr(objId) + '}');
+      resultValue := '"' + strCtrl[0] + '"';
     end;
   end;
+
+  messageId := jData.FindPath(ROOT_MESSAGE_ID_KEY).AsInteger;
+  Output('{'
+    + '"' + ROOT_MESSAGE_ID_KEY + '":' + IntToStr(messageId) + ','
+    + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_RESULT) + ','
+    + '"' + ROOT_RESULT_VALUE + '":' + resultValue
+    + '}');
 end;
 
 procedure TIpcThread.SetObjectEventListener;
@@ -426,27 +469,22 @@ var objId: Integer;
   eventName: String;
   propInfo: PPropInfo;
 begin
-  // param[0] = objectId
-  // param[1] = eventName
-  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) then
+  // check if objectId is valid
+  objId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+  if objId < Length(objArray) then
   begin
-    // check if objectId is valid
-    if jData.FindPath('params[0]').AsInteger < Length(objArray) then
+    eventName := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_EVENT_NAME_KEY).AsString;
+
+    // Get the info about the property
+    propInfo := GetPropInfo(objArray[objId], eventName);
+
+    // If the object has the property, change the value
+    if Assigned(propInfo) then
     begin
-      objId := jData.FindPath('params[0]').AsInteger;
-      eventName := jData.FindPath('params[1]').AsString;
-
-      // Get the info about the property
-      propInfo := GetPropInfo(objArray[objId], eventName);
-
-      // If the object has the property, change the value
-      if Assigned(propInfo) then
-      begin
-        eventHandler := TEventHandler.Create;
-        eventHandler.EventName := eventName;
-        eventHandler.ObjectId := objId;
-        SetMethodProp(objArray[objId], eventName, TMethod(@eventHandler.Call));
-      end;
+      eventHandler := TEventHandler.Create;
+      eventHandler.EventName := eventName;
+      eventHandler.ObjectId := objId;
+      SetMethodProp(objArray[objId], eventName, TMethod(@eventHandler.Call));
     end;
   end;
 end;
@@ -459,45 +497,35 @@ var  objId: Integer;
   propInfo: PPropInfo;
   subpropertyName: String;
 begin
-  // param[0] = objectId
-  // param[1] = propertyName
-  // param[2] = propertyValue
-  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) AND (jData.FindPath('params[2]') <> Nil) then
+  objId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+  obj := objArray[objId];
+  propertyName := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_PROPERTY_NAME_KEY).AsString;
+  propertyValue := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_PROPERTY_VALUE_KEY).AsString;
+
+  // The property name can be property.subproperty.subsubproperty...
+  while Pos('.', propertyName) > 0 do
   begin
-    // check if objectId is valid
-    if jData.FindPath('params[0]').AsInteger < Length(objArray) then
+    subpropertyName := Copy(propertyName, 1, Pos('.', propertyName) - 1);
+    propInfo := GetPropInfo(obj, subpropertyName);
+    Delete(propertyName, 1, Pos('.', propertyName));
+
+    if Assigned(propInfo) then
     begin
-      objId := jData.FindPath('params[0]').AsInteger;
-      obj := objArray[objId];
-      propertyName := jData.FindPath('params[1]').AsString;
-      propertyValue := jData.FindPath('params[2]').Value;
-
-      // The property name can be property.subproperty.subsubproperty...
-      while Pos('.', propertyName) > 0 do
-      begin
-        subpropertyName := Copy(propertyName, 1, Pos('.', propertyName) - 1);
-        propInfo := GetPropInfo(obj, subpropertyName);  
-        Delete(propertyName, 1, Pos('.', propertyName));
-
-        if Assigned(propInfo) then
-        begin
-          obj := GetObjectProp(obj, subpropertyName);
-        end else
-        begin
-          break;
-        end;
-      end;
-
-      // Get the info about the property
-      propInfo := GetPropInfo(obj, propertyName);
-
-      // If the object has the property, change the value
-      if Assigned(propInfo) then
-      begin
-        // @TODO: Convert propertyValue to a object checking with PropIsType and GetObjectPropClass
-        SetPropValue(obj, propertyName, propertyValue);
-      end;
+      obj := GetObjectProp(obj, subpropertyName);
+    end else
+    begin
+      break;
     end;
+  end;
+
+  // Get the info about the property
+  propInfo := GetPropInfo(obj, propertyName);
+
+  // If the object has the property, change the value
+  if Assigned(propInfo) then
+  begin
+    // @TODO: Convert propertyValue to a object checking with PropIsType and GetObjectPropClass
+    SetPropValue(obj, propertyName, propertyValue);
   end;
 end;
 
@@ -509,40 +537,71 @@ var  objId: Integer;
   messageId: Integer;
   return: String;
 begin
-  // param[0] = objectId
-  // param[1] = propertyName
-  if (jData.FindPath('params[0]') <> Nil) AND (jData.FindPath('params[1]') <> Nil) then
+  // check if objectId is valid
+  objId := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_ID_KEY).AsInteger;
+  if objId < Length(objArray) then
   begin
-    // check if objectId is valid
-    if jData.FindPath('params[0]').AsInteger < Length(objArray) then
+    propertyName := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_OBJECT_PROPERTY_NAME_KEY).AsString;
+
+    // Get the info about the property
+    propInfo := GetPropInfo(objArray[objId], propertyName);
+
+    // If the object has the property, change the value
+    if Assigned(propInfo) then
     begin
-      objId := jData.FindPath('params[0]').AsInteger;
-      propertyName := jData.FindPath('params[1]').AsString;
 
-      // Get the info about the property
-      propInfo := GetPropInfo(objArray[objId], propertyName);
+      // @todo send the Variant property as your real type
+      propertyValue := GetPropValue(objArray[objId], propertyName, true);
 
-      // If the object has the property, change the value
-      if Assigned(propInfo) then
+      if VarIsStr(propertyValue) then
       begin
-
-        // @todo send the Variant property as your real type
-        propertyValue := GetPropValue(objArray[objId], propertyName, true);
-
-        if VarIsStr(propertyValue) then
-        begin
-          return := '"' + VarToStr(propertyValue) + '"';
-        end
-        else
-        begin
-          return := VarToStr(propertyValue);
-        end;
-
-        messageId := jData.FindPath('id').AsInteger;
-        Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
+        return := '"' + VarToStr(propertyValue) + '"';
+      end
+      else
+      begin
+        return := VarToStr(propertyValue);
       end;
+
+      messageId := jData.FindPath(ROOT_MESSAGE_ID_KEY).AsInteger;
+      Output('{'
+        + '"' + ROOT_MESSAGE_ID_KEY + '":' + IntToStr(messageId) + ','
+        + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_RESULT) + ','
+        + '"' + ROOT_RESULT_VALUE + '":' + return
+        + '}');
     end;
   end;
+end;
+
+procedure TIpcThread.ShowMessage;
+var
+  Title,
+  Message : string;
+begin
+  if (jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1) <> Nil) AND (jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1).AsString <> '') then
+  begin
+    Title := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA1).AsString;
+  end
+  else
+  begin
+    Title := Application.MainForm.Caption;
+  end;
+  Message := StringReplace(jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsString, '\n', sLineBreak, [rfReplaceAll] );
+  Application.MessageBox( @Message[1], @Title[1] );
+end;
+
+procedure TIpcThread.Ping;
+var
+  messageId: Integer;
+  microtime: String;
+begin
+  messageId := jData.FindPath(ROOT_MESSAGE_ID_KEY).AsInteger;
+  microtime := jData.FindPath(ROOT_PARAMS_KEY + '.' + PARAMS_DATA).AsString;
+
+  Output('{'
+    + '"' + ROOT_MESSAGE_ID_KEY + '":' + IntToStr(messageId) + ','
+    + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_RESULT) + ','
+    + '"' + ROOT_RESULT_VALUE + '":"' + microtime + '"'
+    + '}');
 end;
 
 procedure TEventHandler.Call(Sender: TObject);
@@ -552,7 +611,11 @@ begin
   begin
     if objArray[i] = Sender then
     begin
-      Output('{"method": "callObjectEventListener", "params": [' + IntToStr(ObjectId) + ', "' + EventName + '"]}');
+      Output('{'
+        + '"' + ROOT_RESPONSE_TYPE + '":' + IntToStr(RESPONSE_TYPE_NOTIFICATION_EVENT) + ','
+        + '"' + ROOT_RESPONSE_NOTIFICATION_EVENT_OBJECTID + '":' + IntToStr(ObjectId) + ','
+        + '"' + ROOT_RESPONSE_NOTIFICATION_EVENT_EVENT + '":"' + EventName + '"'
+        + '}');
     end;
   end;
 end;

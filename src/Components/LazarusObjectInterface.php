@@ -20,7 +20,7 @@ interface LazarusObjectInterface
     /**
      * Gets the value of lazarusClass.
      *
-     * @return mixed
+     * @return int
      */
     public function getLazarusClass();
 

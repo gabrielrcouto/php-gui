@@ -3,6 +3,7 @@
 namespace Test;
 
 use Gui\Application;
+use Gui\Ipc\IpcMap;
 use Gui\Components\Window;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
@@ -34,11 +35,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function testPing()
     {
         $mock = $this->getMockBuilder('Gui\Application')
-            ->setMethods(['waitCommand'])
+            ->setMethods(['waitMessage'])
             ->getMock();
 
         $mock->expects($this->once())
-            ->method('waitCommand')
+            ->method('waitMessage')
             ->willReturn(null);
 
         $this->assertTrue(is_float($mock->ping()));
@@ -81,7 +82,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function testDestroyObject()
     {
         $appMock = $this->getMockBuilder('Gui\Application')
-            ->setMethods(['getWindow', 'sendCommand'])
+            ->setMethods(['getWindow', 'sendMessage'])
             ->getMock();
 
         $window = $this->getMockBuilder(
@@ -109,10 +110,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         );
 
         $appMock->expects($this->once())
-            ->method('sendCommand')
+            ->method('sendMessage')
             ->with(
-                'destroyObject',
-                [$mock->getLazarusObjectId()],
+                [
+                    IpcMap::ROOT_METHOD_ID_KEY => IpcMap::COMMAND_METHOD_DESTROY_OBJECT,
+                    IpcMap::ROOT_PARAMS_KEY => [
+                        IpcMap::PARAMS_OBJECT_ID_KEY => $mock->getLazarusObjectId()
+                    ]
+                ],
                 function () {
                 }
             );

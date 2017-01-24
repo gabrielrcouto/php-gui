@@ -19,7 +19,7 @@ class Label extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TLabel';
+    protected $lazarusClass = 7;
 
     /**
      * Get the font color

@@ -60,11 +60,11 @@ class Sender
     /**
      * Get a valid Lazarus RPC JSON String
      *
-     * @param MessageInterface $message Message to send
+     * @param array $message Message to send
      *
      * @return String Lazarus JSON string
      */
-    protected function getLazarusJson(MessageInterface $message)
+    protected function getLazarusJson(array $message)
     {
         return json_encode($message);
     }
@@ -97,37 +97,37 @@ class Sender
     /**
      * Process a message before sending - Useful to incrementing IDs
      *
-     * @param MessageInterface $message Message
+     * @param array $message Message
      *
      * @return void
      */
-    protected function processMessage(MessageInterface $message)
+    protected function processMessage(array & $message)
     {
-        if (property_exists($message, 'id')) {
-            $message->id = $this->lastId++;
+        if (! isset($message[IpcMap::ROOT_MESSAGE_ID_KEY])) {
+            $message[IpcMap::ROOT_MESSAGE_ID_KEY] = $this->lastId++;
         }
     }
 
     /**
      * Send a message
      *
-     * @param MessageInterface $message Message to send
+     * @param array $message Message to send
+     * @param callable $callback
      *
      * @return void
      */
-    public function send(MessageInterface $message)
+    public function send(array $message, callable $callback = null)
     {
         $this->processMessage($message);
 
-        // But into a buffer and send the max we can
-        // Each message is terminated by the NULL character
         $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\0";
 
-        if (property_exists($message, 'callback') && is_callable($message->callback)) {
+        if ($callback) {
             // It's a command!
-            $this->receiver->addMessageCallback($message->id, $message->callback);
-        } else {
-            // @todo: throw an exception
+            $this->receiver->addMessageCallback(
+                $message[IpcMap::ROOT_MESSAGE_ID_KEY],
+                $callback
+            );
         }
 
         $this->writeOnStream();
@@ -148,11 +148,11 @@ class Sender
     /**
      * Send a message and wait for the return
      *
-     * @param MessageInterface $message
+     * @param array $message
      *
      * @return mixed The return of the message
      */
-    public function waitReturn(MessageInterface $message)
+    public function waitReturn(array $message)
     {
         $this->processMessage($message);
 
@@ -162,7 +162,8 @@ class Sender
 
         return $this->receiver->waitMessage(
             $this->application->process->stdout,
-            $message
+            $message[IpcMap::ROOT_MESSAGE_ID_KEY],
+            $this->application
         );
     }
 

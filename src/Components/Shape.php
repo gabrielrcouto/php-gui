@@ -19,7 +19,7 @@ class Shape extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TShape';
+    protected $lazarusClass = 10;
 
     /**
      * Get the background color

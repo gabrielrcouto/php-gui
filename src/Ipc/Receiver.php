@@ -129,12 +129,12 @@ class Receiver
      * Decode a received message
      *
      * @param string $json Received json message
-     * @return MessageInterface|void
+     * @return array
      * @throws ComponentException
      */
     protected function jsonDecode($json)
     {
-        $obj = @json_decode($json);
+        $obj = @json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             $strErr = 'JSON ERROR: ' . $json;
             if ($this->application->getVerboseLevel() == 2) {
@@ -170,12 +170,14 @@ class Receiver
             // Now, process the message
             if ($message) {
                 if ($this->application->getVerboseLevel() == 2) {
-                    Output::out($this->prepareOutput($messageJson), 'green');
+                    if (isset($message[IpcMap::ROOT_DEBUG_KEY]) && $message[IpcMap::ROOT_DEBUG_KEY]) {
+                        $this->parseDebug($message);
+                    } else {
+                        Output::out($this->prepareOutput($messageJson), 'green');
+                    }
                 }
 
-                if (property_exists($message, 'debug')) {
-                    $this->parseDebug($message);
-                } else {
+                if (! isset($message[IpcMap::ROOT_DEBUG_KEY])) {
                     $this->parseNormal($message);
                 }
             }
@@ -207,38 +209,28 @@ class Receiver
      */
     protected function parseNormal($message)
     {
-        // Can be a command or a result
-        if ($message && property_exists($message, 'id')) {
-            if (property_exists($message, 'result')) {
+
+        switch ($message[IpcMap::ROOT_RESPONSE_TYPE]) {
+            case IpcMap::RESPONSE_TYPE_RESULT:
+                $messageId = $message[IpcMap::ROOT_MESSAGE_ID_KEY];
+                $result = $message[IpcMap::ROOT_RESULT_VALUE];
                 if ($this->isWaitingMessage) {
-                    if ($message->id == $this->waitingMessageId) {
-                        $this->waitingMessageResult = $message->result;
+                    if ($messageId == $this->waitingMessageId) {
+                        $this->waitingMessageResult = $result;
                         $this->isWaitingMessage = false;
                     } else {
                         $this->parseMessagesBuffer[] = $message;
                     }
                 } else {
-                    $this->callMessageCallback($message->id, $message->result);
+                    $this->callMessageCallback($messageId, $result);
                 }
-            } else {
-                // @todo: Command implementation
-            }
-
-            return;
-        }
-
-        // It's waiting a message? Store for future parsing
-        if ($this->isWaitingMessage) {
-            $this->parseMessagesBuffer[] = $message;
-            return;
-        }
-
-        // This is a notification/event!
-        if ($message && ! property_exists($message, 'id')) {
-            if ($message->method == 'callObjectEventListener') {
-                // @todo: Check if params contains all the items
-                $this->callObjectEventListener($message->params[0], $message->params[1]);
-            }
+                break;
+            case IpcMap::RESPONSE_TYPE_NOTIFICATION_EVENT:
+                $this->callObjectEventListener(
+                    $message[IpcMap::ROOT_RESPONSE_NOTIFICATION_EVENT_OBJECTID],
+                    $message[IpcMap::ROOT_RESPONSE_NOTIFICATION_EVENT_EVENT]
+                );
+                break;
         }
     }
 
@@ -310,19 +302,20 @@ class Receiver
      * Wait a message result
      *
      * @param Stream $stdout  Stdout Stream
-     * @param MessageInterface $message Command waiting result
+     * @param int $message
+     * @param Application $application
      *
      * @return mixed The result
      */
-    public function waitMessage(Stream $stdout, MessageInterface $message)
+    public function waitMessage(Stream $stdout, $messageId, Application $application)
     {
         $buffer = [];
 
-        $this->waitingMessageId = $message->id;
+        $this->waitingMessageId = $messageId;
         $this->isWaitingMessage = true;
 
         // Read the stdin until we get the message replied
-        while ($this->isWaitingMessage) {
+        while ($this->isWaitingMessage && $application->isRunning()) {
             $this->tick();
             usleep(1);
         }

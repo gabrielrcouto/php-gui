@@ -13,11 +13,11 @@ namespace Gui\Components;
 class Button extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as int
      *
-     * @var string $lazarusClass
+     * @var int $lazarusClass
      */
-    protected $lazarusClass = 'TButton';
+    protected $lazarusClass = 2;
 
     /**
      * Get the Button value

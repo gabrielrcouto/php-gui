@@ -2,7 +2,7 @@
 
 namespace Gui\Components;
 
-use Gui\Color;
+use Gui\Ipc\IpcMap;
 
 /**
  * This is the Select Class
@@ -19,7 +19,7 @@ class Select extends VisualObject
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TComboBox';
+    protected $lazarusClass = 9;
 
     /**
      * Sets the options
@@ -32,14 +32,13 @@ class Select extends VisualObject
     {
         foreach ($options as $key => $option) {
             if (! $option instanceof Option) {
-                // @todo: throw an exception
-                unset($option[$key]);
+                throw new \InvalidArgumentException('Element in array options must be an instance of Option');
             } else {
                 $this->call(
-                    'items.addObject',
+                    IpcMap::OBJECT_METHOD_ITEMS_ADD_OBJECT,
                     [
-                        $option->getLabel(),
-                        $option->getValue()
+                        IpcMap::PARAMS_DATA => $option->getLabel(),
+                        IpcMap::PARAMS_DATA1 => $option->getValue()
                     ]
                 );
             }
