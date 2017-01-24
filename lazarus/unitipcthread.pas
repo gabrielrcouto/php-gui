@@ -255,6 +255,9 @@ begin
     end else if (jData.FindPath('method').value = 'ping') then
     begin
       Ping;
+    end else if (jData.FindPath('method').value = 'exit') then
+    begin
+      halt;
     end;
   end;
 end;

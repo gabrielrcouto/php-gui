@@ -334,6 +334,20 @@ class Application
     }
 
     /**
+     * Terminates the application
+     *
+     * @return void
+     */
+    public function terminate()
+    {
+        $this->sendCommand("exit", [], function () {
+            
+        });
+        $this->process->terminate();
+        $this->process->close();
+    }
+
+    /**
      * Send a command
      *
      * @param string $method the method name
