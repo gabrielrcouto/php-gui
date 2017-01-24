@@ -339,10 +339,10 @@ class Application
 	 * @return void
 	 */
     public function terminate()
-	{
-		$this->sendCommand("exit", [], function(){});
-		$this->process->terminate();
-		$this->process->close();
+    {
+        $this->sendCommand("exit", [], function(){});
+        $this->process->terminate();
+        $this->process->close();
 	}
 
     /**
