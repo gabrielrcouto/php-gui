@@ -343,7 +343,7 @@ class Application
         $this->sendCommand("exit", [], function(){});
         $this->process->terminate();
         $this->process->close();
-	}
+    }
 
     /**
      * Send a command
