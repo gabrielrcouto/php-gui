@@ -27,6 +27,11 @@ class ProgressBar extends VisualObject
         return $this;
     }
 
+    public function getStep()
+    {
+        return $this->get('step');
+    }
+
     public function setPosition($position)
     {
         $this->set('position', $position);
@@ -34,13 +39,32 @@ class ProgressBar extends VisualObject
         return $this;
     }
 
-    public function getStep()
-    {
-        return $this->get('step');
-    }
-
     public function getPosition()
     {
         return $this->get('position');
+    }
+
+    public function setMax($max)
+    {
+        $this->set('max', $max);
+
+        return $this;
+    }
+
+    public function getMax()
+    {
+        return $this->get('max');
+    }
+
+    public function setMin($min)
+    {
+        $this->set('min', $min);
+
+        return $this;
+    }
+
+    public function getMin()
+    {
+        return $this->get('min');
     }
 }
