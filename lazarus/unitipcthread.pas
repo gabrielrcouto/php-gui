@@ -536,7 +536,8 @@ begin
 
         if VarIsStr(propertyValue) then
         begin
-          return := '"' + VarToStr(propertyValue) + '"';
+          {return := '"' + VarToStr(propertyValue) + '"';}
+          return := '"' + StringReplace(VarToStr(propertyValue), '\', '\\', [rfReplaceAll]) + '"';
         end
         else
         begin
