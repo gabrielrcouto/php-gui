@@ -6,12 +6,13 @@ namespace Gui\Components;
  * This is the Directory Field Class
  *
  * It is a visual component for select directory field.
- * 
+ *
  * @link http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdirectoryedit.html TDirectoryEdit Reference
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
-class DirectoryField extends VisualObject {
+class DirectoryField extends VisualObject
+{
 
     /**
      * The lazarus class as string
@@ -19,7 +20,7 @@ class DirectoryField extends VisualObject {
      * @var string $lazarusClass
      */
     protected $lazarusClass = 'TDirectoryEdit';
-    
+
     /**
      * Gets the directory selected.
      *
@@ -29,7 +30,7 @@ class DirectoryField extends VisualObject {
     {
         return $this->get('Directory');
     }
-    
+
     /**
      * Sets the title that appears on the Select Directory dialog.
      *
@@ -43,7 +44,7 @@ class DirectoryField extends VisualObject {
 
         return $this;
     }
-    
+
     /**
      * Gets the title that appears on the Select Directory dialog.
      *
@@ -68,7 +69,7 @@ class DirectoryField extends VisualObject {
 
         return $this;
     }
-    
+
     /**
      * Gets the  root directory for searching.
      *
@@ -93,7 +94,7 @@ class DirectoryField extends VisualObject {
 
         return $this;
     }
-    
+
     /**
      * Gets if direct data input to the Edit Box is permitted.
      *
@@ -104,6 +105,4 @@ class DirectoryField extends VisualObject {
     {
         return $this->get('DirectInput');
     }
-    
-    
 }
