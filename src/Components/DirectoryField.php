@@ -2,7 +2,6 @@
 
 namespace Gui\Components;
 
-
 /**
  * This is the Directory Field Class
  *
