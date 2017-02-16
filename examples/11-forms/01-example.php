@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Directory Field Example
  */
@@ -14,18 +15,12 @@ $application->on('start', function() use ($application) {
     $field = (new DirectoryField())
         ->setLeft(10)
         ->setTop(80)
-        ->setTitle('PHP-GUI Dialog Field Example');    
-   
-//    $field->on('EditingDone', function() use ($field){
-    $field->on('change', function() use ($field){
+        ->setTitle('PHP-GUI Dialog Field Example');
+
+    $field->on('change', function() use ($field) {
         echo "Directory selected:\n";
         echo "\t{$field->getValue()}\n";
     });
 });
-
-//$application->on('exit', function() use($application) {
-//    $application->terminate();
-//    exit(0);
-//});
 
 $application->run();
