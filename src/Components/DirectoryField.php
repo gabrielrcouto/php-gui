@@ -11,8 +11,7 @@ namespace Gui\Components;
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
-class DirectoryField extends VisualObject
-{
+class DirectoryField extends VisualObject {
 
     /**
      * The lazarus class as string
@@ -26,8 +25,7 @@ class DirectoryField extends VisualObject
      *
      * @return string
      */
-    public function getValue()
-    {
+    public function getValue() {
         return $this->get('Directory');
     }
 
@@ -38,8 +36,7 @@ class DirectoryField extends VisualObject
      *
      * @return self
      */
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->set('DialogTitle', $title);
 
         return $this;
@@ -51,8 +48,7 @@ class DirectoryField extends VisualObject
      *
      * @return string
      */
-    public function getTitle()
-    {
+    public function getTitle() {
         return $this->get('DialogTitle');
     }
 
@@ -63,8 +59,7 @@ class DirectoryField extends VisualObject
      *
      * @return self
      */
-    public function setBaseDir($path)
-    {
+    public function setBaseDir($path) {
         $this->set('RootDir', $path);
 
         return $this;
@@ -76,9 +71,8 @@ class DirectoryField extends VisualObject
      *
      * @return string
      */
-    public function getBaseDir()
-    {
-        return $this->get('DialogTitle');
+    public function getBaseDir() {
+        return $this->get('RootDir');
     }
 
     /**
@@ -88,8 +82,7 @@ class DirectoryField extends VisualObject
      *
      * @return self
      */
-    public function setAcceptInput($bool)
-    {
+    public function setAcceptInput($bool) {
         $this->set('DirectInput', $bool);
 
         return $this;
@@ -101,8 +94,8 @@ class DirectoryField extends VisualObject
      *
      * @return string
      */
-    public function getAcceptInput()
-    {
+    public function getAcceptInput() {
         return $this->get('DirectInput');
     }
+
 }
