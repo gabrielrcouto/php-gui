@@ -158,6 +158,7 @@ begin
   RegisterClass(TMemo);
   RegisterClass(TProgressBar);
   RegisterClass(TDirectoryEdit);
+  RegisterClass(TFileNameEdit);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -534,7 +535,7 @@ begin
         // @todo send the Variant property as your real type
         propertyValue := GetPropValue(objArray[objId], propertyName, true);
 
-        if VarIsStr(propertyValue) then
+        {if VarIsStr(propertyValue) then
         begin
           {return := '"' + VarToStr(propertyValue) + '"';}
           return := '"' + StringReplace(VarToStr(propertyValue), '\', '\\', [rfReplaceAll]) + '"';
@@ -542,6 +543,23 @@ begin
         else
         begin
           return := VarToStr(propertyValue);
+        end;}
+
+        if VarIsStr(propertyValue) then
+        begin
+          return := '"' + StringReplace(VarToStr(propertyValue), '\', '\\', [rfReplaceAll]) + '"';
+        end
+        else
+        begin
+          if VarIsArray(propertyValue) then
+          begin
+               {return := '"' + StringReplace(VarToStr(propertyValue.Text), '\', '\\', [rfReplaceAll]) + '"';}
+            return := VarToStr('Está detectando o tipo');
+          end
+          else
+          begin
+               return := VarToStr(propertyValue);
+          end
         end;
 
         messageId := jData.FindPath('id').AsInteger;
