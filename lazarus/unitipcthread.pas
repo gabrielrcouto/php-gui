@@ -514,6 +514,7 @@ var  objId: Integer;
   propInfo: PPropInfo;
   messageId: Integer;
   return: String;
+  counter: Integer;
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -525,45 +526,54 @@ begin
       objId := jData.FindPath('params[0]').AsInteger;
       propertyName := jData.FindPath('params[1]').AsString;
 
-      // Get the info about the property
-      propInfo := GetPropInfo(objArray[objId], propertyName);
-
-      // If the object has the property, change the value
-      if Assigned(propInfo) then
+      if (objArray[objId].ClassType.InheritsFrom(TFileNameEdit)) AND (propertyName = 'DialogFiles') then
       begin
 
-        // @todo send the Variant property as your real type
-        propertyValue := GetPropValue(objArray[objId], propertyName, true);
+        return := '';
 
-        {if VarIsStr(propertyValue) then
+        for counter := 0 to ((objArray[objId] as TFileNameEdit).DialogFiles.Count - 1) do
         begin
-          {return := '"' + VarToStr(propertyValue) + '"';}
-          return := '"' + StringReplace(VarToStr(propertyValue), '\', '\\', [rfReplaceAll]) + '"';
-        end
-        else
-        begin
-          return := VarToStr(propertyValue);
-        end;}
-
-        if VarIsStr(propertyValue) then
-        begin
-          return := '"' + StringReplace(VarToStr(propertyValue), '\', '\\', [rfReplaceAll]) + '"';
-        end
-        else
-        begin
-          if VarIsArray(propertyValue) then
+          if (counter = 1) then
           begin
-               {return := '"' + StringReplace(VarToStr(propertyValue.Text), '\', '\\', [rfReplaceAll]) + '"';}
-            return := VarToStr('Está detectando o tipo');
+            return := (objArray[objId] as TFileNameEdit).DialogFiles.Strings[counter];
           end
           else
           begin
-               return := VarToStr(propertyValue);
-          end
+            return := return + ',' + (objArray[objId] as TFileNameEdit).DialogFiles.Strings[counter];
+          end;
         end;
 
         messageId := jData.FindPath('id').AsInteger;
-        Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
+        return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+        return := StringReplace(return, '"', '\"', [rfReplaceAll]);
+        Output('{"id": ' + IntToStr(messageId) + ',"result": "' + return + '"}');
+      end
+      else
+      begin
+        // Get the info about the property
+        propInfo := GetPropInfo(objArray[objId], propertyName);
+
+        // If the object has the property, change the value
+        if Assigned(propInfo) then
+        begin
+
+          // @todo send the Variant property as your real type
+          propertyValue := GetPropValue(objArray[objId], propertyName, true);
+
+          if VarIsStr(propertyValue) then
+          begin
+            return := '"' + VarToStr(propertyValue) + '"';
+          end
+          else
+          begin
+            return := VarToStr(propertyValue);
+          end;
+
+          messageId := jData.FindPath('id').AsInteger;
+          return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+          return := StringReplace(return, '"', '\"', [rfReplaceAll]);
+          Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
+        end;
       end;
     end;
   end;

@@ -13,7 +13,8 @@ use Gui\OpenOptions;
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
-class FileField extends VisualObject {
+class FileField extends VisualObject
+{
 
     /**
      * The lazarus class as string
@@ -34,7 +35,7 @@ class FileField extends VisualObject {
 
     public function getFileList()
     {
-        return $this->get('DialogFiles');
+        return explode(',', $this->get('DialogFiles'));
     }
 
     /**
@@ -116,7 +117,8 @@ class FileField extends VisualObject {
     /**
      * Sets filter for dialog extensions.
      *
-     * @param array $extensions the extension list where key is extension (xml, json, ...) and value is extension description.
+     * @param array $extensions the extension list where key is extension (xml, json, ...)
+     * and value is extension description.
      * @return self
      */
     public function setExtensionFilter($extensions)
@@ -124,7 +126,7 @@ class FileField extends VisualObject {
 
         $arr = [];
 
-        foreach ($extensions as $ext => $desc){
+        foreach ($extensions as $ext => $desc) {
             $arr[] = "$desc|*.$ext";
         }
 
@@ -146,16 +148,16 @@ class FileField extends VisualObject {
         $ext_list = [];
         $descriptions = [];
 
-        foreach ($arr as $item){
+        foreach ($arr as $item) {
             $test = substr($item, 0, 2);
-            if($test === '*.'){
+            if ($test === '*.') {
                 $ext_list[] = substr($item, 2);
-            }else{
+            } else {
                 $descriptions[] = $item;
             }
         }
 
-        foreach ($ext_list as $key => $ext){
+        foreach ($ext_list as $key => $ext) {
             $extensions[$ext] = $descriptions[$key];
         }
 
