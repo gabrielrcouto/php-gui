@@ -134,5 +134,4 @@ class OpenOptions extends OptionMgr
      * Dialog option to ofAutoPreview.
      */
     const AUTO_PREVIEW = 'ofAutoPreview';
-
 }

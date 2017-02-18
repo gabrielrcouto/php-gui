@@ -32,9 +32,9 @@ class OptionMgr
      */
     public static function parseOptionString($options)
     {
-        if(strlen($options) > 0){
+        if (strlen($options) > 0) {
             return array_map('trim', explode(',', $options));
-        }else{
+        } else {
             return [];
         }
     }

@@ -9,7 +9,6 @@ use Gui\Application;
 use Gui\Components\DirectoryField;
 
 $application = new Application();
-$application->setVerboseLevel(0);
 
 $application->on('start', function() use ($application) {
     $field = (new DirectoryField())
