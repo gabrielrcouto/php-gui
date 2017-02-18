@@ -24,18 +24,18 @@ class FileField extends VisualObject
     protected $lazarusClass = 'TFileNameEdit';
 
     /**
-     * Gets the file selected.
+     * Gets the files selected.
      *
-     * @return string
+     * @return array
      */
     public function getValue()
     {
-        return $this->get('FileName');
-    }
 
-    public function getFileList()
-    {
-        return explode(',', $this->get('DialogFiles'));
+        $list = explode(';', $this->get('DialogFiles'));
+
+        array_pop($list);
+
+        return $list;
     }
 
     /**
@@ -255,5 +255,15 @@ class FileField extends VisualObject
     public function isAutoSelect()
     {
         return (bool) $this->get('AutoSelect');
+    }
+
+    /**
+     * Get number of files selected.
+     *
+     * @return int
+     */
+    public function countFiles()
+    {
+        return count($this->getValue());
     }
 }

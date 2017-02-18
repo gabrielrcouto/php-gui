@@ -22,7 +22,7 @@ $application->on('start', function() use ($application) {
             ;
 
     $field->on('change', function() use ($application, $field) {
-        $application->alert(implode(', ', $field->getFileList()), 'Files');
+        $application->alert(implode(', ', $field->getValue()), 'Files');
     });
 });
 

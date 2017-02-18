@@ -514,7 +514,7 @@ var  objId: Integer;
   propInfo: PPropInfo;
   messageId: Integer;
   return: String;
-  counter: Integer;
+
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -528,24 +528,13 @@ begin
 
       if (objArray[objId].ClassType.InheritsFrom(TFileNameEdit)) AND (propertyName = 'DialogFiles') then
       begin
+        // Get file list from TFileNameEdit
+        return := (objArray[objId] as TFileNameEdit).DialogFiles.Text;
+        return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+        return := StringReplace(return, #13#10, ';', [rfReplaceAll]);
 
-        return := '';
-
-        for counter := 0 to ((objArray[objId] as TFileNameEdit).DialogFiles.Count - 1) do
-        begin
-          if (counter = 1) then
-          begin
-            return := (objArray[objId] as TFileNameEdit).DialogFiles.Strings[counter];
-          end
-          else
-          begin
-            return := return + ',' + (objArray[objId] as TFileNameEdit).DialogFiles.Strings[counter];
-          end;
-        end;
 
         messageId := jData.FindPath('id').AsInteger;
-        return := StringReplace(return, '\', '\\', [rfReplaceAll]);
-        return := StringReplace(return, '"', '\"', [rfReplaceAll]);
         Output('{"id": ' + IntToStr(messageId) + ',"result": "' + return + '"}');
       end
       else
