@@ -3,15 +3,15 @@
 namespace Gui\Components;
 
 /**
- * This is the Directory Field Class
+ * This is the Directory Input Class
  *
- * It is a visual component for select directory field.
+ * It is a visual component for select directory input.
  *
  * @link http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdirectoryedit.html TDirectoryEdit Reference
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
-class DirectoryField extends VisualObject
+class InputDirectory extends VisualObject
 {
 
     /**
