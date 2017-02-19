@@ -1,5 +1,4 @@
 <?php
-
 namespace Gui\Components;
 
 use Gui\OpenOptions;
@@ -17,6 +16,126 @@ class InputFile extends VisualObject
 {
 
     /**
+     * Dialog option to ofReadOnly.
+     */
+    const READ_ONLY = 'ofReadOnly';
+
+    /**
+     * Dialog option to ofOverwritePrompt.
+     */
+    const OVERWRITE_PROMPT = 'ofOverwritePrompt';
+
+    /**
+     * Dialog option to ofHideReadOnly.
+     */
+    const HIDE_READ_ONLY = 'ofHideReadOnly';
+
+    /**
+     * Dialog option to ofNoChangeDir.
+     */
+    const NO_CHANGE_DIR = 'ofNoChangeDir';
+
+    /**
+     * Dialog option to ofShowHelp.
+     */
+    const SHOW_HELP = 'ofShowHelp';
+
+    /**
+     * Dialog option to ofNoValidate.
+     */
+    const NO_VALIDATE = 'ofNoValidate';
+
+    /**
+     * Dialog option to ofAllowMultiSelect.
+     */
+    const ALLOW_MULTI_SELECT = 'ofAllowMultiSelect';
+
+    /**
+     * Dialog option to ofExtensionDifferent.
+     */
+    const EXTENSION_DIFFERENT = 'ofExtensionDifferent';
+
+    /**
+     * Dialog option to ofPathMustExist.
+     */
+    const PATH_MUST_EXIST = 'ofPathMustExist';
+
+    /**
+     * Dialog option to ofFileMustExist.
+     */
+    const FILE_MUST_EXIST = 'ofFileMustExist';
+
+    /**
+     * Dialog option to ofCreatePrompt.
+     */
+    const CREATE_PROMPT = 'ofCreatePrompt';
+
+    /**
+     * Dialog option to ofShareAware.
+     */
+    const SHARE_AWARE = 'ofShareAware';
+
+    /**
+     * Dialog option to ofNoReadOnlyReturn.
+     */
+    const NO_READ_ONLY_RETURN = 'ofNoReadOnlyReturn';
+
+    /**
+     * Dialog option to ofNoTestFileCreate.
+     */
+    const NO_TEST_FILE_CREATE = 'ofNoTestFileCreate';
+
+    /**
+     * Dialog option to ofNoNetworkButton.
+     */
+    const NO_NETWORK_BUTTON = 'ofNoNetworkButton';
+
+    /**
+     * Dialog option to ofNoLongNames.
+     */
+    const NO_LONG_NAMES = 'ofNoLongNames';
+
+    /**
+     * Dialog option to ofOldStyleDialog.
+     */
+    const OLD_STYLE_DIALOG = 'ofOldStyleDialog';
+
+    /**
+     * Dialog option to ofNoDereferenceLinks.
+     */
+    const NO_DEREFERENCE_LINKS = 'ofNoDereferenceLinks';
+
+    /**
+     * Dialog option to ofEnableIncludeNotify.
+     */
+    const ENABLE_INCLUDE_NOTIFY = 'ofEnableIncludeNotify';
+
+    /**
+     * Dialog option to ofEnableSizing.
+     */
+    const ENABLE_SIZING = 'ofEnableSizing';
+
+    /**
+     * Dialog option to ofDontAddToRecent.
+     */
+    const DONT_ADD_TO_RECENT = 'ofDontAddToRecent';
+
+    /**
+     * Dialog option to ofForceShowHidden.
+     */
+    const FORCE_SHOW_HIDDEN = 'ofForceShowHidden';
+
+    /**
+     * Dialog option to ofViewDetail.
+     */
+    const VIEW_DETAIL = 'ofViewDetail';
+
+    /**
+     * Dialog option to ofAutoPreview.
+     */
+    const AUTO_PREVIEW = 'ofAutoPreview';
+
+    /**
      * The lazarus class as string
      *
      * @var string $lazarusClass
@@ -30,7 +149,6 @@ class InputFile extends VisualObject
      */
     public function getValue()
     {
-
         $list = explode(';', $this->get('DialogFiles'));
 
         array_pop($list);
@@ -71,7 +189,7 @@ class InputFile extends VisualObject
      */
     public function setDialogOptions(...$options)
     {
-        $str_options = \Gui\OptionMgr::getOptionString($options);
+        $str_options = $this->getOptionString($options);
         $this->set('DialogOptions', $str_options);
 
         return $this;
@@ -86,7 +204,7 @@ class InputFile extends VisualObject
     {
         $options = $this->get('DialogOptions');
 
-        return OpenOptions::parseOptionString($options);
+        return $this->parseOptionString($options);
     }
 
     /**
@@ -123,7 +241,6 @@ class InputFile extends VisualObject
      */
     public function setExtensionFilter($extensions)
     {
-
         $arr = [];
 
         foreach ($extensions as $ext => $desc) {
@@ -142,7 +259,6 @@ class InputFile extends VisualObject
      */
     public function getExtensionFilter()
     {
-
         $arr = explode('|', $this->get('Filter'));
 
         $ext_list = [];
@@ -162,7 +278,6 @@ class InputFile extends VisualObject
         }
 
         return $extensions;
-
     }
 
     /**
@@ -265,5 +380,32 @@ class InputFile extends VisualObject
     public function countFiles()
     {
         return count($this->getValue());
+    }
+
+    /**
+     * Returns a string with the representation [option1, option2, ...] to be configured by Lazarus.
+     *
+     * @param array $options the options
+     * @return string a string [option1, options2, option3,...]
+     */
+    private function getOptionString($options)
+    {
+        $str = join(', ', $options);
+        return "[$str]";
+    }
+
+    /**
+     * Parse an option string received from Lazarus.
+     *
+     * @param string $options the options string
+     * @return array
+     */
+    private function parseOptionString($options)
+    {
+        if (strlen($options) > 0) {
+            return array_map('trim', explode(',', $options));
+        } else {
+            return [];
+        }
     }
 }

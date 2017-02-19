@@ -1,5 +1,4 @@
 <?php
-
 /*
  * File Field Example
  */
@@ -13,13 +12,13 @@ $application = new Application();
 
 $application->on('start', function() use ($application) {
     $field = (new InputFile())
-            ->setLeft(10)
-            ->setTop(80)
-            ->setWidth(200)
-            ->setAutoSize(true)
-            ->setBaseDir('C:\Users\Arthur\Documents\NetBeansProjects\php-gui')
-            ->setDialogOptions(OpenOptions::ALLOW_MULTI_SELECT)
-            ;
+        ->setLeft(10)
+        ->setTop(80)
+        ->setWidth(200)
+        ->setAutoSize(true)
+        ->setBaseDir('C:\Users\Arthur\Documents\NetBeansProjects\php-gui')
+        ->setDialogOptions(InputFile::ALLOW_MULTI_SELECT)
+    ;
 
     $field->on('change', function() use ($application, $field) {
         $application->alert(implode(', ', $field->getValue()), 'Files');
