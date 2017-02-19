@@ -7,12 +7,12 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Gui\Application;
 use Gui\OpenOptions;
-use Gui\Components\FileField;
+use Gui\Components\InputFile;
 
 $application = new Application();
 
 $application->on('start', function() use ($application) {
-    $field = (new FileField())
+    $field = (new InputFile())
             ->setLeft(10)
             ->setTop(80)
             ->setWidth(200)

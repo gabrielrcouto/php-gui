@@ -5,15 +5,15 @@ namespace Gui\Components;
 use Gui\OpenOptions;
 
 /**
- * This is the File Field Class
+ * This is the File Input Class
  *
- * It is a visual component for select file field.
+ * It is a visual component for select file input.
  *
  * @link http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tfilenameedit.html TFileNameEdit Reference
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
-class FileField extends VisualObject
+class InputFile extends VisualObject
 {
 
     /**
