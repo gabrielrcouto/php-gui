@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn;
 
 type
 
@@ -157,6 +157,8 @@ begin
   RegisterClass(TComboBox);
   RegisterClass(TMemo);
   RegisterClass(TProgressBar);
+  RegisterClass(TDirectoryEdit);
+  RegisterClass(TFileNameEdit);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -512,6 +514,7 @@ var  objId: Integer;
   propInfo: PPropInfo;
   messageId: Integer;
   return: String;
+
 begin
   // param[0] = objectId
   // param[1] = propertyName
@@ -523,27 +526,43 @@ begin
       objId := jData.FindPath('params[0]').AsInteger;
       propertyName := jData.FindPath('params[1]').AsString;
 
-      // Get the info about the property
-      propInfo := GetPropInfo(objArray[objId], propertyName);
-
-      // If the object has the property, change the value
-      if Assigned(propInfo) then
+      if (objArray[objId].ClassType.InheritsFrom(TFileNameEdit)) AND (propertyName = 'DialogFiles') then
       begin
+        // Get file list from TFileNameEdit
+        return := (objArray[objId] as TFileNameEdit).DialogFiles.Text;
+        return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+        return := StringReplace(return, #13#10, ';', [rfReplaceAll]);
 
-        // @todo send the Variant property as your real type
-        propertyValue := GetPropValue(objArray[objId], propertyName, true);
-
-        if VarIsStr(propertyValue) then
-        begin
-          return := '"' + VarToStr(propertyValue) + '"';
-        end
-        else
-        begin
-          return := VarToStr(propertyValue);
-        end;
 
         messageId := jData.FindPath('id').AsInteger;
-        Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
+        Output('{"id": ' + IntToStr(messageId) + ',"result": "' + return + '"}');
+      end
+      else
+      begin
+        // Get the info about the property
+        propInfo := GetPropInfo(objArray[objId], propertyName);
+
+        // If the object has the property, change the value
+        if Assigned(propInfo) then
+        begin
+
+          // @todo send the Variant property as your real type
+          propertyValue := GetPropValue(objArray[objId], propertyName, true);
+
+          if VarIsStr(propertyValue) then
+          begin
+            return := '"' + VarToStr(propertyValue) + '"';
+          end
+          else
+          begin
+            return := VarToStr(propertyValue);
+          end;
+
+          messageId := jData.FindPath('id').AsInteger;
+          return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+          return := StringReplace(return, '"', '\"', [rfReplaceAll]);
+          Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
+        end;
       end;
     end;
   end;
