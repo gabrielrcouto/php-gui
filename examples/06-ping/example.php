@@ -9,9 +9,9 @@ use Gui\Output;
 $application = new Application([
     'title' => 'PHP <=> Lazarus Speed Tester',
     'left' => 248,
-    'top' => 50,
-    'width' => 400,
-    'height' => 200
+    // 'top' => 50,
+    // 'width' => 400,
+    // 'height' => 200
 ]);
 
 $application->on('start', function() use ($application) {
