@@ -161,6 +161,7 @@ begin
   RegisterClass(TFileNameEdit);
   RegisterClass(TSpinEdit);
   RegisterClass(TFloatSpinEdit);
+  RegisterClass(TDateEdit);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
