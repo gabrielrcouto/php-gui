@@ -8,3 +8,4 @@ bin/*
 !bin/generatedoc
 phpunit.xml
 doc/
+.idea
