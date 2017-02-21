@@ -2,47 +2,22 @@
 namespace Gui\Components;
 
 /**
- * This is the InputDate Class
+ * This is the InputTime Class
  *
- * It is a visual component for InputDate, an EditBox to hold a date, with an attached SpeedButton that will summon a date selection (calendar) dialog.
+ * It is a visual component for InputTime, an EditBox to hold a time, with an attached SpeedButton that will summon a time selection dialog.
  *
  * @author Everton da Rosa everton3x@gmail.com
  * @since 0.1
  */
-class InputDate extends VisualObject
+class InputTime extends VisualObject
 {
-
-    /**
-     * dsShowHeadings
-     */
-    const SHOW_HEADINGS = 'dsShowHeadings';
-
-    /**
-     * dsShowDayNames
-     */
-    const SHOW_DAY_NAMES = 'dsShowDayNames';
-
-    /**
-     * dsNoMonthChange
-     */
-    const NO_MONTH_CHANGE = 'dsNoMonthChange';
-
-    /**
-     * dsShowWeekNumbers
-     */
-    const SHOW_WEEK_NUMBERS = 'dsShowWeekNumbers';
-
-    /**
-     * dsStartMonday
-     */
-    const START_MONDAY = 'dsStartMonday';
 
     /**
      * The lazarus class as string
      *
      * @var string $lazarusClass
      */
-    protected $lazarusClass = 'TDateEdit';
+    protected $lazarusClass = 'TTimeEdit';
 
     /**
      * Sets if the button only appears when the control receives focus.
@@ -122,11 +97,11 @@ class InputDate extends VisualObject
      * @param array $options the options
      * @return string a string [option1, options2, option3,...]
      */
-    private function getOptionString($options)
-    {
-        $str = join(', ', $options);
-        return "[$str]";
-    }
+//    private function getOptionString($options)
+//    {
+//        $str = join(', ', $options);
+//        return "[$str]";
+//    }
 
     /**
      * Parse an option string received from Lazarus.
@@ -134,26 +109,26 @@ class InputDate extends VisualObject
      * @param string $options the options string
      * @return array
      */
-    private function parseOptionString($options)
-    {
-        if (strlen($options) > 0) {
-            return array_map('trim', explode(',', $options));
-        } else {
-            return [];
-        }
-    }
+//    private function parseOptionString($options)
+//    {
+//        if (strlen($options) > 0) {
+//            return array_map('trim', explode(',', $options));
+//        } else {
+//            return [];
+//        }
+//    }
 
     /**
      * Gets the dialog options.
      *
      * @return array the options dialog
      */
-    public function getDialogOptions()
-    {
-        $options = $this->get('CalendarDisplaySettings');
-
-        return $this->parseOptionString($options);
-    }
+//    public function getDialogOptions()
+//    {
+//        $options = $this->get('CalendarDisplaySettings');
+//
+//        return $this->parseOptionString($options);
+//    }
 
     /**
      * Sets teh dialog options.
@@ -161,11 +136,11 @@ class InputDate extends VisualObject
      * @param string $options the options.
      * @return self
      */
-    public function setDialogOptions(...$options)
-    {
-        $str_options = $this->getOptionString($options);
-        $this->set('CalendarDisplaySettings', $str_options);
-
-        return $this;
-    }
+//    public function setDialogOptions(...$options)
+//    {
+//        $str_options = $this->getOptionString($options);
+//        $this->set('CalendarDisplaySettings', $str_options);
+//
+//        return $this;
+//    }
 }
