@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar;
 
 type
 
@@ -163,6 +163,7 @@ begin
   RegisterClass(TFloatSpinEdit);
   RegisterClass(TDateEdit);
   RegisterClass(TTimeEdit);
+  RegisterClass(TCalendar);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
