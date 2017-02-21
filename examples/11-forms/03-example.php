@@ -23,7 +23,6 @@ $application->on('start', function() use ($application) {
         ->setWidth(200)
     ;
 
-    var_dump($field->get('EchoMode'));
 
     $field->on('EditingDone', function() use ($application, $field) {
         $application->alert($field->getValue(), 'Password');
