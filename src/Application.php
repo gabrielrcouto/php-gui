@@ -289,6 +289,8 @@ class Application
             $this->fire('exit');
             $this->running = false;
             $application->loop->stop();
+
+            echo 'Process exited' . PHP_EOL;
         });
 
         $this->receiver = $receiver = new Receiver($this);
@@ -343,7 +345,7 @@ class Application
     public function terminate()
     {
         $this->sendCommand("exit", [], function () {
-            
+
         });
         $this->process->terminate();
         $this->process->close();

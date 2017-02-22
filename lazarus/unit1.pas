@@ -29,10 +29,10 @@ type
     procedure SetObjectProperty;
     procedure DisplayMessage;
   protected
-    procedure Output(Msg: String);
     procedure ParseMessage(Msg: String);
   public
-    messages: array of String;
+    procedure ApplicationExceptionHandler(Sender: TObject; E: Exception);
+    procedure Output(Msg: String);
   end;
 
 type
@@ -249,6 +249,12 @@ begin
   end;
 end;
 
+procedure TForm1.ApplicationExceptionHandler(Sender: TObject; E: Exception);
+begin
+  // DumpExceptionCallStack;
+  // Halt; // End of program execution
+end;   
+
 procedure TForm1.DestroyObject;
 var obj: TControl;
   objId: Integer;
@@ -330,7 +336,15 @@ begin
 end;
 
 procedure TForm1.GuiMessageHandler(var Msg: TLMessage);
+// var
+  // MsgStr: PChar;
+  // MsgPasStr: string;
 begin
+  // Output(String(Msg.wParam));
+  // MsgStr := PChar(Msg.wParam);
+  // MsgPasStr := StrPas(MsgStr);
+  // ShowMessage(String(Msg.wParam));
+  // ShowMessage(IntToStr(Msg.wParam));
   ParseMessage(String(Msg.wParam));
 end;
 
@@ -343,7 +357,6 @@ end;
 procedure TForm1.ParseMessage(Msg: String);
 begin
   jData := GetJSON(Msg);
-
 
   // All messages need a method
   if (jData.FindPath('method') <> Nil) then

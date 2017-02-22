@@ -158,6 +158,8 @@ class Receiver
         // Add the new messages to the buffer
         $this->buffer .= $data;
 
+        echo '#' . $data . PHP_EOL;
+
         // Find the NULL character position
         $nulPos = strpos($this->buffer, "\0");
 

@@ -74,6 +74,11 @@ begin
     begin
       ProcessMessages();
     end;
+
+    // Da a chance de outras threads executarem
+    // Yield();
+
+    Sleep(1);
   end;
 end;
 
@@ -89,7 +94,7 @@ begin
     Message := Copy(StdinStringBuffer, 1, CurrentPos);
 
     // Send message to the GUI thread
-    SendMessage(Form1.Handle, LM_GUI_MESSAGE, Integer(Message), 0);
+    SendMessage(Form1.Handle, LM_GUI_MESSAGE, ptrint(Message), 0);
 
     // Remove the message from the buffer
     Delete(StdinStringBuffer, 1, CurrentPos);

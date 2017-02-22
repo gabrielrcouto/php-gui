@@ -30,8 +30,7 @@
         <UnitName Value="UnitIpcThread"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="140"/>
-        <CursorPos X="31" Y="181"/>
+        <CursorPos Y="2"/>
         <UsageCount Value="177"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -76,14 +75,14 @@
         <Filename Value="/usr/local/share/fpcsrc/packages/fcl-base/src/rttiutils.pp"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="15" Y="32"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit8>
       <Unit9>
         <Filename Value="/usr/local/share/fpcsrc/rtl/objpas/typinfo.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="343"/>
         <CursorPos X="79" Y="348"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit9>
       <Unit10>
         <Filename Value="/usr/local/share/fpcsrc/rtl/objpas/sysutils/sysstrh.inc"/>

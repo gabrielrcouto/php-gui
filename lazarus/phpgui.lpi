@@ -62,7 +62,15 @@
       <OtherUnitFiles Value="."/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Optimizations>
+        <OptimizationLevel Value="2"/>
+      </Optimizations>
+    </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -70,6 +78,12 @@
       </Options>
     </Linking>
     <Other>
+      <Verbosity>
+        <ShowWarn Value="False"/>
+        <ShowNotes Value="False"/>
+        <ShowHints Value="False"/>
+      </Verbosity>
+      <WriteFPCLogo Value="False"/>
       <CustomOptions Value="-dUseCThreads"/>
       <OtherDefines Count="1">
         <Define0 Value="UseCThreads"/>
