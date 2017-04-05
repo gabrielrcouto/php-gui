@@ -565,7 +565,6 @@ begin
 
           messageId := jData.FindPath('id').AsInteger;
           return := StringReplace(return, '\', '\\', [rfReplaceAll]);
-          //return := StringReplace(return, '"', '\"', [rfReplaceAll]);
           Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
         end;
       end;

@@ -3,7 +3,7 @@
 /*
  * Components Gallery
  */
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 use Gui\Application;
 use Gui\Components\Button;

@@ -2,6 +2,7 @@ composer.lock
 vendor/
 material/
 lazarus/backup/
+lazarus/lib/
 bin/*
 !bin/.gitkeep
 !bin/generatedoc
