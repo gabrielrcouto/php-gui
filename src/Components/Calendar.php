@@ -45,25 +45,24 @@ class Calendar extends VisualObject
 
     /**
      * Gets the value of component;
+     * 
+     * In the Lazarus documentation for the TCalendar component there is a
+     *  reference to the {@link http://lazarus-ccr.sourceforge.net/
+     * docs/lcl/calendar/tcustomcalendar.date.html Date}
+     * description property that should
+     * return the string of the selected date. This works on Lazarus but
+     * not on PHP-GUI. I do not know if this is a bug or something related
+     *  to the stored false referenced in the documentation.
+     *
+     * An alternative way I found to implement the return of the selected
+     *  date is to use the DateTime property return which is an integer
+     * and add it (with tweaks) as of 01-01-1900 (I found this doing
+     * some testing)
      *
      * @return string
      */
     public function getValue()
     {
-        /**
-         * In the Lazarus documentation for the TCalendar component there is a
-         *  reference to the {@link http://lazarus-ccr.sourceforge.net/
-         * docs/lcl/calendar/tcustomcalendar.date.html Date}
-         * description property that should
-         * return the string of the selected date. This works on Lazarus but
-         * not on PHP-GUI. I do not know if this is a bug or something related
-         *  to the stored false referenced in the documentation.
-         *
-         * An alternative way I found to implement the return of the selected
-         *  date is to use the DateTime property return which is an integer
-         * and add it (with tweaks) as of 01-01-1900 (I found this doing
-         * some testing)
-         */
         $date = date_create('1900-01-01');
         date_add($date, date_interval_create_from_date_string(($this->get('DateTime') - 2) . ' days'));
         return date_format($date, 'd/m/Y');

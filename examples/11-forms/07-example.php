@@ -16,9 +16,9 @@ $application->on('start', function() use ($application) {
         ->setValue('01/02/2017')
     ;
     $application->alert($field->getValue(), 'Date selected');
-//    $field->on('DayChanged', function() use ($application, $field) {
-//        $application->alert($field->getValue(), 'Date selected');
-//    });
+    $field->on('DayChanged', function() use ($application, $field) {
+        $application->alert($field->getValue(), 'Date selected');
+    });
 });
 
 $application->run();

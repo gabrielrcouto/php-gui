@@ -30,7 +30,7 @@ $application->on('start', function() use ($application) {
     $label2 = (new Label())
         ->setFontSize(12)
         ->setLeft(10)
-        ->setText('Integer')
+        ->setText('Float')
         ->setTop(120);
 
     $field2 = (new InputNumber(true))
