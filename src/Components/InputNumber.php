@@ -43,9 +43,12 @@ class InputNumber extends VisualObject
      * @param \Gui\Components\ContainerObjectInterface $parent
      * @param type $application
      */
-    public function __construct($isFloat = false, 
-            array $defaultAttributes = array(), ContainerObjectInterface $parent = null, $application = null)
-    {
+    public function __construct(
+        $isFloat = false, 
+        array $defaultAttributes = array(),
+        ContainerObjectInterface $parent = null,
+        $application = null
+    ) {
         if ($isFloat) {
             $this->lazarusClass = $this->lazFloatClass;
         } else {
@@ -56,7 +59,7 @@ class InputNumber extends VisualObject
     }
 
     /**
-     * Sets the value by which the value of the control should be 
+     * Sets the value by which the value of the control should be
      * increased/decresed when the user clicks one of the arrows or one of the keyboard up/down arrows.
      *
      * @param int|float $value
@@ -70,7 +73,7 @@ class InputNumber extends VisualObject
     }
 
     /**
-     * Gets the value by which the value of the control should be 
+     * Gets the value by which the value of the control should be
      * increased/decresed when the user clicks one of the arrows or one of the keyboard up/down arrows.
      *
      * @return int|float
