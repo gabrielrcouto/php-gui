@@ -44,7 +44,7 @@ class InputNumber extends VisualObject
      * @param type $application
      */
     public function __construct(
-        $isFloat = false, 
+        $isFloat = false,
         array $defaultAttributes = array(),
         ContainerObjectInterface $parent = null,
         $application = null
