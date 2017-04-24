@@ -4,7 +4,8 @@ namespace Gui\Components;
 /**
  * This is the InputTime Class
  *
- * It is a visual component for InputTime, an EditBox to hold a time, with an attached SpeedButton that will summon a time selection dialog.
+ * It is a visual component for InputTime, an EditBox to hold a time,
+ * with an attached SpeedButton that will summon a time selection dialog.
  *
  * @author Everton da Rosa everton3x@gmail.com
  * @since 0.1

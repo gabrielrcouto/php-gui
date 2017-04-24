@@ -4,7 +4,8 @@ namespace Gui\Components;
 /**
  * This is the Calendar Class
  *
- * It is a visual component for Calendar, a graphic allowing the user to select a date which is returned as data to the calling routine.
+ * It is a visual component for Calendar, a graphic allowing the user to 
+ * select a date which is returned as data to the calling routine.
  *
  * @author Everton da Rosa everton3x@gmail.com
  * @since 0.1
@@ -50,9 +51,17 @@ class Calendar extends VisualObject
     public function getValue()
     {
         /**
-         * In the Lazarus documentation for the TCalendar component there is a reference to the {@link http://lazarus-ccr.sourceforge.net/docs/lcl/calendar/tcustomcalendar.date.html Date} description property that should return the string of the selected date. This works on Lazarus but not on PHP-GUI. I do not know if this is a bug or something related to the stored false referenced in the documentation.
+         * In the Lazarus documentation for the TCalendar component there is a
+         *  reference to the {@link http://lazarus-ccr.sourceforge.net/
+         * docs/lcl/calendar/tcustomcalendar.date.html Date} description property that should 
+         * return the string of the selected date. This works on Lazarus but 
+         * not on PHP-GUI. I do not know if this is a bug or something related
+         *  to the stored false referenced in the documentation.
          *
-         * An alternative way I found to implement the return of the selected date is to use the DateTime property return which is an integer and add it (with tweaks) as of 01-01-1900 (I found this doing some testing)
+         * An alternative way I found to implement the return of the selected
+         *  date is to use the DateTime property return which is an integer 
+         * and add it (with tweaks) as of 01-01-1900 (I found this doing 
+         * some testing)
          */
         $date = date_create('1900-01-01');
         date_add($date, date_interval_create_from_date_string(($this->get('DateTime') - 2) . ' days'));

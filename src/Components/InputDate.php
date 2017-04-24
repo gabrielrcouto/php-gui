@@ -4,7 +4,8 @@ namespace Gui\Components;
 /**
  * This is the InputDate Class
  *
- * It is a visual component for InputDate, an EditBox to hold a date, with an attached SpeedButton that will summon a date selection (calendar) dialog.
+ * It is a visual component for InputDate, an EditBox to hold a date, 
+ * with an attached SpeedButton that will summon a date selection (calendar) dialog.
  *
  * @author Everton da Rosa everton3x@gmail.com
  * @since 0.1

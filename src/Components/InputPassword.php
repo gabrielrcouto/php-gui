@@ -28,7 +28,8 @@ class InputPassword extends VisualObject
      * @param \Gui\Components\ContainerObjectInterface $parent
      * @param type $application
      */
-    public function __construct(array $defaultAttributes = array(), ContainerObjectInterface $parent = null, $application = null)
+    public function __construct(array $defaultAttributes = array(),
+            ContainerObjectInterface $parent = null, $application = null)
     {
         parent::__construct($defaultAttributes, $parent, $application);
 
