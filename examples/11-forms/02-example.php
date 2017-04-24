@@ -16,7 +16,7 @@ $application->on('start', function() use ($application) {
         ->setTop(80)
         ->setWidth(200)
         ->setAutoSize(true)
-        ->setBaseDir('C:\Users\Arthur\Documents\NetBeansProjects\php-gui')
+        ->setBaseDir(realpath(__DIR__.'/../..'))
         ->setDialogOptions(InputFile::ALLOW_MULTI_SELECT)
     ;
 

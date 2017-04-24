@@ -184,7 +184,7 @@ class InputFile extends VisualObject
     /**
      * Sets teh dialog options.
      *
-     * @param string $options the options See {@see \Gui\OpenOptions}
+     * @param string $options the options.
      * @return self
      */
     public function setDialogOptions(...$options)
