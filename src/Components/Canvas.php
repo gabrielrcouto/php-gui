@@ -63,8 +63,8 @@ class Canvas extends VisualObject
     /**
      * Sets the canvas size
      *
-     * @param int $width
-     * @param int $height
+     * @param int|string $width
+     * @param int|string $height
      *
      * @return self
      */
