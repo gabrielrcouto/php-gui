@@ -286,8 +286,8 @@ class Application
         $this->process = $process = new Process($processName, $processPath);
 
         $this->process->on('exit', function () use ($application) {
-            $this->fire('exit');
-            $this->running = false;
+            $application->fire('exit');
+            $application->running = false;
             $application->loop->stop();
         });
 
@@ -324,7 +324,11 @@ class Application
             $application->fire('start');
         });
 
-        $this->loop->addPeriodicTimer(0.001, function () use ($application) {
+        $this->loop->addPeriodicTimer(0.001, function () use ($process, $application) {
+            if (! $application->isRunning()) {
+                $application->terminate();
+            }
+
             $application->sender->tick();
 
             if (@is_resource($application->process->stdout->stream)) {
@@ -343,10 +347,9 @@ class Application
     public function terminate()
     {
         $this->sendCommand("exit", [], function () {
-            
         });
-        $this->process->terminate();
-        $this->process->close();
+        @$this->process->terminate();
+        @$this->process->close();
     }
 
     /**
