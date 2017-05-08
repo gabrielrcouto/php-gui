@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar;
 
 type
 
@@ -159,6 +159,11 @@ begin
   RegisterClass(TProgressBar);
   RegisterClass(TDirectoryEdit);
   RegisterClass(TFileNameEdit);
+  RegisterClass(TSpinEdit);
+  RegisterClass(TFloatSpinEdit);
+  RegisterClass(TDateEdit);
+  RegisterClass(TTimeEdit);
+  RegisterClass(TCalendar);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -531,7 +536,11 @@ begin
         // Get file list from TFileNameEdit
         return := (objArray[objId] as TFileNameEdit).DialogFiles.Text;
         return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+
+        // windows suport
         return := StringReplace(return, #13#10, ';', [rfReplaceAll]);
+        // Linux suport
+        return := StringReplace(return, #10, ';', [rfReplaceAll]);
 
 
         messageId := jData.FindPath('id').AsInteger;
@@ -560,7 +569,6 @@ begin
 
           messageId := jData.FindPath('id').AsInteger;
           return := StringReplace(return, '\', '\\', [rfReplaceAll]);
-          return := StringReplace(return, '"', '\"', [rfReplaceAll]);
           Output('{"id": ' + IntToStr(messageId) + ',"result": ' + return + '}');
         end;
       end;
