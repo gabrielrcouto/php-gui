@@ -15,20 +15,18 @@ $application->on('start', function() use ($application) {
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Time')
-        ->setTop(80);
+        ->setTop(20);
 
     $field = (new InputTime())
         ->setLeft(100)
-        ->setTop(80)
+        ->setTop(16)
         ->setWidth(200)
         ->setAcceptInput(false)
         ->setButtonOnlyWhenFocused(true)
     ;
 
     $field->on('change', function() use ($application, $field) {
-        if (strlen($field->getValue()) === 5) {
-            $application->alert($field->getValue(), 'Time selected');
-        }
+        $application->alert('Time selected: ' . $field->getValue(), 'Time selected');
     });
 });
 

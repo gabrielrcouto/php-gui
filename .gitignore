@@ -8,4 +8,4 @@ bin/*
 !bin/generatedoc
 phpunit.xml
 doc/
-/nbproject/private/
+/nbproject

@@ -15,18 +15,16 @@ $application->on('start', function() use ($application) {
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Date')
-        ->setTop(80);
+        ->setTop(20);
 
     $field = (new InputDate())
-        ->setLeft(100)
-        ->setTop(80)
+        ->setLeft(90)
+        ->setTop(16)
         ->setWidth(200)
     ;
 
     $field->on('change', function() use ($application, $field) {
-        if (strlen($field->getValue()) === 10) {
-            $application->alert($field->getValue(), 'Date selected');
-        }
+        $application->alert('Date selected: ' . $field->getValue(), 'Date selected');
     });
 });
 

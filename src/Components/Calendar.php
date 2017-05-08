@@ -45,7 +45,7 @@ class Calendar extends VisualObject
 
     /**
      * Gets the value of component;
-     * 
+     *
      * In the Lazarus documentation for the TCalendar component there is a
      *  reference to the {@link http://lazarus-ccr.sourceforge.net/
      * docs/lcl/calendar/tcustomcalendar.date.html Date}

@@ -536,7 +536,11 @@ begin
         // Get file list from TFileNameEdit
         return := (objArray[objId] as TFileNameEdit).DialogFiles.Text;
         return := StringReplace(return, '\', '\\', [rfReplaceAll]);
+
+        // windows suport
         return := StringReplace(return, #13#10, ';', [rfReplaceAll]);
+        // Linux suport
+        return := StringReplace(return, #10, ';', [rfReplaceAll]);
 
 
         messageId := jData.FindPath('id').AsInteger;

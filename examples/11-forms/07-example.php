@@ -15,9 +15,10 @@ $application->on('start', function() use ($application) {
         ->setTop(20)
         ->setValue('01/02/2017')
     ;
-    $application->alert($field->getValue(), 'Date selected');
-    $field->on('DayChanged', function() use ($application, $field) {
-        $application->alert($field->getValue(), 'Date selected');
+
+    // {on}change events is also fired with the getValue() and then causes a infinite loop
+    $field->on('mouseUp', function() use ($application, $field) {
+        $application->alert('Date selected: ' . $field->getValue(), 'Date selected');
     });
 });
 
