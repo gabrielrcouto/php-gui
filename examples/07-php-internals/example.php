@@ -1,6 +1,14 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php';
+// Normal autoload
+$autoload = __DIR__ . '/../../vendor/autoload.php';
+
+// support for composer require autoload
+if (! file_exists($autoload)) {
+    $autoload = __DIR__ . '/../../../../autoload.php';
+}
+
+require $autoload;
 require __DIR__ . '/Rss.php';
 
 use Example\Rss;
