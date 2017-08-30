@@ -18,15 +18,14 @@ use Gui\Components\Shape;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
-    $label = (new Label())
+$application->on('start', function () {
+    (new Label())
         ->setFontSize(20)
         ->setLeft(90)
         ->setText('Basic Example')
         ->setTop(10);
 
     $button = (new Button())
-        ->setCounter(1)
         ->setLeft(10)
         ->setTop(80)
         ->setValue('Hey, I\'m a button! Please, don\'t click me')
@@ -52,7 +51,7 @@ $application->on('start', function() use ($application) {
         'Click to skip this ad',
     ];
 
-    $button->on('click', function() use ($button, $input, $phrases) {
+    $button->on('click', function () use ($button, $input, $phrases) {
         $counter = $button->getCounter();
         $button->setCounter(++$counter);
 
@@ -60,7 +59,7 @@ $application->on('start', function() use ($application) {
             $input->setValue($phrases[$counter - 1]);
         } elseif ($counter < 20) {
             $input->setValue('Please, stop! You already clicked ' . $counter . ' times');
-        } elseif ($counter == 20) {
+        } elseif ($counter === 20) {
             $input->setValue('Hehe, click again!');
             $button->setVisible(false);
         }
@@ -77,7 +76,7 @@ $application->on('start', function() use ($application) {
 
         $color = '#' . dechex($r) . dechex($g) . dechex($b);
 
-        $shape = (new Shape())
+        (new Shape())
             ->setBackgroundColor($color)
             ->setBorderColor($color)
             ->setHeight($counter * 5)

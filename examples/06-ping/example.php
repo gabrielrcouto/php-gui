@@ -22,8 +22,8 @@ $application = new Application([
     'height' => 200
 ]);
 
-$application->on('start', function() use ($application) {
-    $label = new Label([
+$application->on('start', function () use ($application) {
+    new Label([
         'text' => "See the speed on your terminal. \nThis app measures the speed of" .
             "\nIPC messages between PHP and Lazarus",
         'fontSize' => 20,
@@ -39,10 +39,10 @@ $application->on('start', function() use ($application) {
 
     $application->getLoop()->addPeriodicTimer(
         0.000001,
-        function() use ($application, & $currentSecond, & $messagesPerSecond) {
-            $latency = $application->ping();
+        function () use ($application, &$currentSecond, &$messagesPerSecond) {
+            $application->ping();
 
-            if (time() != $currentSecond) {
+            if (time() !== $currentSecond) {
                 Output::out('Speed: ' . $messagesPerSecond . ' messages/sec', 'red');
 
                 $messagesPerSecond = 0;

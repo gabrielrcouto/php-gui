@@ -34,29 +34,29 @@ use Gui\Components\TextArea;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
+$application->on('start', function () use ($application) {
     $application->getWindow()->setTitle('PHP-GUI Components Gallery');
     $application->getWindow()->setWindowState('maximized');
 
-    $button = (new Button())
+    (new Button())
         ->setValue('Click')
         ->setTop(10)
         ->setLeft(10);
 
-    $calendar = (new Calendar())
+    (new Calendar())
         ->setTop(50)
         ->setLeft(10);
 
-    $checkbox = (new Checkbox())
+    (new Checkbox())
         ->setTop(10)
         ->setLeft(300);
 
-    $label = (new Label())
+    (new Label())
         ->setText('Checkbox')
         ->setTop(11)
         ->setLeft(320);
 
-    $radio = (new Radio())
+    (new Radio())
         ->setTop(30)
         ->setLeft(300)
         ->setOptions([
@@ -65,46 +65,46 @@ $application->on('start', function() use ($application) {
             new Option('Radio 3', 3)
         ]);
 
-    $date = (new InputDate())
+    (new InputDate())
         ->setTop(250)
         ->setLeft(10);
 
-    $directory = (new InputDirectory())
+    (new InputDirectory())
         ->setTop(300)
         ->setLeft(10);
 
-    $file = (new InputFile())
+    (new InputFile())
         ->setTop(350)
         ->setLeft(10);
 
-    $integer= (new InputNumber())
+    (new InputNumber())
         ->setTop(400)
         ->setLeft(10);
 
-    $float= (new InputNumber(true))
+    (new InputNumber(true))
         ->setTop(450)
         ->setLeft(10);
 
-    $password = (new InputPassword())
+    (new InputPassword())
         ->setTop(250)
         ->setLeft(250);
 
-    $text = (new InputText())
+    (new InputText())
         ->setTop(300)
         ->setLeft(250);
 
-    $time = (new InputTime())
+    (new InputTime())
         ->setTop(350)
         ->setLeft(250);
 
-    $progress = (new ProgressBar())
+    (new ProgressBar())
         ->setTop(500)
         ->setLeft(10)
         ->setMin(0)
         ->setMax(100)
         ->setPosition(75);
 
-    $select = (new Select())
+    (new Select())
         ->setTop(10)
         ->setLeft(190)
         ->setOptions([
@@ -113,7 +113,7 @@ $application->on('start', function() use ($application) {
             new Option('Option 3', 3)
         ]);
 
-    $textarea = (new TextArea())
+    (new TextArea())
         ->setTop(500)
         ->setLeft(500)
         ->setValue('Text area sample');

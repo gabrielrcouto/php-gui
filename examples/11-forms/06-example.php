@@ -19,8 +19,8 @@ use Gui\Components\InputTime;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
-    $label = (new Label())
+$application->on('start', function () use ($application) {
+    (new Label())
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Time')
@@ -34,7 +34,7 @@ $application->on('start', function() use ($application) {
         ->setButtonOnlyWhenFocused(true)
     ;
 
-    $field->on('change', function() use ($application, $field) {
+    $field->on('change', function () use ($application, $field) {
         $application->alert('Time selected: ' . $field->getValue(), 'Time selected');
     });
 });
