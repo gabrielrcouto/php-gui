@@ -223,9 +223,9 @@ $application->on('start', function () {
                 $objValue = $value['object']->getValue();
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
-            } elseif ($value['object'] instanceof Radio) {
+            } elseif ($value['object'] instanceof Radio && isset($options[$value['object']->getChecked()])) {
                 $objValue = $options[$value['object']->getChecked()]->getLabel();
-            } elseif ($value['object'] instanceof Select) {
+            } elseif ($value['object'] instanceof Select && isset($states[$value['object']->getChecked()])) {
                 $objValue = $states[$value['object']->getChecked()]->getLabel();
             }
 
