@@ -32,8 +32,16 @@ $application->on('start', function () use ($application) {
         ->setValue('Click here to manipulate the button below.')
         ->setWidth(480);
 
-    $button2->on('click', function () use ($button, $application) {
+    $button2->on('click', function () use ($button, $button2, $application) {
         $button = $application->getObject($button->getLazarusObjectId());
+
+        if ($button2->getValue() === 'If you click now, I will be destroyed!') {
+            $application->destroyObject($button2);
+        }
+
+        if (!$button) {
+            return;
+        }
 
         $prepend = $button->getToggle() ? 'foo' : 'bar';
         $button->setToggle(! $button->getToggle());
@@ -41,7 +49,7 @@ $application->on('start', function () use ($application) {
     });
 
     $button->on('click', function () use ($button2, $button, $application) {
-        $button2->setValue('If you click now, it will crash!');
+        $button2->setValue('If you click now, I will be destroyed!');
         $application->destroyObject($button);
     });
 });
