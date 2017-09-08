@@ -190,3 +190,5 @@ The "Issues" page from this repository is being used for TO-DO management, just 
 ## License
 
 [MIT License](http://gabrielrcouto.mit-license.org/)
+
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/bvezX9B9cTJTidmcB4iikNff/gabrielrcouto/php-gui'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/bvezX9B9cTJTidmcB4iikNff/gabrielrcouto/php-gui.svg' /></a>
