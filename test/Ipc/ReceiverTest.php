@@ -5,9 +5,10 @@ namespace Test\Ipc;
 use Gui\Application;
 use Gui\Exception\ComponentException;
 use Gui\Ipc\Receiver;
+use PHPUnit\Framework\TestCase;
 use Test\Util;
 
-class ReceiverTest extends \PHPUnit_Framework_TestCase
+class ReceiverTest extends TestCase
 {
     public function testConstructor()
     {

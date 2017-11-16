@@ -3,8 +3,9 @@
 namespace Test;
 
 use Gui\Color;
+use PHPUnit\Framework\TestCase;
 
-class ColorTest extends \PHPUnit_Framework_TestCase
+class ColorTest extends TestCase
 {
     public function testColorToLazarus()
     {
