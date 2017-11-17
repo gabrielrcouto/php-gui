@@ -4,8 +4,9 @@ namespace Test\Components;
 
 use Gui\Application;
 use Gui\Components\Window;
+use PHPUnit\Framework\TestCase;
 
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class ObjectTest extends TestCase
 {
     public function testMagicCall()
     {

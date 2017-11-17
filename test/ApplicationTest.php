@@ -4,8 +4,9 @@ namespace Test;
 
 use Gui\Application;
 use Gui\Components\Window;
+use PHPUnit\Framework\TestCase;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends TestCase
 {
     public function testGetNextObjectId()
     {

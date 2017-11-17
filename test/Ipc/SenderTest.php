@@ -5,8 +5,9 @@ namespace Test\Ipc;
 use Gui\Application;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
+use PHPUnit\Framework\TestCase;
 
-class SenderTest extends \PHPUnit_Framework_TestCase
+class SenderTest extends TestCase
 {
     public function testConstructor()
     {

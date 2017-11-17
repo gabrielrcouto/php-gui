@@ -3,8 +3,9 @@
 namespace Test\Ipc;
 
 use Gui\Ipc\CommandMessage;
+use PHPUnit\Framework\TestCase;
 
-class EventMessageTest extends \PHPUnit_Framework_TestCase
+class EventMessageTest extends TestCase
 {
     public function testConstructor()
     {

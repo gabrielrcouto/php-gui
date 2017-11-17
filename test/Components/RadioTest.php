@@ -5,8 +5,9 @@ namespace Test\Components;
 use Gui\Application;
 use Gui\Components\Option;
 use Gui\Components\Radio;
+use PHPUnit\Framework\TestCase;
 
-class RadioTest extends \PHPUnit_Framework_TestCase
+class RadioTest extends TestCase
 {
 
     public function testSetOptions()

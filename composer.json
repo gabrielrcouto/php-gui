@@ -16,7 +16,7 @@
     },
     "require-dev" : {
         "phing/phing": "2.*",
-        "phpunit/phpunit": "4.5.*",
+        "phpunit/phpunit": "^4.8.35",
         "squizlabs/php_codesniffer": "2.0.*@dev",
         "evert/phpdoc-md" : "~0.2.0",
         "phpdocumentor/phpdocumentor": "^2.8"
