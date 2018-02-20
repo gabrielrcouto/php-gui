@@ -2,7 +2,7 @@
 
 namespace Gui;
 
-use Gui\Components\Object;
+use Gui\Components\ObjectAbstract;
 use Gui\Components\Window;
 use Gui\Ipc\CommandMessage;
 use Gui\Ipc\EventMessage;

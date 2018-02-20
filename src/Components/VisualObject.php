@@ -10,7 +10,7 @@ use Gui\Color;
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
  */
-abstract class VisualObject extends Object implements VisualObjectInterface
+abstract class VisualObject extends ObjectAbstract implements VisualObjectInterface
 {
     /**
     * {@inheritdoc}
