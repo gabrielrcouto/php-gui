@@ -101,7 +101,7 @@ class ApplicationTest extends TestCase
             ->will($this->returnValue($window));
 
         $mock = $this->getMockForAbstractClass(
-            'Gui\Components\Object',
+            'Gui\Components\ObjectAbstract',
             [
                 [],
                 null,

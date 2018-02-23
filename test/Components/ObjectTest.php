@@ -11,7 +11,7 @@ class ObjectTest extends TestCase
     public function testMagicCall()
     {
         $mock = $this->getMockForAbstractClass(
-            'Gui\Components\Object',
+            'Gui\Components\ObjectAbstract',
             [
                 [],
                 null,
@@ -37,7 +37,7 @@ class ObjectTest extends TestCase
             ->method('sendCommand');
 
         $mock = $this->getMockForAbstractClass(
-            'Gui\Components\Object',
+            'Gui\Components\ObjectAbstract',
             [
                 [],
                 null,
@@ -58,7 +58,7 @@ class ObjectTest extends TestCase
     public function testGetLazarusClass()
     {
         $mock = $this->getMockForAbstractClass(
-            'Gui\Components\Object',
+            'Gui\Components\ObjectAbstract',
             [
                 [],
                 null,
@@ -72,7 +72,7 @@ class ObjectTest extends TestCase
     public function testGetLazarusObjectId()
     {
         $mock = $this->getMockForAbstractClass(
-            'Gui\Components\Object',
+            'Gui\Components\ObjectAbstract',
             [
                 [],
                 null,

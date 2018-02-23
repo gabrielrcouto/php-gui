@@ -5,14 +5,14 @@ namespace Gui\Components;
 use Gui\Application;
 
 /**
- * This is the Object class
+ * This is the Object Abstract class
  *
  * It is base abstraction for Lazarus Object
  *
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-abstract class Object implements LazarusObjectInterface
+abstract class ObjectAbstract implements LazarusObjectInterface
 {
     /**
      * The lazarus class as string

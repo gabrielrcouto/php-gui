@@ -2,7 +2,7 @@
 
 namespace Gui;
 
-use Gui\Components\Object;
+use Gui\Components\ObjectAbstract;
 use Gui\Components\Window;
 use Gui\Ipc\CommandMessage;
 use Gui\Ipc\EventMessage;
@@ -154,11 +154,11 @@ class Application
     /**
      * Put a object to the internal objects array
      *
-     * @param Object $object Component Object
+     * @param ObjectAbstract $object Component Object
      *
      * @return void
      */
-    public function addObject(Object $object)
+    public function addObject(ObjectAbstract $object)
     {
         $this->objects[$object->getLazarusObjectId()] = $object;
     }
@@ -166,11 +166,11 @@ class Application
     /**
      * Destroy a object
      *
-     * @param Object $object Component Object
+     * @param ObjectAbstract $object Component Object
      *
      * @return void
      */
-    public function destroyObject(Object $object)
+    public function destroyObject(ObjectAbstract $object)
     {
         $application = $this;
 
