@@ -30,16 +30,15 @@ $application = new Application([
     'height' => 490
 ]);
 
-$application->on('start', function() use ($application) {
-
-    $label = new Label([
+$application->on('start', function () {
+    new Label([
         'text' => 'First Form',
         'top' => 10,
         'left' => 40,
         'fontSize' => 20,
     ]);
 
-    $shape = new Shape([
+    new Shape([
         'backgroundColor' => '#EEE',
         'borderColor' => '#DDD',
         'left' => 40,
@@ -81,7 +80,7 @@ $application->on('start', function() use ($application) {
         ];
     }
 
-    $labelOfAge = new Label([
+    new Label([
         'text' => '+18:',
         'top' => 208,
         'left' => 45,
@@ -99,7 +98,7 @@ $application->on('start', function() use ($application) {
         'object' => $checkboxOfAge
     ];
 
-    $labelState = new Label([
+    new Label([
         'text' => 'State:',
         'top' => 238,
         'left' => 45,
@@ -151,7 +150,7 @@ $application->on('start', function() use ($application) {
         'object' => $selectState
     ];
 
-    $labelGender = new Label([
+    new Label([
         'text' => 'Gender:',
         'top' => 278,
         'left' => 45,
@@ -224,9 +223,9 @@ $application->on('start', function() use ($application) {
                 $objValue = $value['object']->getValue();
             } elseif ($value['object'] instanceof Checkbox) {
                 $objValue = $value['object']->getChecked() ? 'Yes' : 'No';
-            } elseif ($value['object'] instanceof Radio) {
+            } elseif ($value['object'] instanceof Radio && isset($options[$value['object']->getChecked()])) {
                 $objValue = $options[$value['object']->getChecked()]->getLabel();
-            } elseif ($value['object'] instanceof Select) {
+            } elseif ($value['object'] instanceof Select && isset($states[$value['object']->getChecked()])) {
                 $objValue = $states[$value['object']->getChecked()]->getLabel();
             }
 

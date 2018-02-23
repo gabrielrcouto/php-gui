@@ -20,8 +20,8 @@ use Gui\Components\InputPassword;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
-    $label = (new Label())
+$application->on('start', function () use ($application) {
+    (new Label())
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Password:')
@@ -40,7 +40,7 @@ $application->on('start', function() use ($application) {
         ->setValue('Click me, or Return/Enter in the above field')
         ->setWidth(300);
 
-    $func = function() use ($application, $field) {
+    $func = function () use ($application, $field) {
         $application->alert('Password: ' . $field->getValue(), 'Password');
     };
 

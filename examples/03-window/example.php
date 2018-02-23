@@ -23,9 +23,8 @@ $application = new Application([
     'icon' => realpath(__DIR__) . DIRECTORY_SEPARATOR . 'php.ico'
 ]);
 
-$application->on('start', function() use ($application) {
-
-    $label = new Label([
+$application->on('start', function () use ($application) {
+    new Label([
         'text' => 'Manipulating Window',
         'top' => 10,
         'fontSize' => 50,
@@ -40,9 +39,9 @@ $application->on('start', function() use ($application) {
     ]);
 
     $button->on('click', function () use ($button, $application) {
-        $window = ($application->getWindow());
+        $window = $application->getWindow();
 
-        if ($window->getHeight() == 600) {
+        if ($window->getHeight() === 600) {
             $window->setHeight(300);
         } else {
             $window->setHeight(600);
@@ -51,7 +50,6 @@ $application->on('start', function() use ($application) {
         $button->setCounter($button->getCounter() + 1);
         $button->setValue('Your window was resized ' . $button->getCounter() . ' time(s), click to resize again!');
     });
-
 });
 
 $application->run();

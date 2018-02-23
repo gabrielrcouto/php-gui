@@ -11,14 +11,10 @@ if (! file_exists($autoload)) {
 require $autoload;
 
 use Gui\Application;
-use Gui\Components\Button;
-use Gui\Components\InputText;
-use Gui\Components\Label;
-use Gui\Components\Shape;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
+$application->on('start', function () use ($application) {
     $application->alert(['Hello World!', 'WhooP!']);
 });
 

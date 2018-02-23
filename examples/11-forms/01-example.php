@@ -19,7 +19,7 @@ use Gui\Components\InputDirectory;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
+$application->on('start', function () use ($application) {
     $field = (new InputDirectory())
         ->setLeft(10)
         ->setTop(50)
@@ -27,7 +27,7 @@ $application->on('start', function() use ($application) {
         ->setTitle('PHP-GUI Dialog Input Example')
     ;
 
-    $field->on('change', function() use ($field, $application) {
+    $field->on('change', function () use ($field, $application) {
         $application->alert('Directory Chosen: ' . PHP_EOL . $field->getValue(), 'Directory Chosen');
     });
 });

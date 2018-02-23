@@ -19,8 +19,8 @@ use Gui\Components\InputDate;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
-    $label = (new Label())
+$application->on('start', function () use ($application) {
+    (new Label())
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Date')
@@ -32,7 +32,7 @@ $application->on('start', function() use ($application) {
         ->setWidth(200)
     ;
 
-    $field->on('change', function() use ($application, $field) {
+    $field->on('change', function () use ($application, $field) {
         $application->alert('Date selected: ' . $field->getValue(), 'Date selected');
     });
 });

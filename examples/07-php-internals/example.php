@@ -13,7 +13,6 @@ require __DIR__ . '/Rss.php';
 
 use Example\Rss;
 use Gui\Application;
-use Gui\Components\Button;
 use Gui\Components\Div;
 use Gui\Components\Label;
 use Gui\Components\Shape;
@@ -28,8 +27,8 @@ $application = new Application([
     'width' => 860,
 ]);
 
-$application->on('start', function() use ($application) {
-    $title = new Label([
+$application->on('start', function () use ($application) {
+    new Label([
         'backgroundColor' => '#181818',
         'fontColor' => '#FFFFFF',
         'fontFamily' => 'Gill Sans',
@@ -48,13 +47,13 @@ $application->on('start', function() use ($application) {
         'top' => 80,
     ]);
 
-    $application->getLoop()->addTimer(1, function() use ($application, $loading) {
+    $application->getLoop()->addTimer(1, function () use ($loading) {
         $messages = Rss::getLastest();
         $postWindow = null;
 
         $loading->setVisible(false);
 
-        $subjectTitle = new Label([
+        new Label([
             'fontColor' => '#a0a0a0',
             'fontFamily' => 'Lucida Sans Unicode',
             'fontSize' => 13,
@@ -64,7 +63,7 @@ $application->on('start', function() use ($application) {
             'width' => 600,
         ]);
 
-        $authorTitle = new Label([
+        new Label([
             'fontColor' => '#a0a0a0',
             'fontFamily' => 'Lucida Sans Unicode',
             'fontSize' => 13,
@@ -74,7 +73,7 @@ $application->on('start', function() use ($application) {
             'width' => 260,
         ]);
 
-        $titleLine = new Shape([
+        new Shape([
             'backgroundColor' => '#a0a0a0',
             'borderColor' => '#a0a0a0',
             'height' => 1,
@@ -83,7 +82,7 @@ $application->on('start', function() use ($application) {
             'width' => 810
         ]);
 
-        for ($i = 0; $i < count($messages['titles']); $i++) {
+        for ($i = 0, $numberOfMessages = count($messages['titles']); $i < $numberOfMessages; $i++) {
             $link = $messages['links'][$i];
             $title = $messages['titles'][$i];
 
@@ -108,7 +107,7 @@ $application->on('start', function() use ($application) {
                 'width' => 550,
             ]);
 
-            $author = new Label([
+            new Label([
                 'autoSize' => false,
                 'fontColor' => '#fcfcfc',
                 'fontFamily' => 'Lucida Sans Unicode',
@@ -120,7 +119,7 @@ $application->on('start', function() use ($application) {
                 'width' => 260,
             ]);
 
-            $clickFunction = function() use ($link, $title) {
+            $clickFunction = function () use ($link) {
                 $content = Rss::getSingle($link);
 
                 $postWindow = new Window([
@@ -133,17 +132,17 @@ $application->on('start', function() use ($application) {
                     'width' => 860,
                 ], $postWindow);
 
-                $content = new Label([
+                new Label([
                     'autoSize' => true,
                     'text' => $content,
                 ], $div);
             };
 
-            $mouseEnterFunction = function() use ($backgroundShape) {
+            $mouseEnterFunction = function () use ($backgroundShape) {
                 $backgroundShape->setBackgroundColor('#282828');
             };
 
-            $mouseLeaveFunction = function() use ($backgroundShape) {
+            $mouseLeaveFunction = function () use ($backgroundShape) {
                 $backgroundShape->setBackgroundColor('#181818');
             };
 

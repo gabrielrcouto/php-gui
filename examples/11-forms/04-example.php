@@ -19,14 +19,14 @@ use Gui\Components\InputNumber;
 
 $application = new Application();
 
-$application->on('start', function() use ($application) {
-    $label1 = (new Label())
+$application->on('start', function () {
+    (new Label())
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Integer')
         ->setTop(80);
 
-    $field1 = (new InputNumber())
+    (new InputNumber())
         ->setLeft(100)
         ->setTop(80)
         ->setWidth(200)
@@ -36,13 +36,13 @@ $application->on('start', function() use ($application) {
         ->setValue(-4)
     ;
 
-    $label2 = (new Label())
+    (new Label())
         ->setFontSize(12)
         ->setLeft(10)
         ->setText('Float')
         ->setTop(120);
 
-    $field2 = (new InputNumber(true))
+    (new InputNumber(true))
         ->setLeft(100)
         ->setTop(120)
         ->setWidth(200)
@@ -50,7 +50,6 @@ $application->on('start', function() use ($application) {
         ->setValue(1.25)
         ->setDecimals(4)
     ;
-
 });
 
 $application->run();

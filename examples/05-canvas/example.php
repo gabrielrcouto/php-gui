@@ -407,8 +407,8 @@ $application = new Application([
     'height' => 200
 ]);
 
-$application->on('start', function() use ($application, $pixels) {
-    $label = new Label([
+$application->on('start', function () use ($application, $pixels) {
+    new Label([
         'left' => 50,
         'fontSize' => 20,
         'text' => 'Let\'s Draw!',
@@ -424,7 +424,7 @@ $application->on('start', function() use ($application, $pixels) {
 
     $canvas->setSize(82, 42);
 
-    $application->getLoop()->addTimer(0.01, function() use ($canvas, $pixels) {
+    $application->getLoop()->addTimer(0.01, function () use ($canvas, $pixels) {
         $canvas->putImageData($pixels);
     });
 });
