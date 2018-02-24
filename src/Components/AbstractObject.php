@@ -12,7 +12,7 @@ use Gui\Application;
  * @author Gabriel Couto @gabrielrcouto
  * @since 0.1
  */
-abstract class Object implements LazarusObjectInterface
+abstract class AbstractObject implements LazarusObjectInterface
 {
     /**
      * The lazarus class as string
