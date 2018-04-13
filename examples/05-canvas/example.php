@@ -407,6 +407,8 @@ $application = new Application([
     'height' => 200
 ]);
 
+$application->setVerboseLevel(0);
+
 $application->on('start', function () use ($application, $pixels) {
     new Label([
         'left' => 50,

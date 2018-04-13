@@ -12,6 +12,8 @@ use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\Socket\Connector;
+use React\Socket\ConnectionInterface;
 
 /**
  * This is the Application Class
@@ -23,6 +25,13 @@ use React\EventLoop\LoopInterface;
  */
 class Application
 {
+    /**
+     * The application socket connection
+     *
+     *  @var ConnectionInterface $connection
+     */
+    public $connection;
+
     /**
      * The application object
      *
@@ -80,6 +89,12 @@ class Application
     protected $sender;
 
     /**
+     * The socket port which will be used to connect to Lazarus
+     * @var int $randomPort
+     */
+    protected $randomPort;
+
+    /**
      * The responsible object to receive the communication messages
      *
      * @var Receiver $receiver
@@ -120,6 +135,43 @@ class Application
                     $window->$method($value);
                 }
             }
+        });
+    }
+
+    protected function connectToSocket()
+    {
+        // Connect to the socket
+        $connector = new Connector($this->loop);
+
+        $application = $this;
+        $receiver = $this->receiver;
+
+        $promise = $connector->connect('127.0.0.1:' . $this->randomPort)->then(function (ConnectionInterface $connection) use ($application, $receiver) {
+            echo 'Connected' . PHP_EOL;
+
+            $application->connection = $connection;
+
+            $connection->on('data', function ($data) use ($receiver) {
+                $receiver->onData($data);
+            });
+
+            $connection->on('close', function () {
+                // @TODO
+            });
+
+            $application->running = true;
+
+            // Bootstrap the application
+            $application->fire('start');
+
+            $application->loop->addPeriodicTimer(0.001, function () use ($application) {
+                if (! $application->isRunning()) {
+                    $application->terminate();
+                }
+            });
+        }, function ($error) {
+            usleep(20000);
+            $this->connectToSocket();
         });
     }
 
@@ -283,7 +335,9 @@ class Application
             throw new RuntimeException('Operational System not identified by PHP-GUI.');
         }
 
-        $this->process = $process = new Process($processName, $processPath);
+        $this->randomPort = rand(1024, 65535);
+
+        $this->process = $process = new Process($processName . ' ' . $this->randomPort, $processPath);
 
         $this->process->on('exit', function () use ($application) {
             $application->fire('exit');
@@ -294,47 +348,11 @@ class Application
         $this->receiver = $receiver = new Receiver($this);
         $this->sender = $sender = new Sender($this, $receiver);
 
-        $this->loop->addTimer(0.001, function ($timer) use ($process, $application, $receiver) {
-            $process->start($timer->getLoop());
+        $process->start($this->loop);
 
-            // We need to pause all default streams
-            // The react/loop uses fread to read data from streams
-            // On Windows, fread always is blocking
+        echo 'Trying to connect to socket on port ' . $this->randomPort . PHP_EOL;
 
-            // Stdin is paused, we use our own way to write on it
-            $process->stdin->pause();
-            // Stdout is paused, we use our own way to read it
-            $process->stdout->pause();
-            // Stderr is paused for avoiding fread
-            $process->stderr->pause();
-
-            $process->stdout->on('data', function ($data) use ($receiver) {
-                $receiver->onData($data);
-            });
-
-            $process->stderr->on('data', function ($data) {
-                if (! empty($data)) {
-                    Output::err($data);
-                }
-            });
-
-            $application->running = true;
-
-            // Bootstrap the application
-            $application->fire('start');
-        });
-
-        $this->loop->addPeriodicTimer(0.001, function () use ($process, $application) {
-            if (! $application->isRunning()) {
-                $application->terminate();
-            }
-
-            $application->sender->tick();
-
-            if (@is_resource($application->process->stdout->stream)) {
-                $application->receiver->tick();
-            }
-        });
+        $this->connectToSocket();
 
         $this->loop->run();
     }

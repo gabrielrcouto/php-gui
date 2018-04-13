@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar, blcksock, synsock;
 
 type
 
@@ -48,7 +48,9 @@ var
   jData: TJSONData;
   objArray: array of TControl;
   // The cumulative Stdin string buffer
-  StdinStringBuffer: String;
+  StdinStringBuffer: AnsiString;
+  StdoutStringBuffer: AnsiString;
+  ActualClientBlockSocket: TBlockSocket;
 
 implementation
 
@@ -128,8 +130,7 @@ end;
 
 procedure TIpcThread.Output(Text: String);
 begin
-  Write(F, Text + #0);
-  Flush(F);
+  StdoutStringBuffer := StdoutStringBuffer + Text + #13#10;
 end;
 
 procedure TIpcThread.Execute;
@@ -141,6 +142,9 @@ var
   LastTimestamp: TTimeStamp;
   CurrentTimestamp: TTimeStamp;
   BytesAvailable: Integer;
+  Sock:TTCPBlockSocket;
+  Client:TSocket;
+  ClientBlockSocket:TTCPBlockSocket;
 begin
   // Register all the classes
   // @TODO - Move it from here!
@@ -165,14 +169,14 @@ begin
   RegisterClass(TTimeEdit);
   RegisterClass(TCalendar);
 
-  // Initializes the input pipe (Stdin)
-  StdinStream := TInputPipeStream.Create(StdInputHandle);
-  // The buffer starts empty
   StdinStringBuffer := '';
+  StdoutStringBuffer := '';
 
-  // Initializes de Stdout
-  Assign(F, '');
-  Rewrite(F);
+  sock := TTCPBlockSocket.create;
+  sock.CreateSocket;
+  sock.SetLinger(true, 10000);
+  sock.Bind('127.0.0.01', ParamStr(1));
+  sock.Listen;
 
   while Form1 = Nil do
   begin
@@ -184,34 +188,41 @@ begin
   SetLength(objArray, 1);
   objArray[0] := Form1;
 
-  LastTimestamp := DateTimeToTimeStamp(Now);
-  
-  SetLength(StdinString, 1);
-
   while True do
   begin
     // OutputDebug('{"waiting": true}');
 
-    BytesAvailable := StdinStream.NumBytesAvailable;
-
-    // We have messages?
-    if BytesAvailable > 0 then
+    if Sock.CanRead(0) then
     begin
-      SetLength(StdinString, BytesAvailable);
-      // Read the messages from stdin stream
-      StdinStream.ReadBuffer(StdinString[1], BytesAvailable);
+        Client := sock.Accept;
+        ClientBlockSocket := TTCPBlockSocket.create;
+        ClientBlockSocket.socket := Client;
+        ClientBlockSocket.GetSins;
+        ActualClientBlockSocket := ClientBlockSocket;
 
-      // Add the new stdin to the buffer
-      StdinStringBuffer := Concat(StdinStringBuffer, StdinString);
-    end;
+        while True do
+        begin
+          if (ClientBlockSocket.LastError <> 0) AND (ClientBlockSocket.LastError <> WSAETIMEDOUT) then
+          begin
+             break;
+          end;
+          if self.Terminated then
+             break;
 
-    CurrentTimestamp := DateTimeToTimeStamp(Now);
+          StdinString := ClientBlockSocket.RecvPacket(0);
 
-    // 60fps = one frame after 16ms
-    if (StdinStringBuffer <> '') and (CurrentTimestamp.Time - LastTimestamp.Time > 16) then
-    begin
-      LastTimestamp := CurrentTimestamp;
-      Synchronize(@ProcessMessages);
+          if (Length(StdinString) > 0) then
+          begin
+            StdinStringBuffer := StdinStringBuffer + StdinString;
+            Synchronize(@ProcessMessages);
+          end;
+
+          if (Length(StdoutStringBuffer) > 0) and (ClientBlockSocket.CanWrite(0)) then
+          begin
+            ClientBlockSocket.SendString(StdoutStringBuffer);
+            StdoutStringBuffer := '';
+          end;
+        end;
     end;
   end;
 end;
@@ -274,7 +285,7 @@ procedure TIpcThread.ProcessMessages();
 var
   CurrentPos: Integer;
 begin
-  CurrentPos := Pos(#0, StdinStringBuffer);
+  CurrentPos := Pos(#13#10, StdinStringBuffer);
 
   while CurrentPos > 0 do
   begin
@@ -284,7 +295,7 @@ begin
     // Remove the message from the buffer
     Delete(StdinStringBuffer, 1, CurrentPos);
 
-    CurrentPos := Pos(#0, StdinStringBuffer);
+    CurrentPos := Pos(#13#10, StdinStringBuffer);
   end;
 end;
 
@@ -590,8 +601,7 @@ end;
 
 procedure TEventHandler.Output(Text: String);
 begin
-  Write(F, Text + #0);
-  Flush(F);
+  StdoutStringBuffer := StdoutStringBuffer + Text + #13#10;
 end;
 
 end.

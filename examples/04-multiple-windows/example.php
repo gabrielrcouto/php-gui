@@ -30,6 +30,8 @@ $application = new Application([
     'height' => 490
 ]);
 
+$application->setVerboseLevel(0);
+
 $application->on('start', function () {
     new Label([
         'text' => 'First Form',

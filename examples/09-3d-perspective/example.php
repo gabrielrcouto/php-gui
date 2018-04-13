@@ -22,6 +22,8 @@ $application = new Application([
 ]);
 
 $application->on('start', function () use ($application) {
+    $application->setVerboseLevel(0);
+
     $canvasWidth = $canvasHeight = 200;
 
     $canvas = new Canvas([

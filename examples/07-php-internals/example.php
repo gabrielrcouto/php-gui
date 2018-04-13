@@ -27,6 +27,8 @@ $application = new Application([
     'width' => 860,
 ]);
 
+$application->setVerboseLevel(0);
+
 $application->on('start', function () use ($application) {
     new Label([
         'backgroundColor' => '#181818',

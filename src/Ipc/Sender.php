@@ -121,7 +121,7 @@ class Sender
 
         // But into a buffer and send the max we can
         // Each message is terminated by the NULL character
-        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\0";
+        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\r\n";
 
         if (property_exists($message, 'callback') && is_callable($message->callback)) {
             // It's a command!
@@ -131,18 +131,6 @@ class Sender
         }
 
         $this->writeOnStream();
-    }
-
-    /**
-     * Check and send queued messages
-     *
-     * @return void
-     */
-    public function tick()
-    {
-        if (strlen($this->sendLaterMessagesBuffer) > 0) {
-            $this->writeOnStream();
-        }
     }
 
     /**
@@ -156,12 +144,11 @@ class Sender
     {
         $this->processMessage($message);
 
-        // Each message is terminated by the NULL character
-        $this->sendLaterMessagesBuffer .= $this->getLazarusJson($message) . "\0";
-        $this->writeOnStream();
+        // Each message is terminated by CRLF
+        // Bypass the DuplexResourceStream Buffer, sending direct to the stream
+        fwrite($this->application->connection->stream, $this->getLazarusJson($message) . "\r\n");
 
         return $this->receiver->waitMessage(
-            $this->application->process->stdout,
             $message,
             $this->application
         );
@@ -174,24 +161,11 @@ class Sender
      */
     protected function writeOnStream()
     {
-        $stream = $this->application->process->stdin->stream;
-
-        if (is_resource($stream)) {
-            // Send the maximum we can to stream
-            $writtenBytes = fwrite($stream, $this->sendLaterMessagesBuffer);
-
-            if ($writtenBytes === false || $writtenBytes === 0) {
-                // Waiting stdin pipe buffer...
-                return;
-            }
-
-            if (strlen($this->sendLaterMessagesBuffer) == $writtenBytes) {
-                $this->out($this->sendLaterMessagesBuffer);
-                $this->sendLaterMessagesBuffer = '';
-            } else {
-                $this->out(substr($this->sendLaterMessagesBuffer, 0, $writtenBytes));
-                $this->sendLaterMessagesBuffer = substr($this->sendLaterMessagesBuffer, $writtenBytes);
-            }
+        if ($this->application->getVerboseLevel() == 2) {
+            echo 'Sent => ' . $this->sendLaterMessagesBuffer . PHP_EOL;
         }
+
+        $this->application->connection->write($this->sendLaterMessagesBuffer);
+        $this->sendLaterMessagesBuffer = '';
     }
 }

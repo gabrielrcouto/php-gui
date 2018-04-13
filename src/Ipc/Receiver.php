@@ -147,7 +147,7 @@ class Receiver
     }
 
     /**
-     * Process Stdout handler
+     * Process socket onData handler
      *
      * @param string $data Data received
      *
@@ -158,8 +158,8 @@ class Receiver
         // Add the new messages to the buffer
         $this->buffer .= $data;
 
-        // Find the NULL character position
-        $nulPos = strpos($this->buffer, "\0");
+        // Find the CRLF character position
+        $nulPos = strpos($this->buffer, "\r\n");
 
         while ($nulPos !== false) {
             $messageJson = substr($this->buffer, 0, $nulPos);
@@ -180,7 +180,7 @@ class Receiver
                 }
             }
 
-            $nulPos = strpos($this->buffer, "\0");
+            $nulPos = strpos($this->buffer, "\r\n");
         }
     }
 
@@ -255,79 +255,22 @@ class Receiver
     }
 
     /**
-     * Read the stdout pipe from Lazarus process. This function uses
-     * stream_select to be non blocking
-     *
-     * @return void
-     */
-    public function tick()
-    {
-        $stream = $this->application->process->stdout->stream;
-        $read = [$stream];
-        $write = [];
-        $except = [];
-
-        $result = stream_select($read, $write, $except, 0);
-
-        if ($result === false) {
-            throw new Exception('stream_select failed');
-        }
-
-        if ($result === 0) {
-            return;
-        }
-
-        // This solves a bug on Windows - If you read the exact size (> 1),
-        // PHP will block
-        if (OsDetector::isWindows()) {
-            $status = fstat($stream);
-
-            if ($status['size'] > 0) {
-                $size = $status['size'];
-
-                if ($size > 1) {
-                    $size -= 1;
-
-                    $data = stream_get_contents($stream, $size);
-                    $data .= stream_get_contents($stream, 1);
-                } else {
-                    $data = stream_get_contents($stream, 1);
-                }
-
-                $this->application->process->stdout->emit('data', array($data, $this));
-            }
-        } else {
-            // On Linux and OSX, we don't need to pass a size limit
-            $data = stream_get_contents($stream);
-
-            if (! empty($data)) {
-                $this->application->process->stdout->emit('data', array($data, $this));
-            }
-        }
-    }
-
-    /**
      * Wait a message result
      *
-     * @param Stream $stdout  Stdout Stream
      * @param MessageInterface $message Command waiting result
      *
      * @return mixed The result
      */
-    public function waitMessage(Stream $stdout, MessageInterface $message, Application $application)
+    public function waitMessage(MessageInterface $message, Application $application)
     {
-        $buffer = [];
-
         $this->waitingMessageId = $message->id;
         $this->isWaitingMessage = true;
 
-        // Read the stdin until we get the message replied
-        while ($this->isWaitingMessage && $application->isRunning()) {
-            $this->tick();
-            usleep(1);
-        }
-
-        //$stdout->resume();
+        // Wait the message
+        do {
+            // Force to receive, blocking
+            $this->onData(fread($this->application->connection->stream, 1));
+        } while ($this->isWaitingMessage);
 
         $result = $this->waitingMessageResult;
         $this->waitingMessageResult = null;

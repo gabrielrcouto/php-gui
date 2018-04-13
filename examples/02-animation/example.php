@@ -16,6 +16,8 @@ use Gui\Components\Shape;
 
 $application = new Application();
 
+$application->setVerboseLevel(0);
+
 $application->on('start', function () use ($application) {
     (new Label())
         ->setLeft(20)
