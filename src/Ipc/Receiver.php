@@ -270,7 +270,7 @@ class Receiver
         $result = stream_select($read, $write, $except, 0);
 
         if ($result === false) {
-            throw new Exception('stream_select failed');
+            throw new \Exception('stream_select failed');
         }
 
         if ($result === 0) {
