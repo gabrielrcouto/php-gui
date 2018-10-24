@@ -51,4 +51,14 @@ class OsDetector
     {
         return '\\' === DIRECTORY_SEPARATOR;
     }
+    
+    /**
+     * This method return system architecture
+     *
+     * @return string
+     */
+    public static function systemArchitecture()
+    {
+        return php_uname('m');
+    }
 }
