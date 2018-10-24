@@ -275,16 +275,16 @@ class Application
             $processPath = __DIR__ . '/../lazarus/';
         } elseif (OsDetector::isUnix()) {
             switch(OsDetector::systemArchitecture()) {
-              case 'x86_64':
-                $processName = './phpgui-x86_64-linux';
+                case 'x86_64':
+                    $processName = './phpgui-x86_64-linux';
                 break;
-              case 'i686':
-              case 'i586':
-              case 'i386':
-                $processName = './phpgui-i386-linux';
+                case 'i686':
+                case 'i586':
+                case 'i386':
+                    $processName = './phpgui-i386-linux';
                 break;
-              default:
-                throw new \RuntimeException('Operational System architecture not identified by PHP-GUI.');
+                default:
+                    throw new \RuntimeException('Operational System architecture not identified by PHP-GUI.');
                 break;
             }
             $processPath = __DIR__ . '/../lazarus/';
