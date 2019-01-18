@@ -19,16 +19,16 @@ abstract class ContainerObject extends VisualObject implements ContainerObjectIn
     protected $children = [];
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function appendChild(VisualObjectInterface $object)
     {
         $this->children[$object->getLazarusObjectId()] = $object;
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getChild($lazarusObjectId)
     {
         if (!isset($this->children[$lazarusObjectId])) {
@@ -39,8 +39,8 @@ abstract class ContainerObject extends VisualObject implements ContainerObjectIn
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getChildren()
     {
         return $this->children;

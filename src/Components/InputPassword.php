@@ -35,9 +35,7 @@ class InputPassword extends VisualObject
     ) {
         parent::__construct($defaultAttributes, $parent, $application);
 
-        /*
-         * Required to configure the component as a password field.
-         */
+        // Required to configure the component as a password field.
         $this->setEchoMode();
     }
 

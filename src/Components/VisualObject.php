@@ -13,16 +13,16 @@ use Gui\Color;
 abstract class VisualObject extends AbstractObject implements VisualObjectInterface
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getAutoSize()
     {
         return $this->get('autosize');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setAutoSize($autoSize)
     {
         $this->set('autosize', $autoSize);
@@ -31,16 +31,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getBackgroundColor()
     {
         return $this->get('color');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setBackgroundColor($color)
     {
         $this->set('color', Color::toLazarus($color));
@@ -49,16 +49,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getBottom()
     {
         return $this->get('bottom');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setBottom($bottom)
     {
         $this->set('bottom', $bottom);
@@ -67,16 +67,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getHeight()
     {
         return $this->get('height');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setHeight($height)
     {
         $this->set('height', $height);
@@ -85,16 +85,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getLeft()
     {
         return $this->get('left');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setLeft($left)
     {
         $this->set('left', $left);
@@ -103,16 +103,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getRight()
     {
         return $this->get('right');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setRight($right)
     {
         $this->set('right', $right);
@@ -121,16 +121,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getTop()
     {
         return $this->get('top');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setTop($top)
     {
         $this->set('top', $top);
@@ -139,16 +139,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getWidth()
     {
         return $this->get('width');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setWidth($width)
     {
         $this->set('width', $width);
@@ -157,16 +157,16 @@ abstract class VisualObject extends AbstractObject implements VisualObjectInterf
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getVisible()
     {
         return $this->get('visible');
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function setVisible($visible)
     {
         $this->set('visible', $visible);

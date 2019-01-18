@@ -216,24 +216,24 @@ abstract class AbstractObject implements LazarusObjectInterface
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getLazarusObjectId()
     {
         return $this->lazarusObjectId;
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getLazarusClass()
     {
         return $this->lazarusClass;
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function fire($eventName)
     {
         if (array_key_exists($eventName, $this->eventHandlers)) {
@@ -244,8 +244,8 @@ abstract class AbstractObject implements LazarusObjectInterface
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function on($eventName, callable $eventHandler)
     {
         $eventName = 'on' . $eventName;

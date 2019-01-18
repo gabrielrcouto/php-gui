@@ -30,9 +30,7 @@ class Calendar extends VisualObject
      */
     public function setValue($value)
     {
-        /**
-         * See explanation of P.O.G in self::getValue()
-         */
+        // See explanation of P.O.G in self::getValue()
         $datetime1 = date_create('1900-01-01');
         $datetime2 = date_create_from_format('d/m/Y', $value);
         $interval = date_diff($datetime1, $datetime2, true);
