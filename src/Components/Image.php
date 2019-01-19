@@ -3,9 +3,9 @@ namespace Gui\Components;
 
 /**
  * This is the Image class.
- * 
+ *
  * It is a visual component for the image.
- * 
+ *
  * @author Isaac Skelton @kingga
  * @since 19/01/2019
  */
@@ -42,14 +42,14 @@ class Image extends Canvas
 
     /**
      * Imagick extension ID.
-     * 
+     *
      * @var integer
      */
     const EXT_IMAGICK = 0;
 
     /**
      * GD extension ID.
-     * 
+     *
      * @var integer
      */
     const EXT_GD = 1;
