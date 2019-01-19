@@ -209,7 +209,7 @@ class Image extends AbstractObject
         list($imgw, $imgh) = $this->getSize();
 
         // If the size hasn't been set yet, use the images size.
-        $noResize = true;
+        $resize = true;
         if (!$imgw && !$imgh) {
             $resize = false;
         }
