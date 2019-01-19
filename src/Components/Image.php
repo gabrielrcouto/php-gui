@@ -9,14 +9,25 @@ namespace Gui\Components;
  * @author Isaac Skelton @kingga
  * @since 19/01/2019
  */
-class Image extends Canvas
+class Image extends AbstractObject
 {
+    /** {@inheritDoc} */
+    protected $lazarusClass = 'TImage';
+
     /**
      * The image file.
      *
      * @var string
      */
     protected $imgFile = null;
+
+    /**
+     * Stores all of the temporary files which have been
+     * modified, e.g. resized.
+     *
+     * @var array
+     */
+    private $tmpFiles = array();
 
     /**
      * The width of the image.
@@ -139,10 +150,23 @@ class Image extends Canvas
         return $this;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Set the size of the image and redraw it if the file
+     * has been defined.
+     *
+     * @param int $width
+     * @param int $height
+     * @return self
+     */
     public function setSize($width, $height)
     {
-        parent::setSize($width, $height);
+        $this->call(
+            'image.setSize',
+            [
+                $width,
+                $height,
+            ]
+        );
 
         $this->imgW = $width;
         $this->imgH = $height;
@@ -179,62 +203,114 @@ class Image extends Canvas
     protected function drawImage()
     {
         $this->checkExtensions();
+        $this->removeTempFiles();
 
         $image = null;
         list($imgw, $imgh) = $this->getSize();
-        $pixels = [];
+
+        // If the size hasn't been set yet, use the images size.
+        $noResize = true;
+        if (!$imgw && !$imgh) {
+            $resize = false;
+        }
+
+        // Create a temporary file for the modified image.
+        $hFile = tmpfile();
+        $this->tmpFiles[] = &$hFile;
+        $file = stream_get_meta_data($hFile)['uri'];
 
         if ($this->currentExt === self::EXT_IMAGICK) {
             $image = new \Imagick($this->getFile());
 
-            // Resize the image.
-            $filter = $this->getResizeFilter() ? $this->getResizeFilter() : \Imagick::FILTER_LANCZOS;
-            $image->resizeImage($imgw, $imgh, $filter, 1);
+            if ($resize) {
+                // Resize the image.
+                $filter = $this->getResizeFilter() ? $this->getResizeFilter() : \Imagick::FILTER_LANCZOS;
+                $image->resizeImage($imgw, $imgh, $filter, 1);
+            } else {
+                // Get the images size.
+                $geo = $image->getImageGeometry();
+                $this->imgW = $imgw = $geo['width'];
+                $this->imgH = $imgh = $geo['height'];
+            }
+
+            // Write the image to the temp file.
+            $image->writeImage($file);
         } elseif ($this->currentExt === self::EXT_GD) {
             list($w, $h, $type) = getimagesize($this->getFile());
 
+            // Create the image resource.
             switch ($type) {
                 case IMAGETYPE_GIF:
                     $image = imagecreatefromgif($this->getFile());
+                    $writefunc = 'imagegif';
                     break;
                 case IMAGETYPE_JPEG:
                     $image = imagecreatefromjpeg($this->getFile());
+                    $writefunc = 'imagejpeg';
                     break;
                 case IMAGETYPE_PNG:
                     $image = imagecreatefrompng($this->getFile());
+                    $writefunc = 'imagepng';
                     break;
                 case IMAGETYPE_BMP:
                     $image = imagecreatefrombmp($this->getFile());
+                    $writefunc = 'imagebmp';
                     break;
                 default:
                     throw new \Exception('The image type is not supported (GIF, JPEG, PNG, BMP).');
                     break;
             }
 
-            imagescale($image, $imgw, $imgh);
+            if ($resize) {
+                // Resize the image.
+                imagescale($image, $imgw, $imgh);
+            } else {
+                // Get the images size.
+                $this->imgW = $imgw = imagesx($image);
+                $this->imgH = $imgh = imagesy($image);
+            }
+
+            // Write the image to the temp file.
+            call_user_func($writefunc, $image, $file);
         }
 
-        for ($x = 0; $x < $imgw; $x++) {
-            for ($y = 0; $y < $imgh; $y++) {
-                if ($this->currentExt === self::EXT_IMAGICK) {
-                    $pixel = $image->getImagePixelColor($x, $y);
-                    $rgb = $pixel->getColor();
-                } elseif ($this->currentExt === self::EXT_GD) {
-                    $pixel = imagecolorat($image, $x, $y);
-                    $rgb = array(
-                        'r'     => ($pixel >> 16) & 0xFF,
-                        'g'     => ($pixel >> 8) & 0xFF,
-                        'b'     => $pixel & 0xFF,
-                    );
-                }
-                
-                $pixels[] = sprintf("#%02x%02x%02x", $rgb['r'], $rgb['g'], $rgb['b']);
+        // If the size wasn't defined previously, the image needs to be resized.
+        if (!$resize) {
+            $this->call(
+                'image.setSize',
+                [
+                    $imgw,
+                    $imgh,
+                ]
+            );
+        }
+
+        // Load the image file.
+        $this->call(
+            'image.loadFromFile',
+            [$file]
+        );
+
+        return $this;
+    }
+
+    public function removeTempFiles()
+    {
+        foreach ($this->tmpFiles as $file) {
+            try {
+                fclose($file);
+            } catch (\Throwable $e) {
+                // ...
             }
         }
 
-        $this->putImageData($pixels);
-        $this->imgData = $pixels;
+        $this->tmpFiles = array();
+    }
 
-        return $this;
+    public function __destruct()
+    {
+        $this->removeTempFiles();
+
+        parent::__destruct();
     }
 }

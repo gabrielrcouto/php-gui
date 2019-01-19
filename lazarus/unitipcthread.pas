@@ -388,6 +388,15 @@ begin
     begin
       (objArray[objId] as TForm1).Icon.LoadFromFile(jData.FindPath('params[2][0]').AsString);
     end
+    else if messageMethodName = 'image.setSize' then
+    begin
+      (objArray[objId] as TImage).Width := jData.FindPath('params[2][0]').AsInteger;
+      (objArray[objId] as TImage).Height := jData.FindPath('params[2][1]').AsInteger;
+    end
+    else if messageMethodName = 'image.loadFromFile' then
+    begin
+      (objArray[objId] as TImage).Picture.LoadFromFile(jData.FindPath('params[2][0]').AsString);
+    end
     else if messageMethodName = 'lines.clear' then
     begin
       (objArray[objId] as TMemo).Lines.Clear;
