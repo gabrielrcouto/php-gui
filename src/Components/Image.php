@@ -38,7 +38,7 @@ class Image extends Canvas
      *
      * @var array
      */
-    private $imgData = [];
+    private $imgData = array();
 
     /**
      * Imagick extension ID.
@@ -75,7 +75,7 @@ class Image extends Canvas
      * @param string $file
      * @return self
      */
-    public function setFile(string $file)
+    public function setFile($file)
     {
         if (is_file($file)) {
             $this->imgFile = $file;
@@ -92,7 +92,7 @@ class Image extends Canvas
      *
      * @return string|null
      */
-    public function getFile(): ?string
+    public function getFile()
     {
         return $this->imgFile;
     }
@@ -103,7 +103,7 @@ class Image extends Canvas
      * @param integer $filter
      * @return self
      */
-    public function setResizeFilter(int $filter)
+    public function setResizeFilter($filter)
     {
         $this->filter = $filter;
         return $this;
@@ -114,7 +114,7 @@ class Image extends Canvas
      *
      * @return integer|null
      */
-    public function getResizeFilter(): ?int
+    public function getResizeFilter()
     {
         return $this->resizeFilter;
     }
@@ -159,12 +159,12 @@ class Image extends Canvas
      *
      * @return array
      */
-    public function getSize(): array
+    public function getSize()
     {
-        return [
-            $this->imgW ?? $this->getWidth(),
-            $this->imgH ?? $this->getHeight(),
-        ];
+        return array(
+            $this->imgW ? $this->imgW :  $this->getWidth(),
+            $this->imgH ? $this->imgH :  $this->getHeight(),
+        );
     }
 
     /**
@@ -181,14 +181,14 @@ class Image extends Canvas
         $this->checkExtensions();
 
         $image = null;
-        [$imgw, $imgh] = $this->getSize();
+        list($imgw, $imgh) = $this->getSize();
         $pixels = [];
 
         if ($this->currentExt === self::EXT_IMAGICK) {
             $image = new \Imagick($this->getFile());
 
             // Resize the image.
-            $filter = $this->getResizeFilter() ?? \Imagick::FILTER_LANCZOS;
+            $filter = $this->getResizeFilter() ? $this->getResizeFilter() : \Imagick::FILTER_LANCZOS;
             $image->resizeImage($imgw, $imgh, $filter, 1);
         } elseif ($this->currentExt === self::EXT_GD) {
             list($w, $h, $type) = getimagesize($this->getFile());
@@ -221,11 +221,11 @@ class Image extends Canvas
                     $rgb = $pixel->getColor();
                 } elseif ($this->currentExt === self::EXT_GD) {
                     $pixel = imagecolorat($image, $x, $y);
-                    $rgb = [
+                    $rgb = array(
                         'r'     => ($pixel >> 16) & 0xFF,
                         'g'     => ($pixel >> 8) & 0xFF,
                         'b'     => $pixel & 0xFF,
-                    ];
+                    );
                 }
                 
                 $pixels[] = sprintf("#%02x%02x%02x", $rgb['r'], $rgb['g'], $rgb['b']);

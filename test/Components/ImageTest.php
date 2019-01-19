@@ -15,7 +15,7 @@ class ImageTest extends TestCase
             'The file could not be found.'
         );
         
-        $image = new Image([], null, new Application);
+        $image = new Image(array(), null, new Application());
         $image->setFile('this-image-does-not-exist.png');
     }
 }
