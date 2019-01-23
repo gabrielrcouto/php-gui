@@ -27,7 +27,7 @@ class Image extends AbstractObject
      *
      * @var array
      */
-    private $tmpFiles = array();
+    private $tmpFiles = [];
 
     /**
      * The width of the image.
@@ -49,7 +49,7 @@ class Image extends AbstractObject
      *
      * @var array
      */
-    private $imgData = array();
+    private $imgData = [];
 
     /**
      * Imagick extension ID.
@@ -185,10 +185,10 @@ class Image extends AbstractObject
      */
     public function getSize()
     {
-        return array(
+        return [
             $this->imgW ? $this->imgW :  $this->getWidth(),
             $this->imgH ? $this->imgH :  $this->getHeight(),
-        );
+        ];
     }
 
     /**
@@ -304,7 +304,7 @@ class Image extends AbstractObject
             }
         }
 
-        $this->tmpFiles = array();
+        $this->tmpFiles = [];
     }
 
     public function __destruct()
