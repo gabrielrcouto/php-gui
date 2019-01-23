@@ -52,8 +52,16 @@ And OS:
 
 Download the library using [composer](https://packagist.org/packages/gabrielrcouto/php-gui):
 
+
+#### Stable version
 ```bash
 $ composer require gabrielrcouto/php-gui
+```
+
+#### Latest version (development)
+
+```bash
+$ composer require gabrielrcouto/php-gui:dev-master
 ```
 
 Now, you can build a GUI application. Let's do a Hello World!
