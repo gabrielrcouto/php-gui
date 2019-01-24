@@ -9,70 +9,69 @@ use Gui\Output;
 use React\Stream\Stream;
 
 /**
- * This is the Receiver class
+ * This is the Receiver class.
  *
  * This class is used to receive communication messages
  *
  * @author Gabriel Couto @gabrielrcouto
+ *
  * @since 0.1
  */
 class Receiver
 {
     /**
-     * The application object
+     * The application object.
      *
-     * @var Application $application
+     * @var Application
      */
     public $application;
 
     /**
-     * The buffer of received messages
+     * The buffer of received messages.
      *
-     * @var string $buffer
+     * @var string
      */
     protected $buffer = '';
 
     /**
-     * Array of callbacks
+     * Array of callbacks.
      *
-     * @var array $messageCallbacks
+     * @var array
      */
     public $messageCallbacks = [];
 
     /**
-     * Defines if is waiting message
+     * Defines if is waiting message.
      *
-     * @var bool $isWaitingMessage
+     * @var bool
      */
     protected $isWaitingMessage = false;
 
     /**
-     * Array of messages in buffer
+     * Array of messages in buffer.
      *
-     * @var array $parseMessagesBuffer
+     * @var array
      */
     protected $parseMessagesBuffer = [];
 
     /**
-     * The id of the waitingMessage
+     * The id of the waitingMessage.
      *
-     * @var int $waitingMessageId
+     * @var int
      */
     protected $waitingMessageId;
 
     /**
-     * The return of the waitingMessage
+     * The return of the waitingMessage.
      *
-     * @var mixed $waitingMessageResult
+     * @var mixed
      */
     protected $waitingMessageResult;
 
     /**
-     * The constructor
+     * The constructor.
      *
      * @param Application $application
-     *
-     * @return void
      */
     public function __construct(Application $application)
     {
@@ -80,12 +79,10 @@ class Receiver
     }
 
     /**
-     * When the result of a message arrives, we call a callback
+     * When the result of a message arrives, we call a callback.
      *
-     * @param int $id Message ID
+     * @param int      $id       Message ID
      * @param callable $callback Callback function
-     *
-     * @return void
      */
     public function addMessageCallback($id, callable $callback)
     {
@@ -93,12 +90,10 @@ class Receiver
     }
 
     /**
-     * Fire a event on a object
+     * Fire a event on a object.
      *
-     * @param int $id Object ID
+     * @param int    $id        Object ID
      * @param string $eventName Event Name
-     *
-     * @return void
      */
     public function callObjectEventListener($id, $eventName)
     {
@@ -110,12 +105,10 @@ class Receiver
     }
 
     /**
-     * Result received, time to call the message callback
+     * Result received, time to call the message callback.
      *
-     * @param int $id Message ID
-     * @param string|Array|Object|int $result Command Result
-     *
-     * @return void
+     * @param int                     $id     Message ID
+     * @param string|array|object|int $result Command Result
      */
     public function callMessageCallback($id, $result)
     {
@@ -126,17 +119,19 @@ class Receiver
     }
 
     /**
-     * Decode a received message
+     * Decode a received message.
      *
      * @param string $json Received json message
+     *
      * @return MessageInterface|void
+     *
      * @throws ComponentException
      */
     protected function jsonDecode($json)
     {
         $obj = @json_decode($json);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $strErr = 'JSON ERROR: ' . $json;
+            $strErr = 'JSON ERROR: '.$json;
             if ($this->application->getVerboseLevel() == 2) {
                 Output::err($strErr);
             }
@@ -147,14 +142,17 @@ class Receiver
     }
 
     /**
-     * Process Stdout handler
+     * Process Stdout handler.
      *
      * @param string $data Data received
-     *
-     * @return void
      */
     public function onData($data)
     {
+        // Fix to Windows event problem where the data wasn't being NULL terminated.
+        if (substr($data, strlen($data) - 2, 1) !== "\0") {
+            $data .= "\0";
+        }
+
         // Add the new messages to the buffer
         $this->buffer .= $data;
 
@@ -185,25 +183,21 @@ class Receiver
     }
 
     /**
-     * Parse a debug message
+     * Parse a debug message.
      *
      * @param $message Message
-     *
-     * @return void
      */
     protected function parseDebug($message)
     {
         if ($this->application->getVerboseLevel() == 2) {
-            Output::out('<= Debug: ' . json_encode($message), 'blue');
+            Output::out('<= Debug: '.json_encode($message), 'blue');
         }
     }
 
     /**
-     * Parse a normal message, can be a command, command result or an event
+     * Parse a normal message, can be a command, command result or an event.
      *
      * @param $message Message
-     *
-     * @return void
      */
     protected function parseNormal($message)
     {
@@ -230,11 +224,12 @@ class Receiver
         // It's waiting a message? Store for future parsing
         if ($this->isWaitingMessage) {
             $this->parseMessagesBuffer[] = $message;
+
             return;
         }
 
         // This is a notification/event!
-        if ($message && ! property_exists($message, 'id')) {
+        if ($message && !property_exists($message, 'id')) {
             if ($message->method == 'callObjectEventListener') {
                 // @todo: Check if params contains all the items
                 $this->callObjectEventListener($message->params[0], $message->params[1]);
@@ -243,22 +238,20 @@ class Receiver
     }
 
     /**
-     * Construct the output string
+     * Construct the output string.
      *
      * @param string $string Output string
      *
-     * @return String New output string
+     * @return string New output string
      */
     protected function prepareOutput($string)
     {
-        return '<= Received: ' . $string;
+        return '<= Received: '.$string;
     }
 
     /**
      * Read the stdout pipe from Lazarus process. This function uses
-     * stream_select to be non blocking
-     *
-     * @return void
+     * stream_select to be non blocking.
      */
     public function tick()
     {
@@ -286,7 +279,7 @@ class Receiver
                 $size = $status['size'];
 
                 if ($size > 1) {
-                    $size -= 1;
+                    --$size;
 
                     $data = stream_get_contents($stream, $size);
                     $data .= stream_get_contents($stream, 1);
@@ -300,16 +293,16 @@ class Receiver
             // On Linux and OSX, we don't need to pass a size limit
             $data = stream_get_contents($stream);
 
-            if (! empty($data)) {
+            if (!empty($data)) {
                 $this->application->process->stdout->emit('data', array($data, $this));
             }
         }
     }
 
     /**
-     * Wait a message result
+     * Wait a message result.
      *
-     * @param Stream $stdout  Stdout Stream
+     * @param Stream           $stdout  Stdout Stream
      * @param MessageInterface $message Command waiting result
      *
      * @return mixed The result
