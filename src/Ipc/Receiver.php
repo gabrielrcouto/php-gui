@@ -142,12 +142,113 @@ class Receiver
     }
 
     /**
+     * Split JSON which comes in joint together with other JSON.
+     * E.g. {"id": 1, "foo": "bar"}{"id": 2, "faz": "baz"}.
+     *
+     * @param string $json
+     * @param array  $carry
+     *
+     * @return array the JSON split into valid JSON
+     */
+    protected function jsonSplit($json, &$carry = [])
+    {
+        @json_decode($json);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            $carry[] = $json;
+
+            return $carry;
+        }
+
+        // Look for the first '[' or '{' character.
+        $fbrac = strpos($json, '[');
+        $fcurl = strpos($json, '{');
+        $start = 0;
+        $fchar = '';
+        $lchar = '';
+        $clevel = 1;
+        $carry_str = '';
+
+        if ($fbrac < $fcurl || $fcurl === false) {
+            // If '[' is before '{' use [].
+            $fchar = '[';
+            $lchar = ']';
+            $start = $fbrac;
+        } elseif ($fcurl > $fbrac || $fbrac === false) {
+            // If '{' is before '[' use {}.
+            $fchar = '{';
+            $lchar = '}';
+            $start = $fcurl;
+        } else {
+            return false;
+        }
+
+        // Set the starting position and split the string.
+        $json = substr($json, $start);
+        $chars = str_split($json);
+        $count = count($chars);
+
+        // Some information about the previous object/array.
+        $opens = [$clevel => $fchar];
+
+        // Loop through each character and look for the first $lchar
+        // on the same level.
+        for ($i = 0; $i < $count; ++$i) {
+            $char = $chars[$i];
+            $carry_str .= $char;
+
+            if ($char === '[' || $char === '{') {
+                ++$clevel;
+                $opens[$clevel] = $char;
+            } elseif ($clevel > 1 && $char === ']' && $opens[$clevel] === '[') {
+                unset($opens[$clevel]);
+                --$clevel;
+            } elseif ($clevel > 1 && $char === '}' && $opens[$clevel] === '{') {
+                unset($opens[$clevel]);
+                --$clevel;
+            }
+
+            if ($clevel === 1 && $char === $lchar) {
+                // Found the last character.
+                $carry[] = $carry_str;
+
+                // If another JSON object can be found, process that one an put it into the carry.
+                $fbrac = strpos($json, '[');
+                $fcurl = strpos($json, '{');
+
+                $json = substr($json, $i + 1);
+                if (strpos($json, '[') !== false || strpos($json, '{') !== false) {
+                    $this->jsonSplit($json, $carry);
+                }
+                break;
+            }
+        }
+
+        return $carry;
+    }
+
+    /**
      * Process Stdout handler.
      *
      * @param string $data Data received
      */
     public function onData($data)
     {
+        // Sometimes, multiple sets of JSON are sent through at the same time
+        // on Windows.
+        if (OsDetector::isWindows()) {
+            @json_decode($data);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $splits = $this->jsonSplit($data);
+
+                foreach ($splits as $split) {
+                    $this->onData($split);
+                }
+
+                return;
+            }
+        }
+
         // Fix to Windows event problem where the data wasn't being NULL terminated.
         if (strpos($data, "\0") === false) {
             $data .= "\0";
