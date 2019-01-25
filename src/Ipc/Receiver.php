@@ -149,7 +149,7 @@ class Receiver
     public function onData($data)
     {
         // Fix to Windows event problem where the data wasn't being NULL terminated.
-        if (substr($data, strlen($data) - 2, 1) !== "\0") {
+        if (strpos($data, "\0") === false) {
             $data .= "\0";
         }
 
