@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Pipes,
-  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar,
-  Grids;
+  fpjson, jsonparser, unit1, typinfo, ExtCtrls, Variants, ComCtrls, EditBtn, Spin, Calendar;
 
 type
 
@@ -165,7 +164,6 @@ begin
   RegisterClass(TDateEdit);
   RegisterClass(TTimeEdit);
   RegisterClass(TCalendar);
-  RegisterClass(TStringGrid);
 
   // Initializes the input pipe (Stdin)
   StdinStream := TInputPipeStream.Create(StdInputHandle);
@@ -398,41 +396,6 @@ begin
     else if messageMethodName = 'image.loadFromFile' then
     begin
       (objArray[objId] as TImage).Picture.LoadFromFile(jData.FindPath('params[2][0]').AsString);
-    end
-    else if messageMethodName = 'table.setAlternateColor' then
-    begin
-      (objArray[objId] as TStringGrid).AlternateColor := StringToColor(jData.FindPath('params[2][0]').AsString);
-      (objArray[objId] as TStringGrid).Flat := false;
-    end
-    else if messageMethodName = 'table.setBorderSpacing' then
-    begin
-      (objArray[objId] as TStringGrid).BorderSpacing.Top := jData.FindPath('params[2][0]').AsInteger;
-      (objArray[objId] as TStringGrid).BorderSpacing.Right := jData.FindPath('params[2][1]').AsInteger;
-      (objArray[objId] as TStringGrid).BorderSpacing.Bottom := jData.FindPath('params[2][2]').AsInteger;
-      (objArray[objId] as TStringGrid).BorderSpacing.Left := jData.FindPath('params[2][3]').AsInteger;
-    end
-    else if messageMethodName = 'table.setCellContent' then
-    begin
-      (objArray[objId] as TStringGrid).Cells[jData.FindPath('params[2][0]').AsInteger, jData.FindPath('params[2][1]').AsInteger] := jData.FindPath('params[2][2]').AsString;
-    end
-    else if messageMethodName = 'table.setBorderStyle' then
-    begin
-      if jData.FindPath('params[2][0]').AsInteger = 0 then
-        (objArray[objId] as TStringGrid).BorderStyle := bsNone
-      else
-        (objArray[objId] as TStringGrid).BorderStyle := bsSingle
-    end
-    else if messageMethodName = 'table.setColumnCount' then
-    begin
-      (objArray[objId] as TStringGrid).ColCount := jData.FindPath('params[2][0]').AsInteger;
-    end
-    else if messageMethodName = 'table.setRowCount' then
-    begin
-      (objArray[objId] as TStringGrid).RowCount := jData.FindPath('params[2][0]').AsInteger;
-    end
-    else if messageMethodName = 'table.setDefaultColumnWidth' then
-    begin
-      (objArray[objId] as TStringGrid).DefaultColWidth := jData.FindPath('params[2][0]').AsInteger;
     end
     else if messageMethodName = 'lines.clear' then
     begin
