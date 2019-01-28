@@ -3,9 +3,12 @@
 namespace Test\Components;
 
 use Gui\Application;
-use Gui\Components\Window;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ObjectTest extends TestCase
 {
     public function testMagicCall()
@@ -15,13 +18,13 @@ class ObjectTest extends TestCase
             [
                 [],
                 null,
-                new Application()
+                new Application(),
             ]
         );
 
         $mock->expects($this->any())
-            ->method('__call');
-
+            ->method('__call')
+        ;
 
         $mock->setFoo(1);
         $this->assertEquals(1, $mock->getFoo());
@@ -31,17 +34,19 @@ class ObjectTest extends TestCase
     {
         $appMock = $this->getMockBuilder('Gui\Application')
             ->setMethods(['sendCommand'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $appMock->expects($this->any())
-            ->method('sendCommand');
+            ->method('sendCommand')
+        ;
 
         $mock = $this->getMockForAbstractClass(
             'Gui\Components\AbstractObject',
             [
                 [],
                 null,
-                $appMock
+                $appMock,
             ]
         );
 
@@ -62,7 +67,7 @@ class ObjectTest extends TestCase
             [
                 [],
                 null,
-                new Application
+                new Application(),
             ]
         );
 
@@ -76,7 +81,7 @@ class ObjectTest extends TestCase
             [
                 [],
                 null,
-                new Application
+                new Application(),
             ]
         );
 

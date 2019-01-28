@@ -3,20 +3,17 @@
 namespace Gui\Components;
 
 /**
- * This is the ProgressBar Class
- *
  * It is a visual component for progress bar
  *
  * @author PeratX @PeratX
  * @since 0.1
  */
-
 class ProgressBar extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TProgressBar';
 

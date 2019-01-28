@@ -1,9 +1,8 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the InputTime Class
- *
  * It is a visual component for InputTime, an EditBox to hold a time,
  * with an attached SpeedButton that will summon a time selection dialog.
  *
@@ -12,11 +11,10 @@ namespace Gui\Components;
  */
 class InputTime extends VisualObject
 {
-
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TTimeEdit';
 
@@ -24,6 +22,7 @@ class InputTime extends VisualObject
      * Sets if the button only appears when the control receives focus.
      *
      * @param bool $option True to activate option. False is default.
+     *
      * @return self
      */
     public function setButtonOnlyWhenFocused($option)
@@ -46,7 +45,7 @@ class InputTime extends VisualObject
     /**
      * Sets if direct data input to the Edit Box is permitted.
      *
-     * @param string $bool  if True, direct data input to the Edit Box is permitted. Default is TRUE.
+     * @param string $bool if True, direct data input to the Edit Box is permitted. Default is TRUE.
      *
      * @return self
      */
@@ -59,7 +58,6 @@ class InputTime extends VisualObject
 
     /**
      * Gets if direct data input to the Edit Box is permitted.
-     *
      *
      * @return string
      */
@@ -83,7 +81,7 @@ class InputTime extends VisualObject
     }
 
     /**
-     * Gets the value of component;
+     * Gets the value of component;.
      *
      * @return string
      */

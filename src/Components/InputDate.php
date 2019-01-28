@@ -1,9 +1,8 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the InputDate Class
- *
  * It is a visual component for InputDate, an EditBox to hold a date,
  * with an attached SpeedButton that will summon a date selection (calendar) dialog.
  *
@@ -15,34 +14,34 @@ class InputDate extends VisualObject
     use OptionAware;
 
     /**
-     * dsShowHeadings
+     * dsShowHeadings.
      */
     const SHOW_HEADINGS = 'dsShowHeadings';
 
     /**
-     * dsShowDayNames
+     * dsShowDayNames.
      */
     const SHOW_DAY_NAMES = 'dsShowDayNames';
 
     /**
-     * dsNoMonthChange
+     * dsNoMonthChange.
      */
     const NO_MONTH_CHANGE = 'dsNoMonthChange';
 
     /**
-     * dsShowWeekNumbers
+     * dsShowWeekNumbers.
      */
     const SHOW_WEEK_NUMBERS = 'dsShowWeekNumbers';
 
     /**
-     * dsStartMonday
+     * dsStartMonday.
      */
     const START_MONDAY = 'dsStartMonday';
 
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TDateEdit';
 
@@ -50,6 +49,7 @@ class InputDate extends VisualObject
      * Sets if the button only appears when the control receives focus.
      *
      * @param bool $option True to activate option. False is default.
+     *
      * @return self
      */
     public function setButtonOnlyWhenFocused($option)
@@ -72,7 +72,7 @@ class InputDate extends VisualObject
     /**
      * Sets if direct data input to the Edit Box is permitted.
      *
-     * @param string $bool  if True, direct data input to the Edit Box is permitted. Default is TRUE.
+     * @param string $bool if True, direct data input to the Edit Box is permitted. Default is TRUE.
      *
      * @return self
      */
@@ -85,7 +85,6 @@ class InputDate extends VisualObject
 
     /**
      * Gets if direct data input to the Edit Box is permitted.
-     *
      *
      * @return string
      */
@@ -109,7 +108,7 @@ class InputDate extends VisualObject
     }
 
     /**
-     * Gets the value of component;
+     * Gets the value of component;.
      *
      * @return string
      */
@@ -133,7 +132,8 @@ class InputDate extends VisualObject
     /**
      * Sets teh dialog options.
      *
-     * @param string $options the options.
+     * @param string $options the options
+     *
      * @return self
      */
     public function setDialogOptions(...$options)

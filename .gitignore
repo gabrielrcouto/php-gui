@@ -1,4 +1,5 @@
 composer.lock
+.php_cs.cache
 vendor/
 material/
 lazarus/backup/

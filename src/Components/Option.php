@@ -2,27 +2,23 @@
 
 namespace Gui\Components;
 
-use Gui\Application;
-
 /**
- * This is the Option class
- *
  * @author Alex Silva
  * @since 0.1
  */
 class Option
 {
     /**
-     * The label for the option
+     * The label for the option.
      *
-     * @var string $label
+     * @var string
      */
     private $label;
 
     /**
-     * The value for the option
+     * The value for the option.
      *
-     * @var int $value
+     * @var int
      */
     private $value;
 
@@ -33,7 +29,7 @@ class Option
     }
 
     /**
-     * This method is used to set an string label for the object instance
+     * This method is used to set an string label for the object instance.
      *
      * @param string $label
      */
@@ -43,9 +39,9 @@ class Option
     }
 
     /**
-     * This method is used to set an integer value for the object instance
+     * This method is used to set an integer value for the object instance.
      *
-     * @param integer $value
+     * @param int $value
      */
     public function setValue($value)
     {
@@ -53,7 +49,7 @@ class Option
     }
 
     /**
-     * This method returns the instance Label
+     * This method returns the instance Label.
      *
      * @return string
      */
@@ -63,9 +59,9 @@ class Option
     }
 
     /**
-     * This method returns the instance value
+     * This method returns the instance value.
      *
-     * @return integer
+     * @return int
      */
     public function getValue()
     {

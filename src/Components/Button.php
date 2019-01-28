@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the Button Class
- *
  * It is a visual component for button
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,14 +11,14 @@ namespace Gui\Components;
 class Button extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TButton';
 
     /**
-     * Get the Button value
+     * Get the Button value.
      *
      * @return mixed
      */
@@ -30,7 +28,7 @@ class Button extends VisualObject
     }
 
     /**
-     * Set the Button Value
+     * Set the Button Value.
      *
      * @param string $value
      *

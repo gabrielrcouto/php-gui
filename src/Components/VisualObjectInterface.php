@@ -3,7 +3,7 @@
 namespace Gui\Components;
 
 /**
- * It is a visual component interface
+ * It is a visual component interface.
  *
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
@@ -11,30 +11,30 @@ namespace Gui\Components;
 interface VisualObjectInterface
 {
     /**
-     * Get the auto size
+     * Get the auto size.
      *
-     * @return Boolean
+     * @return bool
      */
     public function getAutoSize();
 
     /**
-     * Set the auto size
+     * Set the auto size.
      *
-     * @param Boolean $autoSize True = Enabled
+     * @param bool $autoSize True = Enabled
      *
      * @return self
      */
     public function setAutoSize($autoSize);
 
     /**
-     * Get the background color
+     * Get the background color.
      *
-     * @return String
+     * @return string
      */
     public function getBackgroundColor();
 
     /**
-     * Set the background Color
+     * Set the background Color.
      *
      * @param string $color Color '#123456'
      *
@@ -141,14 +141,14 @@ interface VisualObjectInterface
     /**
      * Gets the value of visible in pixel.
      *
-     * @return boolean
+     * @return bool
      */
     public function getVisible();
 
     /**
      * Sets the value of visible in pixel.
      *
-     * @param boolean $visible the visible
+     * @param bool $visible the visible
      *
      * @return self
      */

@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the Checkbox Class
- *
  * It is a visual component for checkbox
  *
  * @author Rafael Reis @reisraff
@@ -13,14 +11,14 @@ namespace Gui\Components;
 class Checkbox extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TCheckBox';
 
     /**
-     * Get the Checkbox checked
+     * Get the Checkbox checked.
      *
      * @return bool
      */
@@ -30,7 +28,7 @@ class Checkbox extends VisualObject
     }
 
     /**
-     * Set the Checkbox Checked
+     * Set the Checkbox Checked.
      *
      * @param bool $checked
      *

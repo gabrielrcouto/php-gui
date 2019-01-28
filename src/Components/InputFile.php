@@ -1,14 +1,14 @@
 <?php
+
 namespace Gui\Components;
 
-use Gui\OpenOptions;
-
 /**
- * This is the File Input Class
+ * This is the File Input Class.
  *
  * It is a visual component for select file input.
  *
- * @link http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tfilenameedit.html TFileNameEdit Reference
+ * @see http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tfilenameedit.html TFileNameEdit Reference
+ *
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
@@ -137,9 +137,9 @@ class InputFile extends VisualObject
     const AUTO_PREVIEW = 'ofAutoPreview';
 
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TFileNameEdit';
 
@@ -150,9 +150,9 @@ class InputFile extends VisualObject
      */
     public function getValue()
     {
-        $list = explode(';', $this->get('DialogFiles'));
+        $list = \explode(';', $this->get('DialogFiles'));
 
-        array_pop($list);
+        \array_pop($list);
 
         return $list;
     }
@@ -174,7 +174,6 @@ class InputFile extends VisualObject
     /**
      * Gets the title that appears on the select dialog.
      *
-     *
      * @return string
      */
     public function getTitle()
@@ -185,7 +184,8 @@ class InputFile extends VisualObject
     /**
      * Sets teh dialog options.
      *
-     * @param string $options the options.
+     * @param string $options the options
+     *
      * @return self
      */
     public function setDialogOptions(...$options)
@@ -211,7 +211,7 @@ class InputFile extends VisualObject
     /**
      * Sets the  initial directory for searching.
      *
-     * @param string $path the path to base directory.
+     * @param string $path the path to base directory
      *
      * @return self
      */
@@ -225,7 +225,6 @@ class InputFile extends VisualObject
     /**
      * Gets the  base directory for searching.
      *
-     *
      * @return string
      */
     public function getBaseDir()
@@ -237,7 +236,8 @@ class InputFile extends VisualObject
      * Sets filter for dialog extensions.
      *
      * @param array $extensions the extension list where key is extension (xml, json, ...)
-     * and value is extension description.
+     *                          and value is extension description.
+     *
      * @return self
      */
     public function setExtensionFilter($extensions)
@@ -245,10 +245,10 @@ class InputFile extends VisualObject
         $arr = [];
 
         foreach ($extensions as $ext => $desc) {
-            $arr[] = "$desc|*.$ext";
+            $arr[] = "${desc}|*.${ext}";
         }
 
-        $this->set('Filter', join('|', $arr));
+        $this->set('Filter', \implode('|', $arr));
 
         return $this;
     }
@@ -260,15 +260,15 @@ class InputFile extends VisualObject
      */
     public function getExtensionFilter()
     {
-        $arr = explode('|', $this->get('Filter'));
+        $arr = \explode('|', $this->get('Filter'));
 
         $ext_list = [];
         $descriptions = [];
 
         foreach ($arr as $item) {
-            $test = substr($item, 0, 2);
-            if ($test === '*.') {
-                $ext_list[] = substr($item, 2);
+            $test = \mb_substr($item, 0, 2);
+            if ('*.' === $test) {
+                $ext_list[] = \mb_substr($item, 2);
             } else {
                 $descriptions[] = $item;
             }
@@ -284,7 +284,8 @@ class InputFile extends VisualObject
     /**
      * Sets to hide directory name from edit.
      *
-     * @param boolean $hide
+     * @param bool $hide
+     *
      * @return self
      */
     public function setHideDirectory($hide)
@@ -307,7 +308,7 @@ class InputFile extends VisualObject
     /**
      * Sets if direct data input to the Edit Box is permitted.
      *
-     * @param string $bool  if True, direct data input to the Edit Box is permitted. Default is TRUE.
+     * @param string $bool if True, direct data input to the Edit Box is permitted. Default is TRUE.
      *
      * @return self
      */
@@ -321,7 +322,6 @@ class InputFile extends VisualObject
     /**
      * Gets if direct data input to the Edit Box is permitted.
      *
-     *
      * @return string
      */
     public function getAcceptInput()
@@ -333,6 +333,7 @@ class InputFile extends VisualObject
      * Sets if the button only appears when the control receives focus.
      *
      * @param bool $option True to activate option. False is default.
+     *
      * @return self
      */
     public function setButtonOnlyWhenFocused($option)
@@ -344,6 +345,7 @@ class InputFile extends VisualObject
 
     /**
      * Gets if the button only appears when the control receives focus.
+     *
      * @return bool
      */
     public function isButtonOnlyWhenFocused()
@@ -355,6 +357,7 @@ class InputFile extends VisualObject
      * Sets if True, the edit control will select all its text when it receives focus or when the Enter key is pressed.
      *
      * @param bool $option True to activate option. False is default.
+     *
      * @return self
      */
     public function setAutoSelect($option)
@@ -366,6 +369,7 @@ class InputFile extends VisualObject
 
     /**
      * Gets if True, the edit control will select all its text when it receives focus or when the Enter key is pressed.
+     *
      * @return bool
      */
     public function isAutoSelect()
@@ -380,6 +384,6 @@ class InputFile extends VisualObject
      */
     public function countFiles()
     {
-        return count($this->getValue());
+        return \count($this->getValue());
     }
 }

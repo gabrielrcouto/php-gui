@@ -3,7 +3,7 @@
 namespace Gui\Components;
 
 /**
- * This is the ContainerObjectInterface
+ * This is the ContainerObjectInterface.
  *
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
@@ -11,16 +11,12 @@ namespace Gui\Components;
 interface ContainerObjectInterface extends LazarusObjectInterface
 {
     /**
-     * Append object as child
-     *
-     * @param VisualObjectInterface $object
-     *
-     * @return void
+     * Append object as child.
      */
     public function appendChild(VisualObjectInterface  $object);
 
     /**
-     * Get child
+     * Get child.
      *
      * @param int $lazarusObjectId the object id
      *
@@ -29,7 +25,7 @@ interface ContainerObjectInterface extends LazarusObjectInterface
     public function getChild($lazarusObjectId);
 
     /**
-     * Get children array
+     * Get children array.
      *
      * @return array
      */

@@ -3,8 +3,6 @@
 namespace Gui\Ipc;
 
 /**
- * This is the CommandMessage Class
- *
  * This class is used as a CommandMessage object
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,41 +11,38 @@ namespace Gui\Ipc;
 class CommandMessage implements MessageInterface
 {
     /**
-     * The command id
+     * The command id.
      *
-     * @var int $id
+     * @var int
      */
     public $id;
 
     /**
-     * The command method
+     * The command method.
      *
-     * @var string $method
+     * @var string
      */
     public $method;
 
     /**
-     * The command params
+     * The command params.
      *
-     * @var array $params
+     * @var array
      */
     public $params;
 
     /**
-     * The command callback
+     * The command callback.
      *
-     * @var callable $callback
+     * @var callable
      */
     public $callback;
 
     /**
-     * The constructor method
+     * The constructor method.
      *
-     * @param string $method
-     * @param array $params
+     * @param string   $method
      * @param callable $callback
-     *
-     * @return void
      */
     public function __construct($method, array $params, callable $callback = null)
     {

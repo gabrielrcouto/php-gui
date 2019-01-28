@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the TextArea Class
- *
  * It is a visual component for textarea
  *
  * @author Rafael Reis @reisraff
@@ -13,9 +11,9 @@ namespace Gui\Components;
 class TextArea extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TMemo';
 
@@ -30,7 +28,7 @@ class TextArea extends VisualObject
     {
         $this->call('lines.clear', []);
 
-        foreach (explode("\n", $value) as $value) {
+        foreach (\explode("\n", $value) as $value) {
             $this->call('lines.add', [$value]);
         }
 
@@ -38,7 +36,7 @@ class TextArea extends VisualObject
     }
 
     /**
-     * Gets the value of value;
+     * Gets the value of value;.
      *
      * @return string
      */
@@ -49,7 +47,7 @@ class TextArea extends VisualObject
             [
                 $this->lazarusObjectId,
                 'lines.getAll',
-                []
+                [],
             ]
         );
     }

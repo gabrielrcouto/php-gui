@@ -1,35 +1,30 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the InputPassword Class
- *
  * It is a visual component for InputPassword, a box with characters masked out to avoid unauthorised reading
- *
- *
  *
  * @author Everton da Rosa everton3x.at.gmail.com
  * @since 0.1
  */
 class InputPassword extends VisualObject
 {
-
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TEdit';
 
     /**
      * The class constructor.
      *
-     * @param array $defaultAttributes
      * @param \Gui\Components\ContainerObjectInterface $parent
-     * @param type $application
+     * @param type                                     $application
      */
     public function __construct(
-        array $defaultAttributes = array(),
+        array $defaultAttributes = [],
         ContainerObjectInterface $parent = null,
         $application = null
     ) {
@@ -54,7 +49,7 @@ class InputPassword extends VisualObject
     }
 
     /**
-     * Gets the value of value;
+     * Gets the value of value;.
      *
      * @return string
      */

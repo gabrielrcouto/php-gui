@@ -1,9 +1,8 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the Image class.
- *
  * It is a visual component for the image.
  *
  * @author Isaac Skelton @kingga
@@ -11,7 +10,20 @@ namespace Gui\Components;
  */
 class Image extends AbstractObject
 {
-    /** {@inheritDoc} */
+    /**
+     * Imagick extension ID.
+     *
+     * @var int
+     */
+    const EXT_IMAGICK = 0;
+
+    /**
+     * GD extension ID.
+     *
+     * @var int
+     */
+    const EXT_GD = 1;
+    /** {@inheritdoc} */
     protected $lazarusClass = 'TImage';
 
     /**
@@ -19,7 +31,7 @@ class Image extends AbstractObject
      *
      * @var string
      */
-    protected $imgFile = null;
+    protected $imgFile;
 
     /**
      * Stores all of the temporary files which have been
@@ -32,16 +44,16 @@ class Image extends AbstractObject
     /**
      * The width of the image.
      *
-     * @var integer
+     * @var int
      */
-    private $imgW = null;
+    private $imgW;
 
     /**
      * The height of the image.
      *
-     * @var integer
+     * @var int
      */
-    private $imgH = null;
+    private $imgH;
 
     /**
      * A cache of the images data if loaded before the app
@@ -52,43 +64,37 @@ class Image extends AbstractObject
     private $imgData = [];
 
     /**
-     * Imagick extension ID.
-     *
-     * @var integer
-     */
-    const EXT_IMAGICK = 0;
-
-    /**
-     * GD extension ID.
-     *
-     * @var integer
-     */
-    const EXT_GD = 1;
-
-    /**
      * Current extension, Imagick is favoured over GD.
      *
-     * @var integer|null
+     * @var int|null
      */
-    private $currentExt = null;
+    private $currentExt;
 
     /**
      * The resize filter for Imagick, yet to support GD's
      * image filters.
      *
-     * @var integer
+     * @var int
      */
-    private $resizeFilter = null;
+    private $resizeFilter;
+
+    public function __destruct()
+    {
+        $this->removeTempFiles();
+
+        parent::__destruct();
+    }
 
     /**
      * Set the image file.
      *
      * @param string $file
+     *
      * @return self
      */
     public function setFile($file)
     {
-        if (is_file($file)) {
+        if (\is_file($file)) {
             $this->imgFile = $file;
             $this->drawImage();
         } else {
@@ -111,43 +117,25 @@ class Image extends AbstractObject
     /**
      * Set the resize method for Imagick.
      *
-     * @param integer $filter
+     * @param int $filter
+     *
      * @return self
      */
     public function setResizeFilter($filter)
     {
         $this->filter = $filter;
+
         return $this;
     }
 
     /**
      * Get the resize method for Imagick.
      *
-     * @return integer|null
+     * @return int|null
      */
     public function getResizeFilter()
     {
         return $this->resizeFilter;
-    }
-
-    /**
-     * Check that either Imagick or GD is loaded as this
-     * class requires them to draw.
-     *
-     * @throws \Exception If the Imagick or GD extension is not loaded.
-     * @return self
-     */
-    private function checkExtensions()
-    {
-        if (extension_loaded('imagick')) {
-            $this->currentExt = self::EXT_IMAGICK;
-        } elseif (extension_loaded('gd')) {
-            $this->currentExt = self::EXT_GD;
-        } else {
-            throw new \Exception('You must have imagick or gd installed to draw images.');
-        }
-
-        return $this;
     }
 
     /**
@@ -156,6 +144,7 @@ class Image extends AbstractObject
      *
      * @param int $width
      * @param int $height
+     *
      * @return self
      */
     public function setSize($width, $height)
@@ -186,9 +175,22 @@ class Image extends AbstractObject
     public function getSize()
     {
         return [
-            $this->imgW ? $this->imgW :  $this->getWidth(),
-            $this->imgH ? $this->imgH :  $this->getHeight(),
+            $this->imgW ? $this->imgW : $this->getWidth(),
+            $this->imgH ? $this->imgH : $this->getHeight(),
         ];
+    }
+
+    public function removeTempFiles()
+    {
+        foreach ($this->tmpFiles as $file) {
+            try {
+                \fclose($file);
+            } catch (\Throwable $e) {
+                // ...
+            }
+        }
+
+        $this->tmpFiles = [];
     }
 
     /**
@@ -197,7 +199,8 @@ class Image extends AbstractObject
      * If GD is the only available extension then only GIF, JPEG, PNG
      * and BMP images are supported.
      *
-     * @throws \Exception If GD is being used and the image isn't in the supported list.
+     * @throws \Exception if GD is being used and the image isn't in the supported list
+     *
      * @return self
      */
     protected function drawImage()
@@ -215,11 +218,11 @@ class Image extends AbstractObject
         }
 
         // Create a temporary file for the modified image.
-        $hFile = tmpfile();
+        $hFile = \tmpfile();
         $this->tmpFiles[] = &$hFile;
-        $file = stream_get_meta_data($hFile)['uri'];
+        $file = \stream_get_meta_data($hFile)['uri'];
 
-        if ($this->currentExt === self::EXT_IMAGICK) {
+        if (self::EXT_IMAGICK === $this->currentExt) {
             $image = new \Imagick($this->getFile());
 
             if ($resize) {
@@ -235,25 +238,25 @@ class Image extends AbstractObject
 
             // Write the image to the temp file.
             $image->writeImage($file);
-        } elseif ($this->currentExt === self::EXT_GD) {
-            list($w, $h, $type) = getimagesize($this->getFile());
+        } elseif (self::EXT_GD === $this->currentExt) {
+            list($w, $h, $type) = \getimagesize($this->getFile());
 
             // Create the image resource.
             switch ($type) {
                 case IMAGETYPE_GIF:
-                    $image = imagecreatefromgif($this->getFile());
+                    $image = \imagecreatefromgif($this->getFile());
                     $writefunc = 'imagegif';
                     break;
                 case IMAGETYPE_JPEG:
-                    $image = imagecreatefromjpeg($this->getFile());
+                    $image = \imagecreatefromjpeg($this->getFile());
                     $writefunc = 'imagejpeg';
                     break;
                 case IMAGETYPE_PNG:
-                    $image = imagecreatefrompng($this->getFile());
+                    $image = \imagecreatefrompng($this->getFile());
                     $writefunc = 'imagepng';
                     break;
                 case IMAGETYPE_BMP:
-                    $image = imagecreatefrombmp($this->getFile());
+                    $image = \imagecreatefrombmp($this->getFile());
                     $writefunc = 'imagebmp';
                     break;
                 default:
@@ -263,15 +266,15 @@ class Image extends AbstractObject
 
             if ($resize) {
                 // Resize the image.
-                imagescale($image, $imgw, $imgh);
+                \imagescale($image, $imgw, $imgh);
             } else {
                 // Get the images size.
-                $this->imgW = $imgw = imagesx($image);
-                $this->imgH = $imgh = imagesy($image);
+                $this->imgW = $imgw = \imagesx($image);
+                $this->imgH = $imgh = \imagesy($image);
             }
 
             // Write the image to the temp file.
-            call_user_func($writefunc, $image, $file);
+            \call_user_func($writefunc, $image, $file);
         }
 
         // If the size wasn't defined previously, the image needs to be resized.
@@ -294,23 +297,24 @@ class Image extends AbstractObject
         return $this;
     }
 
-    public function removeTempFiles()
+    /**
+     * Check that either Imagick or GD is loaded as this
+     * class requires them to draw.
+     *
+     * @throws \Exception if the Imagick or GD extension is not loaded
+     *
+     * @return self
+     */
+    private function checkExtensions()
     {
-        foreach ($this->tmpFiles as $file) {
-            try {
-                fclose($file);
-            } catch (\Throwable $e) {
-                // ...
-            }
+        if (\extension_loaded('imagick')) {
+            $this->currentExt = self::EXT_IMAGICK;
+        } elseif (\extension_loaded('gd')) {
+            $this->currentExt = self::EXT_GD;
+        } else {
+            throw new \Exception('You must have imagick or gd installed to draw images.');
         }
 
-        $this->tmpFiles = [];
-    }
-
-    public function __destruct()
-    {
-        $this->removeTempFiles();
-
-        parent::__destruct();
+        return $this;
     }
 }

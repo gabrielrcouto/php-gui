@@ -2,11 +2,7 @@
 
 namespace Gui\Components;
 
-use Gui\Color;
-
 /**
- * This is the Select Class
- *
  * It is a visual component for select
  *
  * @author Rafael Reis @reisraff
@@ -15,23 +11,21 @@ use Gui\Color;
 class Select extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TComboBox';
 
     /**
-     * Sets the options
-     *
-     * @param array $options
+     * Sets the options.
      *
      * @return self
      */
     public function setOptions(array $options)
     {
         foreach ($options as $key => $option) {
-            if (! $option instanceof Option) {
+            if (!$option instanceof Option) {
                 // @todo: throw an exception
                 unset($option[$key]);
             } else {
@@ -39,7 +33,7 @@ class Select extends VisualObject
                     'items.addObject',
                     [
                         $option->getLabel(),
-                        $option->getValue()
+                        $option->getValue(),
                     ]
                 );
             }
@@ -49,7 +43,7 @@ class Select extends VisualObject
     }
 
     /**
-     * Gets the checked item id
+     * Gets the checked item id.
      *
      * @return int
      */
@@ -59,9 +53,10 @@ class Select extends VisualObject
     }
 
     /**
-     * Set if is read only
+     * Set if is read only.
      *
      * @param bool
+     * @param mixed $val
      *
      * @return self
      */

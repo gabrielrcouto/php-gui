@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the InputText Class
- *
  * It is a visual component for inputText
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,9 +11,9 @@ namespace Gui\Components;
 class InputText extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TEdit';
 
@@ -34,7 +32,7 @@ class InputText extends VisualObject
     }
 
     /**
-     * Gets the value of value;
+     * Gets the value of value;.
      *
      * @return string
      */

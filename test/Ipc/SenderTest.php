@@ -7,6 +7,10 @@ use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class SenderTest extends TestCase
 {
     public function testConstructor()

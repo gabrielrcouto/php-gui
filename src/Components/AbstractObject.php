@@ -5,8 +5,6 @@ namespace Gui\Components;
 use Gui\Application;
 
 /**
- * This is the Object class
- *
  * It is base abstraction for Lazarus Object
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -15,48 +13,45 @@ use Gui\Application;
 abstract class AbstractObject implements LazarusObjectInterface
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TObject';
 
     /**
-     * The communication object id
+     * The communication object id.
      *
-     * @var int $lazarusObjectId
+     * @var int
      */
     protected $lazarusObjectId;
 
     /**
-     * The application object
+     * The application object.
      *
-     * @var Application $application
+     * @var Application
      */
     protected $application;
 
     /**
-     * The array of callbacks
+     * The array of callbacks.
      *
-     * @var array $eventHandlers
+     * @var array
      */
     protected $eventHandlers = [];
 
     /**
-     * The array of special properties
+     * The array of special properties.
      *
-     * @var array $runTimeProperties
+     * @var array
      */
     protected $runTimeProperties = [];
 
     /**
-     * The constructor
+     * The constructor.
      *
-     * @param array $defaultAttributes
      * @param ContainerObjectInterface $parent
-     * @param Application $application
-     *
-     * @return void
+     * @param Application              $application
      */
     public function __construct(
         array $defaultAttributes = [],
@@ -67,13 +62,13 @@ abstract class AbstractObject implements LazarusObjectInterface
 
         // We can use multiple applications, but, if no one is defined, we use the
         // first (default)
-        if ($application == null) {
+        if (null == $application) {
             $this->application = Application::$defaultApplication;
         } else {
             $this->application = $application;
         }
 
-        if ($parent == null) {
+        if (null == $parent) {
             $parent = $this->application->getWindow();
         }
 
@@ -81,7 +76,7 @@ abstract class AbstractObject implements LazarusObjectInterface
         $this->lazarusObjectId = $this->application->getNextObjectId();
         $this->application->addObject($this);
 
-        if ($this->lazarusObjectId !== 0) {
+        if (0 !== $this->lazarusObjectId) {
             if ($this instanceof VisualObjectInterface) {
                 $parent->appendChild($this);
             }
@@ -92,14 +87,14 @@ abstract class AbstractObject implements LazarusObjectInterface
                     [
                         'lazarusClass' => $this->lazarusClass,
                         'lazarusObjectId' => $this->lazarusObjectId,
-                        'parent' => $parent->getLazarusObjectId()
-                    ]
+                        'parent' => $parent->getLazarusObjectId(),
+                    ],
                 ],
                 function ($result) use ($object, $defaultAttributes) {
                     foreach ($defaultAttributes as $attr => $value) {
-                        $method = 'set' . ucfirst($attr);
-                        if (method_exists($object, $method)) {
-                            $object->$method($value);
+                        $method = 'set'.\ucfirst($attr);
+                        if (\method_exists($object, $method)) {
+                            $object->{$method}($value);
                         }
                     }
                 }
@@ -108,17 +103,17 @@ abstract class AbstractObject implements LazarusObjectInterface
     }
 
     /**
-     * The special method used to do the getters/setters for special properties
+     * The special method used to do the getters/setters for special properties.
      *
      * @param string $method
-     * @param array $params
+     * @param array  $params
      *
      * @return self|mixed
      */
     public function __call($method, $params)
     {
-        $type = substr($method, 0, 3);
-        $rest = lcfirst(substr($method, 3));
+        $type = \mb_substr($method, 0, 3);
+        $rest = \lcfirst(\mb_substr($method, 3));
 
         switch ($type) {
             case 'get':
@@ -129,90 +124,14 @@ abstract class AbstractObject implements LazarusObjectInterface
 
             case 'set':
                 $this->runTimeProperties[$rest] = $params[0];
+
                 return $this;
                 break;
 
             default:
-                # do nothing
+                // do nothing
                 break;
         }
-    }
-
-    /**
-     * This method is used to send an object command/envent to lazarus
-     *
-     * @param string $method
-     * @param array $params
-     * @param boolean $isCommand
-     *
-     * @return void
-     */
-    protected function call($method, array $params, $isCommand = true)
-    {
-        if ($isCommand) {
-            // It's a command
-            $this->application->sendCommand(
-                'callObjectMethod',
-                [
-                    $this->lazarusObjectId,
-                    $method,
-                    $params
-                ],
-                function ($result) {
-                    // Ok, the property changed
-                }
-            );
-
-            return;
-        }
-
-        // It's a event
-        $this->application->sendEvent(
-            'callObjectMethod',
-            [
-                $this->lazarusObjectId,
-                $method,
-                $params
-            ]
-        );
-    }
-
-    /**
-     * this method is used to send the IPC message when a property is set
-     *
-     * @param string $name  Property name
-     * @param mixed $value Property value
-     *
-     * @return void
-     */
-    protected function set($name, $value)
-    {
-        $this->application->sendCommand(
-            'setObjectProperty',
-            [
-                $this->lazarusObjectId,
-                $name,
-                $value
-            ],
-            function ($result) {
-                // Ok, the property changed
-            }
-        );
-    }
-
-    /**
-     * This magic method is used to send the IPC message when a property is get
-     *
-     * @param string $name Property name
-     *
-     * @return mixed
-     */
-    protected function get($name)
-    {
-        return $this->application->waitCommand('getObjectProperty', [
-            $this->lazarusObjectId,
-            $name
-        ]);
     }
 
     /**
@@ -236,7 +155,7 @@ abstract class AbstractObject implements LazarusObjectInterface
      */
     public function fire($eventName)
     {
-        if (array_key_exists($eventName, $this->eventHandlers)) {
+        if (\array_key_exists($eventName, $this->eventHandlers)) {
             foreach ($this->eventHandlers[$eventName] as $eventHandler) {
                 $eventHandler();
             }
@@ -248,19 +167,91 @@ abstract class AbstractObject implements LazarusObjectInterface
      */
     public function on($eventName, callable $eventHandler)
     {
-        $eventName = 'on' . $eventName;
+        $eventName = 'on'.$eventName;
 
         $this->application->sendCommand('setObjectEventListener', [
             $this->lazarusObjectId,
-            $eventName
+            $eventName,
         ], function ($result) {
             // Ok, the event listener created
         });
 
-        if (! array_key_exists($eventName, $this->eventHandlers)) {
+        if (!\array_key_exists($eventName, $this->eventHandlers)) {
             $this->eventHandlers[$eventName] = [];
         }
 
         $this->eventHandlers[$eventName][] = $eventHandler;
+    }
+
+    /**
+     * This method is used to send an object command/envent to lazarus.
+     *
+     * @param string $method
+     * @param bool   $isCommand
+     */
+    protected function call($method, array $params, $isCommand = true)
+    {
+        if ($isCommand) {
+            // It's a command
+            $this->application->sendCommand(
+                'callObjectMethod',
+                [
+                    $this->lazarusObjectId,
+                    $method,
+                    $params,
+                ],
+                function ($result) {
+                    // Ok, the property changed
+                }
+            );
+
+            return;
+        }
+
+        // It's a event
+        $this->application->sendEvent(
+            'callObjectMethod',
+            [
+                $this->lazarusObjectId,
+                $method,
+                $params,
+            ]
+        );
+    }
+
+    /**
+     * this method is used to send the IPC message when a property is set.
+     *
+     * @param string $name  Property name
+     * @param mixed  $value Property value
+     */
+    protected function set($name, $value)
+    {
+        $this->application->sendCommand(
+            'setObjectProperty',
+            [
+                $this->lazarusObjectId,
+                $name,
+                $value,
+            ],
+            function ($result) {
+                // Ok, the property changed
+            }
+        );
+    }
+
+    /**
+     * This magic method is used to send the IPC message when a property is get.
+     *
+     * @param string $name Property name
+     *
+     * @return mixed
+     */
+    protected function get($name)
+    {
+        return $this->application->waitCommand('getObjectProperty', [
+            $this->lazarusObjectId,
+            $name,
+        ]);
     }
 }

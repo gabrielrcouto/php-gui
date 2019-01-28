@@ -3,8 +3,6 @@
 namespace Gui;
 
 /**
- * This is the Output Class
- *
  * This class is used to send the output easier
  *
  * @author Rafael Reis @reisraff
@@ -13,21 +11,21 @@ namespace Gui;
 class Output
 {
     /**
-     * The resource for out
+     * The resource for out.
      *
-     * @var resource $out
+     * @var resource
      */
     protected static $out = STDOUT;
 
     /**
-     * The resource for err
+     * The resource for err.
      *
-     * @var resource $err
+     * @var resource
      */
     protected static $err = STDERR;
 
     /**
-     * @var array $color associative array of colors
+     * @var array associative array of colors
      */
     private static $colors = [
         'black' => 30,
@@ -37,52 +35,48 @@ class Output
         'blue' => 34,
         'magenta' => 35,
         'cyan' => 36,
-        'white' => 37
+        'white' => 37,
     ];
 
     /**
-     * This method is used to send some text to STDOUT, maybe with some color
+     * This method is used to send some text to STDOUT, maybe with some color.
      *
      * @param string $string the text to be sent to STDOUT
-     * @param string $color the color to colorize your text
-     *
-     * @return void
+     * @param string $color  the color to colorize your text
      */
     public static function out($string, $color = 'white')
     {
-        fwrite(
+        \fwrite(
             static::$out,
-            self::colorize($string . PHP_EOL, $color)
+            self::colorize($string.PHP_EOL, $color)
         );
     }
 
     /**
-     * This method is used to send some text to STDERR
+     * This method is used to send some text to STDERR.
      *
      * @param string $string the text to be sent to STDERR
-     *
-     * @return void
      */
     public static function err($string)
     {
-        fwrite(
+        \fwrite(
             static::$err,
-            self::colorize($string . PHP_EOL, 'red')
+            self::colorize($string.PHP_EOL, 'red')
         );
     }
 
     /**
-     * This method is used to colorize some text
+     * This method is used to colorize some text.
      *
      * @param string $string the text to be colorized
-     * @param string $color the color to colorize your
+     * @param string $color  the color to colorize your
      *
      * @return string
      */
     private static function colorize($string, $color)
     {
         if (isset(self::$colors[$color])) {
-            return "\033[" . self::$colors[$color] . 'm' . $string . "\033[0m";
+            return "\033[".self::$colors[$color].'m'.$string."\033[0m";
         }
 
         return $string;
