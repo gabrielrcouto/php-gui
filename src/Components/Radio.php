@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the Radio Class
- *
  * It is a visual component for radio
  *
  * @author Rafael Reis @reisraff
@@ -13,40 +11,37 @@ namespace Gui\Components;
 class Radio extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TRadioGroup';
 
     /**
-     * Sets the options
-     *
-     * @param array $options
+     * Sets the options.
      *
      * @return self
      */
     public function setOptions(array $options)
     {
         foreach ($options as $key => $option) {
-            if (! $option instanceof Option) {
+            if (!$option instanceof Option) {
                 throw new \InvalidArgumentException('Element in array options must be an instance of Option');
-            } else {
-                $this->call(
+            }
+            $this->call(
                     'items.addObject',
                     [
                         $option->getLabel(),
-                        $option->getValue()
+                        $option->getValue(),
                     ]
                 );
-            }
         }
 
         return $this;
     }
 
     /**
-     * Gets the checked item id
+     * Gets the checked item id.
      *
      * @return int
      */

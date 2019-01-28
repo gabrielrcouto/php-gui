@@ -1,9 +1,8 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the Calendar Class
- *
  * It is a visual component for Calendar, a graphic allowing the user to
  * select a date which is returned as data to the calling routine.
  *
@@ -13,11 +12,10 @@ namespace Gui\Components;
  */
 class Calendar extends VisualObject
 {
-
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TCalendar';
 
@@ -31,9 +29,9 @@ class Calendar extends VisualObject
     public function setValue($value)
     {
         // See explanation of P.O.G in self::getValue()
-        $datetime1 = date_create('1900-01-01');
-        $datetime2 = date_create_from_format('d/m/Y', $value);
-        $interval = date_diff($datetime1, $datetime2, true);
+        $datetime1 = \date_create('1900-01-01');
+        $datetime2 = \date_create_from_format('d/m/Y', $value);
+        $interval = \date_diff($datetime1, $datetime2, true);
         $int = $interval->format('%a');
 
         $this->set('DateTime', $int + 2);
@@ -42,7 +40,7 @@ class Calendar extends VisualObject
     }
 
     /**
-     * Gets the value of component;
+     * Gets the value of component.
      *
      * In the Lazarus documentation for the TCalendar component there is a
      *  reference to the {@link http://lazarus-ccr.sourceforge.net/
@@ -61,8 +59,9 @@ class Calendar extends VisualObject
      */
     public function getValue()
     {
-        $date = date_create('1900-01-01');
-        date_add($date, date_interval_create_from_date_string(($this->get('DateTime') - 2) . ' days'));
-        return date_format($date, 'd/m/Y');
+        $date = \date_create('1900-01-01');
+        \date_add($date, \date_interval_create_from_date_string(($this->get('DateTime') - 2).' days'));
+
+        return \date_format($date, 'd/m/Y');
     }
 }

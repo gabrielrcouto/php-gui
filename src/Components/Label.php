@@ -5,8 +5,6 @@ namespace Gui\Components;
 use Gui\Color;
 
 /**
- * This is the Label Class
- *
  * It is a visual component for label
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -15,16 +13,16 @@ use Gui\Color;
 class Label extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TLabel';
 
     /**
-     * Get the font color
+     * Get the font color.
      *
-     * @return String
+     * @return string
      */
     public function getFontColor()
     {
@@ -32,7 +30,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Set the font Color
+     * Set the font Color.
      *
      * @param string $color Color '#123456'
      *
@@ -46,9 +44,9 @@ class Label extends VisualObject
     }
 
     /**
-     * Get the font family
+     * Get the font family.
      *
-     * @return String
+     * @return string
      */
     public function getFontFamily()
     {
@@ -56,7 +54,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Set the font Family
+     * Set the font Family.
      *
      * @param string $family Family name (ex: Arial)
      *
@@ -70,7 +68,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Get the font size
+     * Get the font size.
      *
      * @return float
      */
@@ -80,7 +78,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Set the font size for label
+     * Set the font size for label.
      *
      * @param float $size
      *
@@ -94,7 +92,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Get the Label text
+     * Get the Label text.
      *
      * @return mixed
      */
@@ -104,7 +102,7 @@ class Label extends VisualObject
     }
 
     /**
-     * Set the Label text
+     * Set the Label text.
      *
      * @param string $value
      *

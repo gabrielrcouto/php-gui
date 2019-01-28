@@ -3,8 +3,6 @@
 namespace Gui\Ipc;
 
 /**
- * This is the EventMessage Class
- *
  * This class is used as a EventMessage object
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,26 +11,23 @@ namespace Gui\Ipc;
 class EventMessage implements MessageInterface
 {
     /**
-     * The event method
+     * The event method.
      *
-     * @var string $method
+     * @var string
      */
     public $method;
 
     /**
-     * The command params
+     * The command params.
      *
-     * @var array $params
+     * @var array
      */
     public $params;
 
     /**
-     * The constructor method
+     * The constructor method.
      *
      * @param string $method
-     * @param array $params
-     *
-     * @return void
      */
     public function __construct($method, array $params)
     {

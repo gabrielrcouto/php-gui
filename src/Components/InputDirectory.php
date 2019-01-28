@@ -1,22 +1,23 @@
 <?php
+
 namespace Gui\Components;
 
 /**
- * This is the Directory Input Class
+ * This is the Directory Input Class.
  *
  * It is a visual component for select directory input.
  *
- * @link http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdirectoryedit.html TDirectoryEdit Reference
+ * @see http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdirectoryedit.html TDirectoryEdit Reference
+ *
  * @author Everton da Rosa @everton3x
  * @since 0.1
  */
 class InputDirectory extends VisualObject
 {
-
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TDirectoryEdit';
 
@@ -47,7 +48,6 @@ class InputDirectory extends VisualObject
     /**
      * Gets the title that appears on the Select Directory dialog.
      *
-     *
      * @return string
      */
     public function getTitle()
@@ -72,7 +72,6 @@ class InputDirectory extends VisualObject
     /**
      * Gets the  root directory for searching.
      *
-     *
      * @return string
      */
     public function getBaseDir()
@@ -83,7 +82,7 @@ class InputDirectory extends VisualObject
     /**
      * Sets if direct data input to the Edit Box is permitted.
      *
-     * @param string $bool  if True, direct data input to the Edit Box is permitted. Default is TRUE.
+     * @param string $bool if True, direct data input to the Edit Box is permitted. Default is TRUE.
      *
      * @return self
      */
@@ -96,7 +95,6 @@ class InputDirectory extends VisualObject
 
     /**
      * Gets if direct data input to the Edit Box is permitted.
-     *
      *
      * @return string
      */

@@ -8,14 +8,11 @@ use Gui\Ipc\CommandMessage;
 use Gui\Ipc\EventMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
-use Gui\OsDetector;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 
 /**
- * This is the Application Class
- *
  * This class is used to manipulate the application
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -24,89 +21,86 @@ use React\EventLoop\LoopInterface;
 class Application
 {
     /**
-     * The application object
+     * The application object.
      *
-     * @var Application $defaultApplication
+     * @var Application
      */
     public static $defaultApplication;
 
     /**
-     * The internal array of all callbacks
+     * The object responsible to manage the lazarus process.
      *
-     * @var array $eventHandlers
-     */
-    protected $eventHandlers = [];
-
-    /**
-     * The application loop
-     *
-     * @var LoopInterface $loop
-     */
-    protected $loop;
-
-    /**
-     * The next object ID available
-     *
-     * @var int $objectId
-     */
-    protected $objectId = 0;
-
-    /**
-     * The internal array of all Components Objects in this application
-     *
-     * @var array $objects
-     */
-    protected $objects = [];
-
-    /**
-     * The object responsible to manage the lazarus process
-     *
-     * @var Process $process
+     * @var Process
      */
     public $process;
 
     /**
-     * Defines if the application is running
+     * The internal array of all callbacks.
      *
-     * @var bool $running
+     * @var array
+     */
+    protected $eventHandlers = [];
+
+    /**
+     * The application loop.
+     *
+     * @var LoopInterface
+     */
+    protected $loop;
+
+    /**
+     * The next object ID available.
+     *
+     * @var int
+     */
+    protected $objectId = 0;
+
+    /**
+     * The internal array of all Components Objects in this application.
+     *
+     * @var array
+     */
+    protected $objects = [];
+
+    /**
+     * Defines if the application is running.
+     *
+     * @var bool
      */
     protected $running = false;
 
     /**
-     * The responsible object to sent the communication messages
+     * The responsible object to sent the communication messages.
      *
-     * @var Sender $sender
+     * @var Sender
      */
     protected $sender;
 
     /**
-     * The responsible object to receive the communication messages
+     * The responsible object to receive the communication messages.
      *
-     * @var Receiver $receiver
+     * @var Receiver
      */
     protected $receiver;
 
     /**
-     * The verbose level
+     * The verbose level.
      *
-     * @var int $verboseLevel
+     * @var int
      */
     protected $verboseLevel = 2;
 
     /**
-     * The 1st Window of the Application
+     * The 1st Window of the Application.
      *
-     * @var Window $window
+     * @var Window
      */
     protected $window;
 
     /**
-     * The constructor method
+     * The constructor method.
      *
-     * @param array $defaultAttributes
      * @param LoopInterface $loop
-     *
-     * @return void
      */
     public function __construct(array $defaultAttributes = [], LoopInterface $loop = null)
     {
@@ -115,16 +109,28 @@ class Application
 
         $this->on('start', function () use ($window, $defaultAttributes) {
             foreach ($defaultAttributes as $attr => $value) {
-                $method = 'set' . ucfirst($attr);
-                if (method_exists($window, $method)) {
-                    $window->$method($value);
+                $method = 'set'.\ucfirst($attr);
+                if (\method_exists($window, $method)) {
+                    $window->{$method}($value);
                 }
             }
         });
     }
 
     /**
-     * Returns the 1st Window of the Application
+     * Unset the object referency from the stack.
+     *
+     * @param $objectId
+     */
+    public function __unset($objectId)
+    {
+        if ($this->getObject($objectId)) {
+            unset($this->objects[$objectId]);
+        }
+    }
+
+    /**
+     * Returns the 1st Window of the Application.
      *
      * @return Window
      */
@@ -134,29 +140,27 @@ class Application
     }
 
     /**
-     * Returns the communication time between php and lazarus
+     * Returns the communication time between php and lazarus.
      *
      * @return float
      */
     public function ping()
     {
-        $now = microtime(true);
+        $now = \microtime(true);
         $this->waitCommand(
             'ping',
             [
-                (string) $now
+                (string) $now,
             ]
         );
 
-        return microtime(true) - $now;
+        return \microtime(true) - $now;
     }
 
     /**
-     * Put a object to the internal objects array
+     * Put a object to the internal objects array.
      *
      * @param AbstractObject $object Component Object
-     *
-     * @return void
      */
     public function addObject(AbstractObject $object)
     {
@@ -164,11 +168,9 @@ class Application
     }
 
     /**
-     * Destroy a object
+     * Destroy a object.
      *
      * @param AbstractObject $object Component Object
-     *
-     * @return void
      */
     public function destroyObject(AbstractObject $object)
     {
@@ -177,9 +179,9 @@ class Application
         $this->sendCommand(
             'destroyObject',
             [
-                $object->getLazarusObjectId()
+                $object->getLazarusObjectId(),
             ],
-            function ($result) use (& $object, $application) {
+            function ($result) use (&$object, $application) {
                 if ($result == $object->getLazarusObjectId()) {
                     if ($application->getObject($result)) {
                         unset($object, $application->{$result});
@@ -190,15 +192,13 @@ class Application
     }
 
     /**
-     * Fire an application event
+     * Fire an application event.
      *
      * @param string $eventName Event Name
-     *
-     * @return void
      */
     public function fire($eventName)
     {
-        if (array_key_exists($eventName, $this->eventHandlers)) {
+        if (\array_key_exists($eventName, $this->eventHandlers)) {
             foreach ($this->eventHandlers[$eventName] as $eventHandler) {
                 $eventHandler();
             }
@@ -206,7 +206,7 @@ class Application
     }
 
     /**
-     * Returns the next avaible object ID
+     * Returns the next avaible object ID.
      *
      * @return int
      */
@@ -216,19 +216,19 @@ class Application
     }
 
     /**
-     * Get a object from the internal objects array
+     * Get a object from the internal objects array.
      *
      * @param int $id Object ID
      *
-     * @return Object
+     * @return object
      */
     public function getObject($id)
     {
-        return (isset($this->objects[$id]) && $this->objects[$id] !== null) ? $this->objects[$id] : null;
+        return (isset($this->objects[$id]) && null !== $this->objects[$id]) ? $this->objects[$id] : null;
     }
 
     /**
-     * Returns the verbose level
+     * Returns the verbose level.
      *
      * @return int
      */
@@ -238,16 +238,14 @@ class Application
     }
 
     /**
-     * Returns the next avaible object ID
+     * Returns the next avaible object ID.
      *
-     * @param string $eventName the name of the event
+     * @param string   $eventName    the name of the event
      * @param callable $eventHandler the callback
-     *
-     * @return void
      */
     public function on($eventName, callable $eventHandler)
     {
-        if (! array_key_exists($eventName, $this->eventHandlers)) {
+        if (!\array_key_exists($eventName, $this->eventHandlers)) {
             $this->eventHandlers[$eventName] = [];
         }
 
@@ -255,13 +253,11 @@ class Application
     }
 
     /**
-     * Runs the application
-     *
-     * @return void
+     * Runs the application.
      */
     public function run()
     {
-        if (! self::$defaultApplication) {
+        if (!self::$defaultApplication) {
             self::$defaultApplication = $this;
         }
 
@@ -269,12 +265,12 @@ class Application
 
         if (OsDetector::isMacOS()) {
             $processName = './phpgui-i386-darwin';
-            $processPath = __DIR__ . '/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
+            $processPath = __DIR__.'/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
         } elseif (OsDetector::isFreeBSD()) {
             $processName = './phpgui-x86_64-freebsd';
-            $processPath = __DIR__ . '/../lazarus/';
+            $processPath = __DIR__.'/../lazarus/';
         } elseif (OsDetector::isUnix()) {
-            switch(OsDetector::systemArchitecture()) {
+            switch (OsDetector::systemArchitecture()) {
                 case 'x86_64':
                     $processName = './phpgui-x86_64-linux';
                     break;
@@ -287,10 +283,10 @@ class Application
                     throw new \RuntimeException('Operational System architecture not identified by PHP-GUI.');
                     break;
             }
-            $processPath = __DIR__ . '/../lazarus/';
+            $processPath = __DIR__.'/../lazarus/';
         } elseif (OsDetector::isWindows()) {
             $processName = '.\\phpgui-x86_64-win64';
-            $processPath = __DIR__ . '\\..\\lazarus\\';
+            $processPath = __DIR__.'\\..\\lazarus\\';
         } else {
             throw new \RuntimeException('Operational System not identified by PHP-GUI.');
         }
@@ -325,7 +321,7 @@ class Application
             });
 
             $process->stderr->on('data', function ($data) {
-                if (! empty($data)) {
+                if (!empty($data)) {
                     Output::err($data);
                 }
             });
@@ -337,13 +333,13 @@ class Application
         });
 
         $this->loop->addPeriodicTimer(0.001, function () use ($process, $application) {
-            if (! $application->isRunning()) {
+            if (!$application->isRunning()) {
                 $application->terminate();
             }
 
             $application->sender->tick();
 
-            if (@is_resource($application->process->stdout->stream)) {
+            if (@\is_resource($application->process->stdout->stream)) {
                 $application->receiver->tick();
             }
         });
@@ -352,31 +348,27 @@ class Application
     }
 
     /**
-     * Terminates the application
-     *
-     * @return void
+     * Terminates the application.
      */
     public function terminate()
     {
-        $this->sendCommand("exit", [], function () {
+        $this->sendCommand('exit', [], function () {
         });
         @$this->process->terminate();
         @$this->process->close();
     }
 
     /**
-     * Send a command
+     * Send a command.
      *
-     * @param string $method the method name
-     * @param array $params the method params
+     * @param string   $method   the method name
+     * @param array    $params   the method params
      * @param callable $callback the callback
-     *
-     * @return void
      */
     public function sendCommand($method, array $params, callable $callback)
     {
         // @todo: Put the message on a poll
-        if (! $this->running) {
+        if (!$this->running) {
             return;
         }
 
@@ -385,17 +377,15 @@ class Application
     }
 
     /**
-     * Send an event
+     * Send an event.
      *
      * @param string $method the method name
-     * @param array $params the method params
-     *
-     * @return void
+     * @param array  $params the method params
      */
     public function sendEvent($method, array $params)
     {
         // @todo: Put the message on a poll
-        if (! $this->running) {
+        if (!$this->running) {
             return;
         }
 
@@ -404,11 +394,9 @@ class Application
     }
 
     /**
-     * Set the verbose level
+     * Set the verbose level.
      *
      * @param int $verboseLevel
-     *
-     * @return void
      */
     public function setVerboseLevel($verboseLevel)
     {
@@ -416,10 +404,10 @@ class Application
     }
 
     /**
-     * Send a command and wait the return
+     * Send a command and wait the return.
      *
      * @param string $method the method name
-     * @param array $params the method params
+     * @param array  $params the method params
      *
      * @return mixed
      */
@@ -431,7 +419,7 @@ class Application
     }
 
     /**
-     * Get the event loop
+     * Get the event loop.
      *
      * @return LoopInterface
      */
@@ -441,17 +429,15 @@ class Application
     }
 
     /**
-     * Shows an alert dialog
+     * Shows an alert dialog.
      *
      * @param mixed  $message Array or String message to display
      * @param string $title   Title of the alert
-     *
-     * @return void
      */
     public function alert($message, $title = '')
     {
-        if (is_array($message)) {
-            $message = implode('\n', $message);
+        if (\is_array($message)) {
+            $message = \implode('\n', $message);
         }
         $this->sendCommand(
             'showMessage',
@@ -463,27 +449,13 @@ class Application
     }
 
     /**
-     * Unset the object referency from the stack
-     *
-     * @param $objectId
-     *
-     * @return void
-     */
-    public function __unset($objectId)
-    {
-        if ($this->getObject($objectId)) {
-            unset($this->objects[$objectId]);
-        }
-    }
-
-    /**
      * Gets the Defines if the application is running.
      *
      * @return bool $running
      */
     public function isRunning()
     {
-        $this->running = ! $this->process->isRunning() ? false : $this->running;
+        $this->running = !$this->process->isRunning() ? false : $this->running;
 
         return $this->running;
     }

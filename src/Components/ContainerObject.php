@@ -3,18 +3,17 @@
 namespace Gui\Components;
 
 /**
- * It is a container component
+ * It is a container component.
  *
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
  */
 abstract class ContainerObject extends VisualObject implements ContainerObjectInterface
 {
-
     /**
-     * The children objetcs
+     * The children objetcs.
      *
-     * @var array $children
+     * @var array
      */
     protected $children = [];
 
@@ -32,7 +31,7 @@ abstract class ContainerObject extends VisualObject implements ContainerObjectIn
     public function getChild($lazarusObjectId)
     {
         if (!isset($this->children[$lazarusObjectId])) {
-            throw new \Exception("Child object not found");
+            throw new \Exception('Child object not found');
         }
 
         return $this->children[$lazarusObjectId];

@@ -3,8 +3,7 @@
 namespace Gui\Exception;
 
 /**
- * This is the Exception Class for Components
- *
+ * This is the Exception Class for Components.
  *
  * @author Johann SERVOIRE @Johann-S
  * @since 0.1
@@ -12,11 +11,10 @@ namespace Gui\Exception;
 class ComponentException extends \RuntimeException
 {
     /**
-     * ComponentException
+     * ComponentException.
      *
      * @param string $message
-     * @param int $code
-     * @param \Exception|null $previous
+     * @param int    $code
      */
     public function __construct($message, $code = 0, \Exception $previous = null)
     {
@@ -24,10 +22,10 @@ class ComponentException extends \RuntimeException
     }
 
     /**
-     * Activated when casting to string
+     * Activated when casting to string.
      */
     public function __toString()
     {
-        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        return __CLASS__.": [{$this->code}]: {$this->message}\n";
     }
 }

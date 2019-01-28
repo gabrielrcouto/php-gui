@@ -3,7 +3,7 @@
 namespace Gui\Components;
 
 /**
- * This is the LazarusObjectInterface
+ * This is the LazarusObjectInterface.
  *
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
@@ -25,21 +25,17 @@ interface LazarusObjectInterface
     public function getLazarusClass();
 
     /**
-     * Fire an object event
+     * Fire an object event.
      *
      * @param string $eventName Event Name
-     *
-     * @return void
      */
     public function fire($eventName);
 
     /**
-     * Add a listener to an event
+     * Add a listener to an event.
      *
-     * @param string $eventName Event Name
+     * @param string   $eventName    Event Name
      * @param callable $eventHandler Event Handler Function
-     *
-     * @return void
      */
     public function on($eventName, callable $eventHandler);
 }

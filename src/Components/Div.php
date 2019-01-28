@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the Div Class
- *
  * It is a visual component for div
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,9 +11,9 @@ namespace Gui\Components;
 class Div extends ContainerObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TScrollBox';
 }

@@ -1,11 +1,10 @@
 <?php
+
 namespace Gui\Components;
 
 use Gui\Color;
 
 /**
- * This is the table class.
- *
  * It is a visual component for a table using the Lazarus
  * component TStringGrid.
  *
@@ -27,7 +26,7 @@ class Table extends VisualObject
      */
     const BORDER_STYLE_SINGLE = 1;
 
-    /** {@inheritDoc} */
+    /** {@inheritdoc} */
     protected $lazarusClass = 'TStringGrid';
 
     /**
@@ -50,25 +49,25 @@ class Table extends VisualObject
      * The borders style, this should use one of the
      * BORDER_STYLE_* constants.
      *
-     * @var integer
+     * @var int
      */
     protected $borderStyle;
 
     /**
      * The column count of the table.
      *
-     * @var integer
+     * @var int
      */
     protected $colCount;
 
     /**
      * The row count of the table.
      *
-     * @var integer
+     * @var int
      */
     protected $rowCount;
 
-    /** {@inheritDoc} */
+    /** {@inheritdoc} */
     public function __construct(
         array $defaultAttributes = [],
         ContainerObjectInterface $parent = null,
@@ -84,7 +83,8 @@ class Table extends VisualObject
     /**
      * Set the colour of the alternating column.
      *
-     * @param string $colour The hexidecimal colour.
+     * @param string $colour the hexidecimal colour
+     *
      * @return self
      */
     public function setAlternateColor($colour)
@@ -95,7 +95,7 @@ class Table extends VisualObject
                 Color::toLazarus($colour),
             ]
         );
-        
+
         $this->alternateColour = $colour;
 
         return $this;
@@ -114,19 +114,20 @@ class Table extends VisualObject
     /**
      * Set the border.
      *
-     * @param int $top
+     * @param int      $top
      * @param int|null $right
      * @param int|null $bottom
      * @param int|null $left
+     *
      * @return self
      */
     public function setBorder($top, $right = null, $bottom = null, $left = null)
     {
-        trigger_error('The method doesn\'t seem to be working yet.', E_USER_WARNING);
+        \trigger_error('The method doesn\'t seem to be working yet.', E_USER_WARNING);
 
-        $r = is_null($right);
-        $b = is_null($bottom);
-        $l = is_null($left);
+        $r = null === $right;
+        $b = null === $bottom;
+        $l = null === $left;
 
         if ($r && $b && $l) {
             $right = $bottom = $left = $top;
@@ -155,8 +156,9 @@ class Table extends VisualObject
     /**
      * Get the border.
      *
-     * @param boolean $withKeys Should it be returned with the keys?
-     *                          e.g. $->top, $->right, $->bottom, $->left.
+     * @param bool $withKeys Should it be returned with the keys?
+     *                       e.g. $->top, $->right, $->bottom, $->left.
+     *
      * @return array|\stdClass
      */
     public function getBorder($withKeys = false)
@@ -166,22 +168,23 @@ class Table extends VisualObject
         }
 
         return (object) [
-            'top'       => $this->border[0],
-            'right'     => $this->border[1],
-            'bottom'    => $this->border[2],
-            'left'      => $this->border[3],
+            'top' => $this->border[0],
+            'right' => $this->border[1],
+            'bottom' => $this->border[2],
+            'left' => $this->border[3],
         ];
     }
 
     /**
      * Set the border style.
      *
-     * @param integer $style Use one of the BORDER_STYLE_* constants.
+     * @param int $style use one of the BORDER_STYLE_* constants
+     *
      * @return self
      */
     public function setBorderStyle($style)
     {
-        if ($style !== self::BORDER_STYLE_NONE && $style !== self::BORDER_STYLE_SINGLE) {
+        if (self::BORDER_STYLE_NONE !== $style && self::BORDER_STYLE_SINGLE !== $style) {
             throw new \Exception('Invalid border style used.');
         }
 
@@ -200,9 +203,10 @@ class Table extends VisualObject
     /**
      * Set the content of the column at the given position.
      *
-     * @param integer $cellx The column.
-     * @param integer $celly The row.
-     * @param mixed $content The content of the cell.
+     * @param int   $cellx   the column
+     * @param int   $celly   the row
+     * @param mixed $content the content of the cell
+     *
      * @return self
      */
     public function setContent($cellx, $celly, $content)
@@ -222,7 +226,8 @@ class Table extends VisualObject
     /**
      * Set how many rows are displayed on the table.
      *
-     * @param integer $count
+     * @param int $count
+     *
      * @return self
      */
     public function setRowCount($count)
@@ -242,7 +247,7 @@ class Table extends VisualObject
     /**
      * Get how many rows are on the table.
      *
-     * @return integer
+     * @return int
      */
     public function getRowCount()
     {
@@ -252,7 +257,8 @@ class Table extends VisualObject
     /**
      * Set how many columns are on the table.
      *
-     * @param integer $count
+     * @param int $count
+     *
      * @return self
      */
     public function setColumnCount($count)
@@ -272,7 +278,7 @@ class Table extends VisualObject
     /**
      * Get how many columns are on the table.
      *
-     * @return integer
+     * @return int
      */
     public function getColumnCount()
     {
@@ -282,7 +288,8 @@ class Table extends VisualObject
     /**
      * Set the default column width.
      *
-     * @param integer $width
+     * @param int $width
+     *
      * @return self
      */
     public function setDefaultColumnWidth($width)
@@ -300,7 +307,8 @@ class Table extends VisualObject
     /**
      * Add a column or columns to the table.
      *
-     * @param integer $count The amount of columns.
+     * @param int $count the amount of columns
+     *
      * @return self
      */
     public function addColumn($count = 1)
@@ -313,7 +321,8 @@ class Table extends VisualObject
     /**
      * Add a row or rows to the table.
      *
-     * @param integer $count The amount of rows.
+     * @param int $count the amount of rows
+     *
      * @return self
      */
     public function addRow($count = 1)
@@ -326,7 +335,8 @@ class Table extends VisualObject
     /**
      * Delete a column or columns from a table.
      *
-     * @param integer $count The amount of columns.
+     * @param int $count the amount of columns
+     *
      * @return self
      */
     public function deleteColumn($count = 1)
@@ -339,7 +349,8 @@ class Table extends VisualObject
     /**
      * Delete a row or rows from a table.
      *
-     * @param integer $count The amount of rows.
+     * @param int $count the amount of rows
+     *
      * @return self
      */
     public function deleteRow($count = 1)
@@ -352,7 +363,8 @@ class Table extends VisualObject
     /**
      * Enable the table.
      *
-     * @param boolean $enabled
+     * @param bool $enabled
+     *
      * @return self
      */
     public function setEnabled($enabled = true)

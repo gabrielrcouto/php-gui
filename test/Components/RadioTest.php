@@ -7,9 +7,12 @@ use Gui\Components\Option;
 use Gui\Components\Radio;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class RadioTest extends TestCase
 {
-
     public function testSetOptions()
     {
         $radio = new Radio([], null, new Application());

@@ -5,8 +5,6 @@ namespace Gui\Components;
 use Gui\Color;
 
 /**
- * This is the Canvas Class
- *
  * It is a visual component for canvas
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -15,9 +13,9 @@ use Gui\Color;
 class Canvas extends VisualObject
 {
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TImage';
 
@@ -37,11 +35,12 @@ class Canvas extends VisualObject
     }
 
     /**
-     * Sets the pixel color
+     * Sets the pixel color.
      *
-     * @param int $x
-     * @param int $x
+     * @param int    $x
+     * @param int    $x
      * @param string $color
+     * @param mixed  $y
      *
      * @return self
      */
@@ -52,7 +51,7 @@ class Canvas extends VisualObject
             [
                 $x,
                 $y,
-                Color::toLazarus($color)
+                Color::toLazarus($color),
             ],
             $isCommand = false
         );
@@ -61,7 +60,7 @@ class Canvas extends VisualObject
     }
 
     /**
-     * Sets the canvas size
+     * Sets the canvas size.
      *
      * @param int $width
      * @param int $height
@@ -74,7 +73,7 @@ class Canvas extends VisualObject
             'picture.bitmap.setSize',
             [
                 $width,
-                $height
+                $height,
             ]
         );
 

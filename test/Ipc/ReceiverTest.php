@@ -3,11 +3,14 @@
 namespace Test\Ipc;
 
 use Gui\Application;
-use Gui\Exception\ComponentException;
 use Gui\Ipc\Receiver;
 use PHPUnit\Framework\TestCase;
 use Test\Util;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ReceiverTest extends TestCase
 {
     public function testConstructor()
@@ -29,7 +32,7 @@ class ReceiverTest extends TestCase
             }
         );
 
-        $this->assertTrue(is_array($receiver->messageCallbacks));
+        $this->assertTrue(\is_array($receiver->messageCallbacks));
         $receiver->messageCallbacks[1]();
         $this->assertEquals(1, $foo);
     }
@@ -41,11 +44,13 @@ class ReceiverTest extends TestCase
         $obj = $this->getMockBuilder('Gui\Components\Window')
             ->setConstructorArgs([[], null, $application])
             ->setMethods(['fire'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $obj->expects($this->once())
             ->method('fire')
-            ->with('foo');
+            ->with('foo')
+        ;
 
         $application->addObject($obj);
 
@@ -71,8 +76,9 @@ class ReceiverTest extends TestCase
     }
 
     /**
-     * Test Receiver jsonDecode method
-     * @expectedException ComponentException
+     * Test Receiver jsonDecode method.
+     *
+     * @expectedException \ComponentException
      */
     public function testCallJsonDecode()
     {
@@ -82,6 +88,6 @@ class ReceiverTest extends TestCase
         $strJson = '{ data: "Nice data but not a valid JSON string" }';
         $this->setExpectedException('\Gui\Exception\ComponentException');
         $util = new Util();
-        $util->invokeMethod($receiver, 'jsonDecode', array($strJson));
+        $util->invokeMethod($receiver, 'jsonDecode', [$strJson]);
     }
 }

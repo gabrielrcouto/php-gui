@@ -6,6 +6,10 @@ use Gui\Application;
 use Gui\Components\Window;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ApplicationTest extends TestCase
 {
     public function testGetNextObjectId()
@@ -36,13 +40,15 @@ class ApplicationTest extends TestCase
     {
         $mock = $this->getMockBuilder('Gui\Application')
             ->setMethods(['waitCommand'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $mock->expects($this->once())
             ->method('waitCommand')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
-        $this->assertTrue(is_float($mock->ping()));
+        $this->assertTrue(\is_float($mock->ping()));
     }
 
     public function testAddObject()
@@ -83,29 +89,32 @@ class ApplicationTest extends TestCase
     {
         $appMock = $this->getMockBuilder('Gui\Application')
             ->setMethods(['getWindow', 'sendCommand'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $window = $this->getMockBuilder(
             'Gui\Components\Window',
             [
                 [],
                 null,
-                $appMock
+                $appMock,
             ]
         )
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $appMock->expects($this->any())
             ->method('getWindow')
-            ->will($this->returnValue($window));
+            ->will($this->returnValue($window))
+        ;
 
         $mock = $this->getMockForAbstractClass(
             'Gui\Components\AbstractObject',
             [
                 [],
                 null,
-                $appMock
+                $appMock,
             ]
         );
 
@@ -116,7 +125,8 @@ class ApplicationTest extends TestCase
                 [$mock->getLazarusObjectId()],
                 function () {
                 }
-            );
+            )
+        ;
 
         $appMock->destroyObject($mock);
     }

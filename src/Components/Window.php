@@ -3,8 +3,6 @@
 namespace Gui\Components;
 
 /**
- * This is the Window Class
- *
  * It is a visual component for window
  *
  * @author Rafael Reis @reisraff
@@ -12,16 +10,15 @@ namespace Gui\Components;
  */
 class Window extends ContainerObject
 {
-
     /**
-     * The lazarus class as string
+     * The lazarus class as string.
      *
-     * @var string $lazarusClass
+     * @var string
      */
     protected $lazarusClass = 'TForm1';
 
     /**
-     * Sets the window title
+     * Sets the window title.
      *
      * @param string $title
      *
@@ -35,9 +32,9 @@ class Window extends ContainerObject
     }
 
     /**
-     * Gets the window title
+     * Gets the window title.
      *
-     * @return String
+     * @return string
      */
     public function getTitle()
     {
@@ -45,7 +42,7 @@ class Window extends ContainerObject
     }
 
     /**
-     * Sets the icon
+     * Sets the icon.
      *
      * @param string $icon
      *
@@ -53,7 +50,7 @@ class Window extends ContainerObject
      */
     public function setIcon($icon)
     {
-        if (file_exists($icon) && preg_match('/ico$/i', $icon)) {
+        if (\file_exists($icon) && \preg_match('/ico$/i', $icon)) {
             $this->call(
                 'icon.loadFromFile',
                 [$icon]
@@ -64,7 +61,7 @@ class Window extends ContainerObject
     }
 
     /**
-     * Sets the window state. Can be one of the following values: fullscreen, minimized, maximized, normal
+     * Sets the window state. Can be one of the following values: fullscreen, minimized, maximized, normal.
      *
      * @param string $state
      *
@@ -76,14 +73,14 @@ class Window extends ContainerObject
             'fullscreen',
             'minimized',
             'maximized',
-            'normal'
+            'normal',
         ];
 
-        if (!in_array($state, $validStates)) {
-            throw new \InvalidArgumentException('Unknown state: ' . $state);
+        if (!\in_array($state, $validStates, true)) {
+            throw new \InvalidArgumentException('Unknown state: '.$state);
         }
 
-        $this->set('windowState', 'ws' . ucfirst($state));
+        $this->set('windowState', 'ws'.\ucfirst($state));
 
         return $this;
     }

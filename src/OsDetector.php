@@ -3,8 +3,6 @@
 namespace Gui;
 
 /**
- * This is the OsDetector Class
- *
  * This class is used to check to current OS
  *
  * @author Gabriel Couto @gabrielrcouto
@@ -13,52 +11,52 @@ namespace Gui;
 class OsDetector
 {
     /**
-     * This method is used to check if the current OS is MacOs
+     * This method is used to check if the current OS is MacOs.
      *
      * @return bool
      */
     public static function isMacOS()
     {
-        return false !== strpos(php_uname('s'), 'Darwin');
+        return false !== \mb_strpos(\php_uname('s'), 'Darwin');
     }
 
     /**
-     * This method is used to check if the current OS is Unix
+     * This method is used to check if the current OS is Unix.
      *
      * @return bool
      */
     public static function isUnix()
     {
-        return '/' === DIRECTORY_SEPARATOR;
+        return '/' === \DIRECTORY_SEPARATOR;
     }
 
     /**
-     * This method is used to check if the current OS is FreeBSD
+     * This method is used to check if the current OS is FreeBSD.
      *
      * @return bool
      */
     public static function isFreeBSD()
     {
-        return false !== strpos(php_uname('s'), 'FreeBSD');
+        return false !== \mb_strpos(\php_uname('s'), 'FreeBSD');
     }
 
     /**
-     * This method is used to check if the current OS is Windows
+     * This method is used to check if the current OS is Windows.
      *
      * @return bool
      */
     public static function isWindows()
     {
-        return '\\' === DIRECTORY_SEPARATOR;
+        return '\\' === \DIRECTORY_SEPARATOR;
     }
-    
+
     /**
-     * This method return system architecture
+     * This method return system architecture.
      *
      * @return string
      */
     public static function systemArchitecture()
     {
-        return php_uname('m');
+        return \php_uname('m');
     }
 }

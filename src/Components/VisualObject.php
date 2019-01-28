@@ -5,7 +5,7 @@ namespace Gui\Components;
 use Gui\Color;
 
 /**
- * It is a visual component
+ * It is a visual component.
  *
  * @author Rodrigo Azevedo @rodrigowbazeved
  * @since 0.1
