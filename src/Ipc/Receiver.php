@@ -173,7 +173,7 @@ class Receiver
             $fchar = '[';
             $lchar = ']';
             $start = $fbrac;
-        } elseif ($fcurl > $fbrac || $fbrac === false) {
+        } elseif ($fcurl < $fbrac || $fbrac === false) {
             // If '{' is before '[' use {}.
             $fchar = '{';
             $lchar = '}';
