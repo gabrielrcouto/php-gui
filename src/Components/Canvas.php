@@ -63,13 +63,43 @@ class Canvas extends VisualObject
     /**
      * Sets the canvas size
      *
-     * @param int $width
-     * @param int $height
+     * @param int|string $width
+     * @param int|string $height
      *
      * @return self
      */
     public function setSize($width, $height)
     {
+        if (is_string($width)) {
+            $parent = 0;
+
+            if (strpos($width, "vw") !== false) {
+                $width = floatval(str_replace("vw", "", $width));
+                $parent = $this->getWidth();
+            }
+            else if (strpos($width, "vh") !== false) {
+                $width = floatval(str_replace("vh", "", $width));
+                $parent = $this->getheight();
+            }
+
+            $width = $parent * ($width / 100);
+        }
+
+        if (is_string($height)) {
+            $parent = 0;
+
+            if (strpos($height, "vw") !== false) {
+                $height = floatval(str_replace("vw", "", $height));
+                $parent = $this->getWidth();
+            }
+            else if (strpos($height, "vh") !== false) {
+                $height = floatval(str_replace("vh", "", $height));
+                $parent = $this->getheight();
+            }
+
+            $height = $parent * ($height / 100);
+        }
+
         $this->call(
             'picture.bitmap.setSize',
             [
