@@ -11,8 +11,6 @@ use Gui\Application;
  */
 class InputSpin extends VisualObject
 {
-    use InputEvents;
-    
     /**
      * {@inheritdoc}
      */
