@@ -152,6 +152,7 @@ class Receiver
      */
     protected function jsonSplit($json, &$carry = [])
     {
+        $json = trim($json);
         @json_decode($json);
         if (json_last_error() === JSON_ERROR_NONE) {
             $carry[] = $json;
