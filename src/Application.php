@@ -503,9 +503,9 @@ class Application
 			return $proc . "linux";
 		} elseif (OsDetector::isWindows()) {
 			if ($arch === "x86_64") {
-				return $proc . "win64";
+				return $proc . "win64.exe";
 			} else {
-				return $proc . "win32";
+				return $proc . "win32.exe";
 			}
 		} else {
 			throw new \RuntimeException('Operational System not identified by PHP-GUI.');
