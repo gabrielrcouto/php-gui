@@ -273,7 +273,7 @@ class Application
 
 		$binPath = rtrim($processPath, "/\\") . DIRECTORY_SEPARATOR . ltrim($processName, ".\\/");
 		if (!file_exists(realpath($binPath))) {
-			throw new RuntimeException("Correct binary cannot be found (checked $binPath) by PHP-GUI.");
+			throw new \RuntimeException("Correct binary cannot be found (checked $binPath) by PHP-GUI.");
 		}
 
         $this->process = $process = new Process($processName, $processPath);
