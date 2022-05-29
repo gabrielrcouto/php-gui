@@ -520,6 +520,7 @@ class Application
 	private function getProcessArchId()
 	{
 		switch (OsDetector::systemArchitecture()) {
+			case 'AMD64':
 			case 'x86_64':
 				return 'x86_64';
 			case 'i686':
