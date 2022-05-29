@@ -319,9 +319,9 @@
       <Unit0>
         <Filename Value="phpgui.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="2"/>
         <CursorPos X="4" Y="23"/>
-        <UsageCount Value="183"/>
+        <UsageCount Value="186"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -332,7 +332,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <CursorPos X="21" Y="15"/>
-        <UsageCount Value="183"/>
+        <UsageCount Value="186"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -340,10 +340,11 @@
         <Filename Value="unitipcthread.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="UnitIpcThread"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="368"/>
-        <CursorPos X="84" Y="488"/>
-        <UsageCount Value="179"/>
+        <TopLine Value="43"/>
+        <CursorPos X="65" Y="64"/>
+        <UsageCount Value="182"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -436,26 +437,24 @@
       <Unit15>
         <Filename Value="s:/fpc-lazarus/lazarus/lcl/interfaces/carbon/carbonbars.pp"/>
         <UnitName Value="CarbonBars"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <CursorPos X="9" Y="16"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="34"/>
+        <CursorPos X="42" Y="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="s:/fpc-lazarus/lazarus/lcl/interfaces/carbon/carbondef.pp"/>
         <UnitName Value="CarbonDef"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="170"/>
         <CursorPos Y="187"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit16>
     </Units>
     <OtherDefines Count="1">
       <Define0 Value="UseCThreads"/>
     </OtherDefines>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="9" HistoryIndex="8">
       <Position1>
         <Filename Value="unit1.pas"/>
         <Caret Line="14" Column="24"/>
@@ -492,14 +491,6 @@
         <Filename Value="unitipcthread.pas"/>
         <Caret Line="488" Column="84" TopLine="368"/>
       </Position9>
-      <Position10>
-        <Filename Value="s:/fpc-lazarus/lazarus/lcl/interfaces/carbon/carbonbars.pp"/>
-        <Caret Line="16" Column="2"/>
-      </Position10>
-      <Position11>
-        <Filename Value="s:/fpc-lazarus/lazarus/lcl/interfaces/carbon/carbondef.pp"/>
-        <Caret Line="187" TopLine="170"/>
-      </Position11>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

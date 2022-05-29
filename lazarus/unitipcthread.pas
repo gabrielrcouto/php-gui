@@ -63,7 +63,7 @@ begin
 
     while(i < Length(input)) do
     begin
-        if (input[i+1] <> '"') AND (input[i+1] <> '"') then
+        if (input[i+1] <> '"') AND (input[i+1] <> '\') then
         begin
             output := output + input[i+1];
         end else begin
