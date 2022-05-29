@@ -9,6 +9,7 @@ use Gui\Ipc\EventMessage;
 use Gui\Ipc\Receiver;
 use Gui\Ipc\Sender;
 use Gui\OsDetector;
+use http\Exception\RuntimeException;
 use React\ChildProcess\Process;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
@@ -267,33 +268,13 @@ class Application
 
         $application = $this;
 
-        if (OsDetector::isMacOS()) {
-            $processName = './phpgui-i386-darwin';
-            $processPath = __DIR__ . '/../lazarus/phpgui-i386-darwin.app/Contents/MacOS/';
-        } elseif (OsDetector::isFreeBSD()) {
-            $processName = './phpgui-x86_64-freebsd';
-            $processPath = __DIR__ . '/../lazarus/';
-        } elseif (OsDetector::isUnix()) {
-            switch(OsDetector::systemArchitecture()) {
-                case 'x86_64':
-                    $processName = './phpgui-x86_64-linux';
-                    break;
-                case 'i686':
-                case 'i586':
-                case 'i386':
-                    $processName = './phpgui-i386-linux';
-                    break;
-                default:
-                    throw new \RuntimeException('Operational System architecture not identified by PHP-GUI.');
-                    break;
-            }
-            $processPath = __DIR__ . '/../lazarus/';
-        } elseif (OsDetector::isWindows()) {
-            $processName = '.\\phpgui-x86_64-win64';
-            $processPath = __DIR__ . '\\..\\lazarus\\';
-        } else {
-            throw new \RuntimeException('Operational System not identified by PHP-GUI.');
-        }
+        $processName = $this->getProcessName();
+		$processPath = $this->getProcessPath();
+
+		$binPath = rtrim($processPath, "/\\") . DIRECTORY_SEPARATOR . ltrim($processName, ".\\/");
+		if (!file_exists(realpath($binPath))) {
+			throw new RuntimeException("Correct binary cannot be found (checked $binPath) by PHP-GUI.");
+		}
 
         $this->process = $process = new Process($processName, $processPath);
 
@@ -487,4 +468,66 @@ class Application
 
         return $this->running;
     }
+
+	/**
+	 * Returns Lazarus process path, using correct slashes for current platform.
+	 *
+	 * @return string
+	 */
+	private function getProcessPath()
+	{
+		if (OsDetector::isWindows()) {
+			return __DIR__ . '\\..\\lazarus\\';
+		} elseif (OsDetector::isMacOS()) {
+			return __DIR__ . '/../lazarus/phpgui-' . $this->getProcessArchId() .'-darwin.app/Contents/MacOS/';
+		} else {
+			return __DIR__ . '/../lazarus/';
+		}
+	}
+
+	/**
+	 * Returns Lazarus process name, selecting current platform.
+	 *
+	 * @return string
+	 */
+	private function getProcessName()
+	{
+		$arch = $this->getProcessArchId();
+		$proc = "phpgui-" . $arch . "-";
+		// mac, bsd, unix, windows
+		if (OsDetector::isMacOS()) {
+			return $proc . "darwin";
+		} elseif (OsDetector::isFreeBSD()) {
+			return $proc . "freebsd";
+		} elseif (OsDetector::isUnix()) {
+			return $proc . "linux";
+		} elseif (OsDetector::isWindows()) {
+			if ($arch === "x86_64") {
+				return $proc . "win64";
+			} else {
+				return $proc . "win32";
+			}
+		} else {
+			throw new \RuntimeException('Operational System not identified by PHP-GUI.');
+		}
+	}
+
+	/**
+	 * Returns processor architecture in such manner, that it fits file names (returns 'x86_64' or 'i386')
+	 *
+	 * @return string
+	 */
+	private function getProcessArchId()
+	{
+		switch (OsDetector::systemArchitecture()) {
+			case 'x86_64':
+				return 'x86_64';
+			case 'i686':
+			case 'i586':
+			case 'i386':
+				return 'i386';
+			default:
+				throw new \RuntimeException('Operational System architecture not identified by PHP-GUI.');
+		}
+	}
 }

@@ -53,6 +53,27 @@ var
 
 implementation
 
+function Escape(input: string): string;
+var
+    output: string;
+    i: integer;
+begin
+    output := '';
+    i := 0;
+
+    while(i < Length(input)) do
+    begin
+        if (input[i+1] <> '"') AND (input[i+1] <> '"') then
+        begin
+            output := output + input[i+1];
+        end else begin
+            output := output + '\' + input[i+1];
+        end;
+        i := i + 1;
+    end;
+    Escape := output;
+end;
+
 procedure TIpcThread.CreateObject;
 var obj: TControl;
   objClass: TPersistentClass;
@@ -464,7 +485,7 @@ begin
       end;
 
       messageId := jData.FindPath('id').AsInteger;
-      Output('{"id": ' + IntToStr(messageId) + ', "result": "' + strCtrl[0] + '"}');
+      Output('{"id": ' + IntToStr(messageId) + ', "result": "' + Escape(strCtrl[0]) + '"}');
       sent := true;
     end;
 
